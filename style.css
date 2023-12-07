@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.container {
+  padding: 0 15px;
+  min-height: 100vh;
+  justify-content: center;
+  background: #f0f2f5;
+}
+.home-view  {
+  justify-content: space-between;
+  max-width: 1000px;
+  width: 100%;
+}
+.home-view  .text {
+  margin-bottom: 90px;
+}
+.home-view  h1 {
+  color: #1877f2;
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+.home-view  p {
+  font-size: 1.3rem;
+  white-space: nowrap;
+}
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+.loginForm form input {
+  height: 55px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  padding: 0 14px;
+}
+input:focus {
+  outline: none;
+  border-color: #1877f2;
+}
+::placeholder {
+  color: #867a7a;
+  font-size: 1.063rem;
+}
+.link {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 15px;
+}
+.link .login {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #1877f2;
+  padding: 15px 0;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+.link .login:hover {
+  background: #0d65d9;
+}
+
+.link .forgot {
+  color: #1877f2;
+  font-size: 0.875rem;
+}
+.link .forgot:hover {
+  text-decoration: underline;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.button-new-account {
+  margin-top: 25px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.button-new-account a {
+  padding: 15px 20px;
+  background: #42b72a;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1.063rem;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+.button-new-account a:hover {
+  background: #3ba626;
+}
+
+
+@media (max-width: 900px) {
+    .home-view  {
+      flex-direction: column;
+    }
+    .home-view  .text {
+      margin-bottom: 50px;
+    }
+    .loginForm{
+      max-width: 100%;
+    }
+
+    
+  }
+  @media (max-width: 500px) {
+    .home-view  .text {
+      margin-bottom: 30px;
+      
+    }
+    .loginForm {
+      padding: 15px;
+    }
+    .loginForm form input {
+      height: 45px;
+    }
+    .link .login {
+      padding: 10px 0;
+    }
+    .button-new-account a {
+      padding: 10px 15px;
+    }
+    .home-view  h1 {
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+    .home-view  p {
+        font-size: 1rem;
+        white-space: wrap;
+    }
+}
+
+
+/* .button-new-account {
+    
+} */
+
+.button-new-account button {
+    font-size: 1.5rem;
+    font-weight: 600px;
+    color: white;
+    background-color: #0b5208;
+    border: none;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.button-new-account button:hover {
+    background-color: #176b10;
+    
+}
+
+
+
+
+  /*         registration      */
+
+.registration {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+}
+
+.registration input[type=text],
+.registration input[type=number],
+.registration input[type=email],
+.registration input[type="password"],
+.registration select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.registration input[type="submit"] {
+    font-size: 1.25rem;
+    font-weight: 600;
+    width: 100%;
+    padding: 20px;
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.registration input:focus {
+    outline: none;
+}
+
+
+.close {
+    
+    position: absolute;
+    top: 1px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+}
+
+
+/* nav */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    
+}
+
+nav{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #cccccc;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+nav .left .logo img{
+    width: 100px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+nav .left{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+nav .left .search_bar{
+    width: 250px;
+    height: 40px;
+    background: #efefef;
+    border-radius: 30px;
+    padding: 0 10px;
+    margin-left: 10px;
+    position: relative;
+    left: 15px;
+}
+
+nav .left .search_bar i{
+    line-height: 40px;
+    font-size: 19px;
+    color: #919191;
+    margin-right: 5px;
+}
+
+nav .left .search_bar input{
+    background: transparent;
+    outline: none;
+    border: 0;
+    font-size: 16px;
+    width: 200px;
+}
+
+
+nav .right {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+nav .right  i{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #efefef;
+    line-height: 35px;
+    padding-left: 8px;
+    font-size: 18px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+nav .right  img{
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    margin-left: 8px;
+    line-height: 45px;
+    cursor: pointer;
+}
