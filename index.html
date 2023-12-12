@@ -8,107 +8,50 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
-  <div class="container flex">
+  <nav>
+      <div class="left">
+          <div class="logo">
+              <h1>REAL TIME FORUM</h1>
+              <!-- <img src="image/logo.png"> -->
+          </div>
+                  
+      </div> 
+  </nav>
+  <div class="container flex" id="app">
     <div class="home-view flex">
       <div class="text">
         <h1>REAL TIME FORUM</h1>
         <p>Connect, Collaborate, Communicate<br>  
            Real-Time Conversations Unleashed! </p>
       </div>
-      <div  style="width: 50%;" class="loginForm" id="login">
-        <form action="">
+      <div class="loginForm" id="login">
+        <form id="loginForm">
             <input type="email" placeholder="Nickname or email" required>
             <input type="password" placeholder="Password" required>
             <div class="link">
               <button type="submit" class="login">Login</button>
             </div>
-            <hr>
         </form>
+     
+        <hr>
         <div class="button-new-account">
             <button type="submit" class="login">Create new account</button>
         </div>
       </div>
       
-
-
-      <div class="registration" id="registration-form" >
-        <button class="close" id="close-register-form">X</button>
-        <form>
-            <input type="text" id="nickname" name="nickname" placeholder="Nickname">
-            <input type="number" id="age" name="age" placeholder="Age">
-            <select id="gender" name="gender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select>
-            <input type="text" id="first-name" name="first-name" placeholder="First Name" required>
-            <input type="text" id="last-name" name="last-name" placeholder="Last Name" required>
-            <input type="email" id="email" name="email" placeholder="E-mail" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <div class="link submitRegister" class="">
-                <button type="submit" class="login">Register</button>
-            </div>
-            
-        </form>
+      
     </div>
+    <div class="registration" id="registration-form">
+      <button class="close" id="close-register-form">X</button>
+      <form id="registrationForm">
+        
+      </form>
+    <div></div>
 
-
-    </div>
     <div id="overlay" style="display: none;"></div>
   </div>
 
 
-  <Script>
-    let btnCreateNewAccount=document.querySelector('.button-new-account')
-    let registrationDiv=document.querySelector('#registration-form')
-    let loginForm=document.querySelector("#login")
-    registrationDiv.style.display='none'
-    let container=document.querySelector(".container")
-    
-    btnCreateNewAccount.addEventListener('click', function(){
-        registrationDiv.style.display='block'
-        overlay.style.display = 'block';
-        let closeButton = document.querySelector('#close-register-form')
-
-        closeButton.addEventListener('click', function() {
-            overlay.style.display = 'none';
-            registrationDiv.style.display = 'none';
-        });
-
-        let submitRegister=document.querySelector(".submitRegister")
-        submitRegister.addEventListener('click', function(){
-            console.log(submitRegister);
-            container.innerHTML=`<nav>
-        <div class="left">
-            <div class="logo">
-                <h1>REAL TIME FORUM</h1>
-                <!-- <img src="image/logo.png"> -->
-            </div>
-
-            <!-- <div class="search_bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search">
-            </div> -->
-        </div> 
-
-        <div class="right">
-       
-            <div class="nav-connection">
-                <!-- <i class="fa-solid fa-list-ul"></i> -->
-                <i class="fa-brands fa-facebook-messenger"></i>
-                <i class="fa-solid fa-bell"></i>
-                <i class="fa-solid fa-moon"></i>
-                <i class="fa-solid fa-user"></i>
-                <!-- <img src="images/profil.png"> -->
-            </div>         
-        </div>
-
-    </nav>`
-        })
-        
-    })
-    
-    
-  </Script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
