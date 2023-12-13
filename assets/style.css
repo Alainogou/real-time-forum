@@ -959,3 +959,24 @@ nav .right  img{
   border: 3px solid #45abff;
   cursor: pointer;
 }
+
+
+/* -------------- */
+
+.user-image {
+  position: relative;
+  display: inline-block;
+}
+.user-image img {
+  display: block;
+}
+.online-indicator {
+  width: 9px;
+  height: 9px;
+  background-color: rgb(17, 158, 12);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+}          
+            

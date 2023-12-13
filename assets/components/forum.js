@@ -4,7 +4,7 @@ export const loadConnexionPage=(container) =>{
     <div class="left">
         <div class="logo">
             <h1>REAL TIME FORUM</h1>
-            <!-- <img src="image/logo.png"> -->
+            <!-- <img src="/assets/image/logo.png"> -->
         </div>
         <!-- <div class="search_bar">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -20,7 +20,7 @@ export const loadConnexionPage=(container) =>{
             <i class="fa-solid fa-bell"></i>
             <i class="fa-solid fa-moon"></i>
             <i class="fa-solid fa-user"></i>
-            <!-- <img src="images/profil.png"> -->
+            <!-- <img src="/assets/images/profil.png"> -->
         </div>         
     </div>
 </nav>
@@ -32,7 +32,7 @@ export const loadConnexionPage=(container) =>{
     <div class="left">
         <div>
             <div class="img">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <p>John Deo</p>
             </div>
             <hr>
@@ -41,27 +41,27 @@ export const loadConnexionPage=(container) =>{
         <h2>Categories</h2>
         
         <div class="shortcuts">
-            <img src="image/shortcuts_1.png">
+            <img src="/assets/image/shortcuts_1.png">
             <p>MOBILE GAMES</p>
         </div>
         <div class="shortcuts">
-            <img src="image/shortcuts_2.jpeg">
+            <img src="/assets/image/shortcuts_2.jpeg">
             <p>Online Education</p>
         </div>
         <div class="shortcuts">
-            <img src="image/shortcuts_3.webp">
+            <img src="/assets/image/shortcuts_3.webp">
             <p>Food Lovers</p>
         </div>
         <div class="shortcuts">
-            <img src="image/shortcuts_4.png">
+            <img src="/assets/image/shortcuts_4.png">
             <p>Social Media Academy</p>
         </div>
         <div class="shortcuts">
-            <img src="image/shortcuts_5.webp">
+            <img src="/assets/image/shortcuts_5.webp">
             <p>PC Shop</p>
         </div>
         <div class="shortcuts">
-            <img src="image/down_arrow.png">
+            <img src="/assets/image/down_arrow.png">
             <p>See more</p>
         </div>
     </div>
@@ -70,7 +70,7 @@ export const loadConnexionPage=(container) =>{
     
         <div class="my_post">
             <div class="post_top">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <input type="text" placeholder="What's on you mind, John?">
             </div>
             <hr>
@@ -94,7 +94,7 @@ export const loadConnexionPage=(container) =>{
         <div class="friends_post">
             <div class="friend_post_top">
                 <div class="img_and_name">
-                    <img src="image/post_1.jpg">
+                    <img src="/assets/image/post_1.jpg">
                     <div class="friends_name">
                         <p class="friends_name">
                             Senuda De Silva
@@ -118,12 +118,12 @@ export const loadConnexionPage=(container) =>{
                 <br></br>
             </div>
            
-            <img src="image/post_1.jpg">
+            <img src="/assets/image/post_1.jpg">
             <div class="info">
                 <div class="emoji_img">
-                    <img src="image/like.png">
-                    <img src="image/haha.png">
-                    <img src="image/heart.png">
+                    <img src="/assets/image/like.png">
+                    <img src="/assets/image/haha.png">
+                    <img src="/assets/image/heart.png">
                     <p>You, Charith Disanayaka and 25K others</p>
                 </div>
                 <div class="comment">
@@ -148,7 +148,7 @@ export const loadConnexionPage=(container) =>{
             </div>
             <hr>
             <div class="comment_warpper">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <div class="circle"></div>
                 <div class="comment_search">
                     <input type="text" placeholder="Write a comment">
@@ -161,7 +161,7 @@ export const loadConnexionPage=(container) =>{
         <div class="friends_post">
             <div class="friend_post_top">
                 <div class="img_and_name">
-                    <img src="image/profile_9.png">
+                    <img src="/assets/image/profile_9.png">
                     <div class="friends_name">
                         <p class="friends_name">
                             Senuda De Silva
@@ -174,12 +174,12 @@ export const loadConnexionPage=(container) =>{
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
-            <img src="image/post_2.jpg">
+            <img src="/assets/image/post_2.jpg">
             <div class="info">
                 <div class="emoji_img">
-                    <img src="image/like.png">
-                    <img src="image/haha.png">
-                    <img src="image/heart.png">
+                    <img src="/assets/image/like.png">
+                    <img src="/assets/image/haha.png">
+                    <img src="/assets/image/heart.png">
                     <p>You, Charith Disanayaka and 25K others</p>
                 </div>
                 <div class="comment">
@@ -204,7 +204,7 @@ export const loadConnexionPage=(container) =>{
             </div>
             <hr>
             <div class="comment_warpper">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <div class="circle"></div>
                 <div class="comment_search">
                     <input type="text" placeholder="Write a comment">
@@ -217,7 +217,7 @@ export const loadConnexionPage=(container) =>{
         <div class="friends_post">
             <div class="friend_post_top">
                 <div class="img_and_name">
-                    <img src="image/profile_10.png">
+                    <img src="/assets/image/profile_10.png">
                     <div class="friends_name">
                         <p class="friends_name">
                             Senuda De Silva
@@ -230,12 +230,12 @@ export const loadConnexionPage=(container) =>{
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
-            <img src="image/post_3.png">
+            <img src="/assets/image/post_3.png">
             <div class="info">
                 <div class="emoji_img">
-                    <img src="image/like.png">
-                    <img src="image/haha.png">
-                    <img src="image/heart.png">
+                    <img src="/assets/image/like.png">
+                    <img src="/assets/image/haha.png">
+                    <img src="/assets/image/heart.png">
                     <p>You, Charith Disanayaka and 25K others</p>
                 </div>
                 <div class="comment">
@@ -252,24 +252,7 @@ export const loadConnexionPage=(container) =>{
                 <div class="like_icon">
                     <i class="fa-solid fa-message"></i>
                     <p>Comments</p>
-                </div><style>
-                .user-image {
-                     position: relative;
-                     display: inline-block;
-                 }
-                 .user-image img {
-                     display: block;
-                 }
-                 .online-indicator {
-                     width: 9px;
-                     height: 9px;
-                     background-color: rgb(17, 158, 12);
-                     border-radius: 50%;
-                     position: absolute;
-                     bottom: 10px;
-                     right: 16px;
-                 }
-             </style>
+                </div>
                 <div class="like_icon">
                     <i class="fa-solid fa-share"></i>
                     <p>Share</p>
@@ -277,7 +260,7 @@ export const loadConnexionPage=(container) =>{
             </div>
             <hr>
             <div class="comment_warpper">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <div class="circle"></div>
                 <div class="comment_search">
                     <input type="text" placeholder="Write a comment">
@@ -290,7 +273,7 @@ export const loadConnexionPage=(container) =>{
         <div class="friends_post">
             <div class="friend_post_top">
                 <div class="img_and_name">
-                    <img src="image/profile_11.png">
+                    <img src="/assets/image/profile_11.png">
                     <div class="friends_name">
                         <p class="friends_name">
                             Senuda De Silva
@@ -303,12 +286,12 @@ export const loadConnexionPage=(container) =>{
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
-            <img src="image/post_4.jpg">
+            <img src="/assets/image/post_4.jpg">
             <div class="info">
                 <div class="emoji_img">
-                    <img src="image/like.png">
-                    <img src="image/haha.png">
-                    <img src="image/heart.png">
+                    <img src="/assets/image/like.png">
+                    <img src="/assets/image/haha.png">
+                    <img src="/assets/image/heart.png">
                     <p>You, Charith Disanayaka and 25K others</p>
                 </div>
                 <div class="comment">
@@ -333,7 +316,7 @@ export const loadConnexionPage=(container) =>{
             </div>
             <hr>
             <div class="comment_warpper">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <div class="circle"></div>
                 <div class="comment_search">
                     <input type="text" placeholder="Write a comment">
@@ -346,7 +329,7 @@ export const loadConnexionPage=(container) =>{
         <div class="friends_post">
             <div class="friend_post_top">
                 <div class="img_and_name">
-                    <img src="image/profile_12.jpg">
+                    <img src="/assets/image/profile_12.jpg">
                     <div class="friends_name">
                         <p class="friends_name">
                             Senuda De Silva
@@ -359,12 +342,12 @@ export const loadConnexionPage=(container) =>{
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
-            <img src="image/post_5.jpg">
+            <img src="/assets/image/post_5.jpg">
             <div class="info">
                 <div class="emoji_img">
-                    <img src="image/like.png">
-                    <img src="image/haha.png">
-                    <img src="image/heart.png">
+                    <img src="/assets/image/like.png">
+                    <img src="/assets/image/haha.png">
+                    <img src="/assets/image/heart.png">
                     <p>You, Charith Disanayaka and 25K others</p>
                 </div>
                 <div class="comment">
@@ -389,7 +372,7 @@ export const loadConnexionPage=(container) =>{
             </div>
             <hr>
             <div class="comment_warpper">
-                <img src="image/profile.png">
+                <img src="/assets/image/profile.png">
                 <div class="circle"></div>
                 <div class="comment_search">
                     <input type="text" placeholder="Write a comment">
@@ -414,13 +397,11 @@ export const loadConnexionPage=(container) =>{
                 <div class="contact_tag">
 
                     <h2>Contacts</h2>
-
-                 
                 </div>
 
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_1.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -428,7 +409,7 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_1.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -436,22 +417,14 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
 
-                    <img src="image/contact_2.jpg">
+                    <img src="/assets/image/contact_2.jpg">
                     <p>Sandra</p>
 
                 </div>
 
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_3.jpg">
-                        <div class="online-indicator"></div>
-                    </div>
-                    <p>Sandra</p>
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_3.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -459,7 +432,7 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_1.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -467,7 +440,15 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_1.jpg">
+                        <div class="online-indicator"></div>
+                    </div>
+                    <p>Sandra</p>
+                </div>
+
+                <div class="contact">
+                    <div class="user-image">
+                        <img src="/assets/image/contact_1.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -475,26 +456,26 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
 
-                    <img src="image/profile_3.jpg">
+                    <img src="/assets/image/profile_3.jpg">
                     <p>Sandra</p>
 
                 </div>
 
                 <div class="contact">
-                    <img src="image/profile_4.png">
+                    <img src="/assets/image/profile_4.png">
                     <p>Sandra</p>
 
                 </div>
 
                 <div class="contact">
 
-                    <img src="image/profile_5.png">
+                    <img src="/assets/image/profile_5.png">
                     <p>Sandra</p>
 
                 </div>
                 <div class="contact">
                     <div class="user-image">
-                        <img src="image/contact_1.jpg">
+                        <img src="/assets/image/contact_1.jpg">
                         <div class="online-indicator"></div>
                     </div>
                     <p>Sandra</p>
@@ -502,7 +483,7 @@ export const loadConnexionPage=(container) =>{
 
                 <div class="contact">
 
-                    <img src="image/profile_7.png">
+                    <img src="/assets/image/profile_7.png">
                     <p>Sandra</p>
 
                 </div>

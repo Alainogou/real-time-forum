@@ -1,0 +1,106 @@
+package main
+
+import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"html/template"
+	"os"
+	"realtimeforum/config"
+	"realtimeforum/models"
+	"io/ioutil"
+)
+
+var (
+	DB   *sql.DB	
+	Port = ":8081"
+)
+
+func init() {
+	fmt.Println("from init")
+	var err error
+
+	DB, err = config.GetDB()
+	if err != nil {
+		fmt.Println("connection database Error")
+		os.Exit(0)
+	}
+	// req:=`
+	// CREATE TABLE IF NOT EXISTS Session (
+	// 	 id        integer  not null,
+	// 	 sessionId varchar(250) ,
+	// 	 email		varchar(250),
+	// 	 datefin		TIMESTAMP,
+	// 	 constraint PK_SESS primary key (id)
+	//  );
+	// `
+	// _,erree:=controllers.DB.Exec(req)
+	// if erree!=nil{
+	// 	fmt.Println("Erreur lors de la creation de la table session")
+	// 	os.Exit(0)
+	// }
+	
+}
+
+func HomeHandler(w http.ResponseWriter, r *http.Request){
+	if r.URL.Path != "/" {
+		return
+	}
+	
+	tmpl, err := template.ParseFiles("index.html")
+	if err != nil {
+		fmt.Println("Parsing error")
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+
+func getHandler(w http.ResponseWriter, r *http.Request) {
+	// Handle GET request
+	fmt.Fprintf(w, "GET request received")
+}
+
+func registerUser(w http.ResponseWriter, r *http.Request) {
+	
+	newUser := models.User{}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+	}
+	err = json.Unmarshal(reqBody, &newUser)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	err = newUser.InsertData(DB, newUser.Age, newUser.NickName, newUser.Email, newUser.LastName, newUser.FirstName, newUser.Password,  newUser.Gender)
+	
+	if err != nil {
+		fmt.Println(err)
+		
+	}
+	
+}
+
+
+
+func main() {
+
+	
+	static := http.FileServer(http.Dir("./assets/"))
+	http.Handle("/assets/", http.StripPrefix("/assets/", static))
+	http.HandleFunc("/", HomeHandler)
+	http.HandleFunc("/register", registerUser)
+	
+	fmt.Println("Server running on http://localhost" + Port)
+	http.ListenAndServe(Port, nil)
+
+	defer DB.Close()
+}

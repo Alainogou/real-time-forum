@@ -1,0 +1,33 @@
+package models
+
+import (
+	"database/sql"
+	"fmt"
+	"strings"
+	
+)
+
+type User struct {
+	Id        int `json:"Id"`
+	NickName  string `json:"NickName"`
+	Email     string `json:"Email"`
+	LastName  string `json:"LastName"`
+	FirstName  string `json:"FirstName"`
+	Password  string `json:"Password"`
+	Age 	  int	 `json:"Age"`
+	Gender    string `json:"Gender"`
+}
+
+var Table = "User"
+
+
+func (us *User) InsertData(db *sql.DB, age int, data ...string) error {
+	req := fmt.Sprintf("INSERT INTO %s (age, nickName, email, lastName, firstName, password,  gender) VALUES(%d, '%s')", Table, age, strings.Join(data, "','"))
+	dat, err := db.Prepare(req)
+	if err != nil {
+		return err
+	}
+	result, er := dat.Exec()
+	fmt.Println(result)
+	return er
+}

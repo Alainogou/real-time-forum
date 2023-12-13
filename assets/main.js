@@ -66,12 +66,53 @@ registrationForm.addEventListener('submit', handleRegistration);
 loginForm.addEventListener('submit', handleLogin);
 
 
+
+
+
 function handleRegistration(event) {
     event.preventDefault();
-   
+    
     const formData = new FormData(event.target);
+    let email = formData.get("email");
+    console.log(formData);
+
+    let newUser={
+        Id:1,
+        LastName :formData.get("last-name"),
+        FirstName: formData.get("first-name"),
+        NickName:formData.get("nickname"),
+        Password:formData.get("password"),
+        Email:formData.get("email"),
+        Age : parseInt(formData.get("age")),
+        Gender:formData.get("gender")
+    }
+    fetch('http://localhost:8081/register', {
+        method: 'POST',
+        headers: {
+           'Content-Type': 'application/json', 
+       },
+       body: JSON.stringify(newUser),
+     
+   })
+   .then(response => {
+       if (response.ok) {
+            
+        // window.open('/scoreboard.html', '_blank');
+        // if(status==="champion"){
+        //     window.location.reload();//recommencer le jeux
+        //     localStorage.clear()
+        // }
+        console.log("yes");
+            
+        } else {
+           console.error('Erreur lors de la création de l\'utilisateur:', response.status);
+        }
+    })
+   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
+  
     window.location.hash = '#forum'
 }
+
 
 // Fonction pour gérer la connexion
 function handleLogin(event) {
