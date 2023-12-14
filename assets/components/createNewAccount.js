@@ -13,6 +13,7 @@ export const createNewAccount=(container) =>{
         <input type="text" id="last-name" name="last-name" placeholder="Last Name" required>
         <input type="email" id="email" name="email" placeholder="E-mail" required>
         <input type="password" id="password" name="password" placeholder="Password" required>
+        <input type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" required>
 
         <div class="link submitRegister" class="">
             <button type="submit" class="login">Register</button>

@@ -7,5 +7,5 @@ import (
 
 func GetDB()(bd *sql.DB,err error){
 	
-	return sql.Open("sqlite3","db/db.sqlite")
+	return sql.Open("sqlite3","db/forum.db")
 }

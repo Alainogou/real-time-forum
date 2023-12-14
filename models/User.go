@@ -16,9 +16,10 @@ type User struct {
 	Password  string `json:"Password"`
 	Age 	  int	 `json:"Age"`
 	Gender    string `json:"Gender"`
+	ConfirmPassword string `json:"ConfirmPassword"`
 }
 
-var Table = "User"
+var Table = "user"
 
 
 func (us *User) InsertData(db *sql.DB, age int, data ...string) error {

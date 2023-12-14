@@ -26,7 +26,7 @@ function navigate() {
     
     
     if (route==="createNewAccount"){
-        
+        console.log("c'est  bien ici");
         register.style.display="block"
         homeView.style.display="none"
         createNewAccount(registrationForm)
@@ -73,9 +73,7 @@ function handleRegistration(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
-    let email = formData.get("email");
     console.log(formData);
-
     let newUser={
         Id:1,
         LastName :formData.get("last-name"),
@@ -84,7 +82,8 @@ function handleRegistration(event) {
         Password:formData.get("password"),
         Email:formData.get("email"),
         Age : parseInt(formData.get("age")),
-        Gender:formData.get("gender")
+        Gender:formData.get("gender"),
+        ConfirmPassword:formData.get("ConfirmPassword")
     }
     fetch('http://localhost:8081/register', {
         method: 'POST',
@@ -96,21 +95,21 @@ function handleRegistration(event) {
    })
    .then(response => {
        if (response.ok) {
-            
-        // window.open('/scoreboard.html', '_blank');
-        // if(status==="champion"){
-        //     window.location.reload();//recommencer le jeux
-        //     localStorage.clear()
-        // }
+        
+        window.location.hash = '#forum'
         console.log("yes");
             
         } else {
-           console.error('Erreur lors de la création de l\'utilisateur:', response.status);
+            
+            console.log(response.status);
+            window.location.hash = '#createNewAccount'
+            return 
+        //    console.error('Erreur lors de la création de l\'utilisateur:', response.status);
         }
     })
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   
-    window.location.hash = '#forum'
+   
 }
 
 

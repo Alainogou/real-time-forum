@@ -1,19 +1,19 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
+	
 	"fmt"
 	"net/http"
 	"html/template"
 	"os"
 	"realtimeforum/config"
-	"realtimeforum/models"
-	"io/ioutil"
+	
+	"realtimeforum/controllers"
+
 )
 
 var (
-	DB   *sql.DB	
+	
 	Port = ":8081"
 )
 
@@ -21,7 +21,7 @@ func init() {
 	fmt.Println("from init")
 	var err error
 
-	DB, err = config.GetDB()
+	controllers.DB, err = config.GetDB()
 	if err != nil {
 		fmt.Println("connection database Error")
 		os.Exit(0)
@@ -67,27 +67,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "GET request received")
 }
 
-func registerUser(w http.ResponseWriter, r *http.Request) {
-	
-	newUser := models.User{}
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Error reading request body", http.StatusInternalServerError)
-	}
-	err = json.Unmarshal(reqBody, &newUser)
-	if err != nil {
-		http.Error(w, "Invalid JSON", http.StatusBadRequest)
-		return
-	}
 
-	err = newUser.InsertData(DB, newUser.Age, newUser.NickName, newUser.Email, newUser.LastName, newUser.FirstName, newUser.Password,  newUser.Gender)
-	
-	if err != nil {
-		fmt.Println(err)
-		
-	}
-	
-}
 
 
 
@@ -97,10 +77,10 @@ func main() {
 	static := http.FileServer(http.Dir("./assets/"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", static))
 	http.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/register", registerUser)
+	http.HandleFunc("/register", controllers.RegisterUser)
 	
 	fmt.Println("Server running on http://localhost" + Port)
 	http.ListenAndServe(Port, nil)
 
-	defer DB.Close()
+	defer controllers.DB.Close()
 }
