@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	
+	"time"
+
+	"github.com/gofrs/uuid"
 )
 
 type User struct {
@@ -19,6 +21,12 @@ type User struct {
 	ConfirmPassword string `json:"ConfirmPassword"`
 }
 
+type Session struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	ExpiresAt time.Time
+	CreatedAt time.Time
+}
 var Table = "user"
 
 

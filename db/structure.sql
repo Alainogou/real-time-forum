@@ -34,6 +34,14 @@ CREATE TABLE comment (
  FOREIGN KEY(postId) REFERENCES post(id)
 );
 
+CREATE TABLE IF NOT EXISTS sessions (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 CREATE TABLE user_post_reaction (
  id INTEGER NOT NULL PRIMARY KEY,
  userId INTEGER NOT NULL,
@@ -74,7 +82,6 @@ CREATE TABLE message (
 
 INSERT INTO user (id, nickName, passWord, email, firstName, lastName, age, gender)
 VALUES
-    (1, 'admin', 'admin123', 'admin@gmail.com', 'fname', 'lname', 99, 'male');
-
+    (1, 'aladji', 'Mvlick@123', 'ass.lo@gmail.com', 'aladji', 'malick', 99, 'male');
 
 INSERT INTO category (categoryName) VALUES ('Sport'), ('Art'), ('Informatics'), ('Religion'), ('Game');

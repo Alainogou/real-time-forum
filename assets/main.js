@@ -17,16 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
     navigate();
 });
 
-register.style.display="none"   
-
+  
+register.style.display="none" 
 window.addEventListener('hashchange', navigate);
 
 function navigate() {
     let route = window.location.hash.slice(1) || 'accueil';
     
-    
+    console.log(route)
     if (route==="createNewAccount"){
-        console.log("c'est  bien ici");
+        
         register.style.display="block"
         homeView.style.display="none"
         createNewAccount(registrationForm)
@@ -109,10 +109,12 @@ function handleRegistration(event) {
    })
    .then(response => {
        if (response.ok) {
-        
-        window.location.hash = '#forum'
+        register.remove()
+        homeView.style.display="block"
+        window.location.hash = ''
+        // window.location.hash= '#accueil'
         console.log("yes");
-        console.log(response);
+       
         } else {
             
             console.log("bakhoul");
@@ -126,7 +128,6 @@ function handleRegistration(event) {
     })
     .then(response => { 
         // response.JSON()
-        console.log("ass1",response['message']);
         if (response['message_pawword']!=="") {
             errpassword.innerHTML=response['message_pawword']
            
