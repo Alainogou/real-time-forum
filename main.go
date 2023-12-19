@@ -71,6 +71,7 @@ func main() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", static))
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/register", controllers.RegisterUser)
+	http.HandleFunc("/login", controllers.LoginUser)
 
 	fmt.Println("Server running on http://localhost" + Port)
 

@@ -40,3 +40,53 @@ func (us *User) InsertData(db *sql.DB, age int, data ...string) error {
 	fmt.Println(result)
 	return er
 }
+
+
+func (UserOne *User) GetOneUser(db *sql.DB, email string) error {
+	req := `SELECT id,email,lastName,firthName, password,username from ` + Table + ` Where email=?;`
+	row, err := db.Query(req, email)
+	if err != nil {
+		return err
+	}
+	for row.Next() {
+		row.Scan(&UserOne.Id, &UserOne.Email, &UserOne.FirthName, &UserOne.LastName, &UserOne.Password, &UserOne.Username)
+	}
+
+	UserOne.Email = html.UnescapeString(UserOne.Email)
+	UserOne.Username = html.UnescapeString(UserOne.Username)
+	UserOne.FirthName = html.UnescapeString(UserOne.FirthName)
+	UserOne.LastName = html.UnescapeString(UserOne.LastName)
+	errr := row.Err()
+	return errr
+}
+
+func SelectOneData(db *sql.DB) (User, error) {
+	return User{}, nil
+}
+
+func UpdateOne(db *sql.DB) (User, error) {
+	return User{}, nil
+}
+
+func DeleteOne(db *sql.DB) (User, error) {
+	return User{}, nil
+}
+
+func IsUserExist(db *sql.DB, email string) (string, error) {
+	var userEmail string
+
+	query := "SELECT email FROM User WHERE email = ?"
+	err := db.QueryRow(query, email).Scan(&userEmail)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", nil
+		} else {
+			return "", err
+		}
+	}
+
+	return userEmail, nil
+}
+
+

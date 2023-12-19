@@ -33,15 +33,7 @@ function navigate() {
     }else if (route=="forum"){ 
         loadConnexionPage(app)
     }
-    // import(`./components/${route}.js`)
-    //     .then((module) => {
-    //         const container = document.querySelector(".home-view");?#createNewAccount
-    //         module.default(container);
-    //     })
-    //     .catch((error) => {
-    //         console.error(error);
-    //         loadNotFoundPage(document.getElementById('app'));
-    //     });
+   
 }
 
 
@@ -73,7 +65,7 @@ function handleRegistration(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
-    console.log(formData);
+   
     let newUser={
         Id:1,
         LastName :formData.get("last-name"),
@@ -151,9 +143,21 @@ function handleRegistration(event) {
 }
 
 
+
+
 // Fonction pour gérer la connexion
 function handleLogin(event) {
    event.preventDefault();
-    window.location.hash = '#forum'
+   const formData = new FormData(event.target);
+   
+    let logUser={
+        
+        EmailOrUsername  :formData.get("email-nickname"),
+        Password:formData.get("password")
+          
+    }   
+
+    console.log(logUser);
+   window.location.hash = '#forum'
    
 }
