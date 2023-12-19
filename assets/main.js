@@ -84,7 +84,21 @@ function handleRegistration(event) {
         Age : parseInt(formData.get("age")),
         Gender:formData.get("gender"),
         ConfirmPassword:formData.get("ConfirmPassword")
-    }
+    }   
+
+    let errpassword = document.querySelector(".messageErro")
+    let errnicknam = document.querySelector(".messageErro1")
+    let erremailUser = document.querySelector(".messageErro2")
+   
+   
+    errpassword.style.color="red"
+    errnicknam.style.color="red"
+    errpassword.style.marginLeft="10px"
+    errnicknam.style.marginLeft="10px"
+    erremailUser.style.color="red"
+    erremailUser.style.marginLeft="10px"
+
+
     fetch('http://localhost:8081/register', {
         method: 'POST',
         headers: {
@@ -98,14 +112,37 @@ function handleRegistration(event) {
         
         window.location.hash = '#forum'
         console.log("yes");
-            
+        console.log(response);
         } else {
             
-            console.log(response.status);
-            window.location.hash = '#createNewAccount'
-            return 
+            console.log("bakhoul");
+            // console.log(response.status);
+            window.location.hash = '#createNewAccount';
+            registrationForm.reset();
+
+             return response.json();
         //    console.error('Erreur lors de la création de l\'utilisateur:', response.status);
         }
+    })
+    .then(response => { 
+        // response.JSON()
+        console.log("ass1",response['message']);
+        if (response['message_pawword']!=="") {
+            errpassword.innerHTML=response['message_pawword']
+           
+        }else if (response['message_emailUser']!==""){
+            erremailUser.innerHTML=response['message_emailUser']
+        }else (response['message']==="Enter at least 4 input characters") ;{
+            errnicknam.innerHTML=response['message']
+        }
+        setTimeout(function() {
+            errpassword.innerHTML = '';
+            errnicknam.innerHTML= ''
+            erremailUser.innerHTML=''
+        }, 5000);
+        // console.log("ass1",response['message']);
+
+
     })
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   

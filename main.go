@@ -1,19 +1,18 @@
 package main
 
 import (
-	
 	"fmt"
-	"net/http"
 	"html/template"
+	"net/http"
 	"os"
 	"realtimeforum/config"
-	
+
 	"realtimeforum/controllers"
 
+	"github.com/rs/cors"
 )
 
 var (
-	
 	Port = ":8081"
 )
 
@@ -40,14 +39,14 @@ func init() {
 	// 	fmt.Println("Erreur lors de la creation de la table session")
 	// 	os.Exit(0)
 	// }
-	
+
 }
 
-func HomeHandler(w http.ResponseWriter, r *http.Request){
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		return
 	}
-	
+
 	tmpl, err := template.ParseFiles("index.html")
 	if err != nil {
 		fmt.Println("Parsing error")
@@ -61,26 +60,22 @@ func HomeHandler(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	// Handle GET request
 	fmt.Fprintf(w, "GET request received")
 }
 
-
-
-
-
 func main() {
 
-	
 	static := http.FileServer(http.Dir("./assets/"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", static))
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/register", controllers.RegisterUser)
-	
+
 	fmt.Println("Server running on http://localhost" + Port)
-	http.ListenAndServe(Port, nil)
+
+	handler := cors.Default().Handler(http.DefaultServeMux)
+	http.ListenAndServe(Port, handler)
 
 	defer controllers.DB.Close()
 }
