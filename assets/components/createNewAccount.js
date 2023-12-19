@@ -10,13 +10,13 @@ export const createNewAccount=(container) =>{
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
-        <input type="text" id="first-name" name="first-name" placeholder="First Name" required>
+        <input type="text" id="first-name" name="first-name" placeholder="First Name" >
         <input type="text" id="last-name" name="last-name" placeholder="Last Name" >
         <div><span class="start" >*</span><span class="messageErro2"></span></div> 
-        <input type="email" id="email" name="email" placeholder="E-mail" required>
+        <input type="email" id="email" name="email" placeholder="E-mail" >
         <div><span class="start">*</span><span class="messageErro"></span></div> 
-        <input type="password" id="password" name="password" placeholder="Password" required>
-        <input type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" required>
+        <input type="password" id="password" name="password" placeholder="Password" >
+        <input type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" >
         
 
         <div class="link submitRegister" class="">

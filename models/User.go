@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
-
+	"html"
 	"github.com/gofrs/uuid"
 )
 
@@ -43,19 +43,39 @@ func (us *User) InsertData(db *sql.DB, age int, data ...string) error {
 
 
 func (UserOne *User) GetOneUser(db *sql.DB, email string) error {
-	req := `SELECT id,email,lastName,firthName, password,username from ` + Table + ` Where email=?;`
+	req := `SELECT id, age, nickName, email, lastName, firstName, password,  gender from ` + Table + ` Where email=?;`
 	row, err := db.Query(req, email)
 	if err != nil {
 		return err
 	}
 	for row.Next() {
-		row.Scan(&UserOne.Id, &UserOne.Email, &UserOne.FirthName, &UserOne.LastName, &UserOne.Password, &UserOne.Username)
+		row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
 	}
 
 	UserOne.Email = html.UnescapeString(UserOne.Email)
-	UserOne.Username = html.UnescapeString(UserOne.Username)
-	UserOne.FirthName = html.UnescapeString(UserOne.FirthName)
+	UserOne.NickName= html.UnescapeString(UserOne.NickName)
+	UserOne.Password = html.UnescapeString(UserOne.Password)
 	UserOne.LastName = html.UnescapeString(UserOne.LastName)
+	UserOne.FirstName= html.UnescapeString(UserOne.FirstName)
+	errr := row.Err()
+	return errr
+}
+
+func (UserOne *User) GetOneUserWithNickName(db *sql.DB, NickName string) error {
+	req := `SELECT id, age, nickName, email, lastName, firstName, password,  gender from ` + Table + ` Where nickName=?;`
+	row, err := db.Query(req, NickName)
+	if err != nil {
+		return err
+	}
+	for row.Next() {
+		row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
+	}
+
+	UserOne.Email = html.UnescapeString(UserOne.Email)
+	UserOne.NickName= html.UnescapeString(UserOne.NickName)
+	UserOne.Password = html.UnescapeString(UserOne.Password)
+	UserOne.LastName = html.UnescapeString(UserOne.LastName)
+	UserOne.FirstName= html.UnescapeString(UserOne.FirstName)
 	errr := row.Err()
 	return errr
 }

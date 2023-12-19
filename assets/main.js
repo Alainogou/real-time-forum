@@ -149,15 +149,46 @@ function handleRegistration(event) {
 function handleLogin(event) {
    event.preventDefault();
    const formData = new FormData(event.target);
-   
-    let logUser={
+   console.log(formData);
+    let logRequest={
         
         EmailOrUsername  :formData.get("email-nickname"),
         Password:formData.get("password")
           
-    }   
+    }  
+    console.log(logRequest);
+    fetch('http://localhost:8081/login', {
+        method: 'POST',
+        headers: {
+           'Content-Type': 'application/json', 
+       },
+       body: JSON.stringify(logRequest),
+     
+   })
+   .then(response => {
+       if (response.ok) {
+        // register.remove()
+        // homeView.style.display="block"
+        // window.location.hash = ''
+        // // window.location.hash= '#accueil'
+        
+        console.log("yes");
+       
+        } else {
+            
+            // console.log("bakhoul");
+            // // console.log(response.status);
+            // window.location.hash = '#createNewAccount';
+            // registrationForm.reset();
 
-    console.log(logUser);
+            //  return response.json();
+         console.error('Erreur lors de la création de l\'utilisateur:', response.status);
+        }
+    })
+   
+   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
+  
+
    window.location.hash = '#forum'
    
 }
