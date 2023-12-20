@@ -78,18 +78,16 @@ function handleRegistration(event) {
         ConfirmPassword:formData.get("ConfirmPassword")
     }   
 
-    let errpassword = document.querySelector(".messageErro")
-    let errnicknam = document.querySelector(".messageErro1")
-    let erremailUser = document.querySelector(".messageErro2")
+    let errPassword = document.querySelector(".messageErrorPassword")
+    let errNickname = document.querySelector(".messageErrorNickname")
+    let errEmail = document.querySelector(".messageErrorEmail")
+    let errFirstName = document.querySelector(".messageErrorFName")
+    let errLastName = document.querySelector(".messageErrorLName")
+    let errAge = document.querySelector(".messageErrorAge")
+    let errGender= document.querySelector(".messageErrorGender")
+    // let errorStyle= document.querySelectorAll(".errorStyle")
+    
    
-   
-    errpassword.style.color="red"
-    errnicknam.style.color="red"
-    errpassword.style.marginLeft="10px"
-    errnicknam.style.marginLeft="10px"
-    erremailUser.style.color="red"
-    erremailUser.style.marginLeft="10px"
-
 
     fetch('http://localhost:8081/register', {
         method: 'POST',
@@ -105,11 +103,11 @@ function handleRegistration(event) {
         homeView.style.display="block"
         window.location.hash = ''
         // window.location.hash= '#accueil'
-        console.log("yes");
+       
        
         } else {
-            
-            console.log("bakhoul");
+
+           
             // console.log(response.status);
             window.location.hash = '#createNewAccount';
             registrationForm.reset();
@@ -120,23 +118,50 @@ function handleRegistration(event) {
     })
     .then(response => { 
         // response.JSON()
-        if (response['message_pawword']!=="") {
-            errpassword.innerHTML=response['message_pawword']
-           
-        }else if (response['message_emailUser']!==""){
-            erremailUser.innerHTML=response['message_emailUser']
-        }else (response['message']==="Enter at least 4 input characters") ;{
-            errnicknam.innerHTML=response['message']
+       
+        if (response['error_class']==="errNickname"){
+            errNickname.innerHTML=response['message']
+        }else if (response['error_class']==="errAge"){
+            errAge.innerHTML=response['message']
+        }else if (response['error_class']==="errGender"){
+            errGender.innerHTML=response['message']
+        }else if (response['error_class']==="errLastName"){
+            errLastName.innerHTML=response['message']
+        }else if (response['error_class']==="errFirstName"){
+            errFirstName.innerHTML=response['message']
+        }else if (response['error_class']==="errEmail"){
+            errEmail.innerHTML=response['message']
+        }else if (response['error_class']==="errPassword"){
+            errPassword.innerHTML=response['message']
+        }else if (response['error_class']==="errEmailorNickname"){
+            errNickname.innerHTML=response['message']
+            errEmail.innerHTML=response['message']
         }
+        
+        // if (response['message_pawword']!=="") {
+        //     errPassword.innerHTML=response['message_pawword']
+           
+        // }else if (response['message_emailUser']!==""){
+        //     errEmailUser.innerHTML=response['message_emailUser']
+        // }else (response['message']==="Enter at least 4 input characters") ;{
+        //     errNickname.innerHTML=response['message']
+        // }
         setTimeout(function() {
-            errpassword.innerHTML = '';
-            errnicknam.innerHTML= ''
-            erremailUser.innerHTML=''
+            errPassword.innerHTML = '';
+            errNickname.innerHTML= ''
+            errEmail.innerHTML=''
+            errFirstName.innerHTML=''
+            errLastName.innerHTML=''
+            errAge.innerHTML=''
+            errGender.innerHTML=''
+            
         }, 5000);
+        // console.log(response.status);
         // console.log("ass1",response['message']);
 
 
     })
+ 
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   
    
@@ -149,7 +174,7 @@ function handleRegistration(event) {
 function handleLogin(event) {
    event.preventDefault();
    const formData = new FormData(event.target);
-   console.log(formData);
+ 
     let logRequest={
         
         EmailOrUsername  :formData.get("email-nickname"),
@@ -167,28 +192,30 @@ function handleLogin(event) {
    })
    .then(response => {
        if (response.ok) {
-        // register.remove()
-        // homeView.style.display="block"
-        // window.location.hash = ''
-        // // window.location.hash= '#accueil'
         
         console.log("yes");
-       
+        window.location.hash = '#forum'
         } else {
             
-            // console.log("bakhoul");
-            // // console.log(response.status);
-            // window.location.hash = '#createNewAccount';
-            // registrationForm.reset();
-
-            //  return response.json();
-         console.error('Erreur lors de la création de l\'utilisateur:', response.status);
+            return response.json();
+         
         }
+    })
+    .then(response => { 
+        let logNotMatch = document.querySelector(".logNotMatch")
+        console.log("log: "+ logNotMatch);
+        if (response['error_class']==="logNotMatch"){
+            logNotMatch.innerHTML=response['message']
+        }
+
+        setTimeout(function() {
+            logNotMatch.innerHTML = ''       
+        }, 5000);
     })
    
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   
 
-   window.location.hash = '#forum'
+  
    
 }

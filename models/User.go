@@ -3,21 +3,22 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"html"
 	"strings"
 	"time"
-	"html"
+
 	"github.com/gofrs/uuid"
 )
 
 type User struct {
-	Id        int `json:"Id"`
-	NickName  string `json:"NickName"`
-	Email     string `json:"Email"`
-	LastName  string `json:"LastName"`
-	FirstName  string `json:"FirstName"`
-	Password  string `json:"Password"`
-	Age 	  int	 `json:"Age"`
-	Gender    string `json:"Gender"`
+	Id              int    `json:"Id"`
+	NickName        string `json:"NickName"`
+	Email           string `json:"Email"`
+	LastName        string `json:"LastName"`
+	FirstName       string `json:"FirstName"`
+	Password        string `json:"Password"`
+	Age             int    `json:"Age"`
+	Gender          string `json:"Gender"`
 	ConfirmPassword string `json:"ConfirmPassword"`
 }
 
@@ -27,8 +28,8 @@ type Session struct {
 	ExpiresAt time.Time
 	CreatedAt time.Time
 }
-var Table = "user"
 
+var Table = "user"
 
 func (us *User) InsertData(db *sql.DB, age int, data ...string) error {
 	req := fmt.Sprintf("INSERT INTO %s (age, nickName, email, lastName, firstName, password,  gender) VALUES(%d, '%s')", Table, age, strings.Join(data, "','"))
@@ -41,43 +42,34 @@ func (us *User) InsertData(db *sql.DB, age int, data ...string) error {
 	return er
 }
 
-
 func (UserOne *User) GetOneUser(db *sql.DB, email string) error {
 	req := `SELECT id, age, nickName, email, lastName, firstName, password,  gender from ` + Table + ` Where email=?;`
-	row, err := db.Query(req, email)
-	if err != nil {
-		return err
-	}
-	for row.Next() {
-		row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
-	}
+	row := db.QueryRow(req, email)
+
+	err := row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
 
 	UserOne.Email = html.UnescapeString(UserOne.Email)
-	UserOne.NickName= html.UnescapeString(UserOne.NickName)
+	UserOne.NickName = html.UnescapeString(UserOne.NickName)
 	UserOne.Password = html.UnescapeString(UserOne.Password)
 	UserOne.LastName = html.UnescapeString(UserOne.LastName)
-	UserOne.FirstName= html.UnescapeString(UserOne.FirstName)
-	errr := row.Err()
-	return errr
+	UserOne.FirstName = html.UnescapeString(UserOne.FirstName)
+
+	return err
 }
 
-func (UserOne *User) GetOneUserWithNickName(db *sql.DB, NickName string) error {
+func (UserOne *User) GetOneUserWithNickName(db *sql.DB, nickName string) error {
 	req := `SELECT id, age, nickName, email, lastName, firstName, password,  gender from ` + Table + ` Where nickName=?;`
-	row, err := db.Query(req, NickName)
-	if err != nil {
-		return err
-	}
-	for row.Next() {
-		row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
-	}
+	row := db.QueryRow(req, nickName)
+
+	err := row.Scan(&UserOne.Id, &UserOne.Age, &UserOne.NickName, &UserOne.Email, &UserOne.LastName, &UserOne.FirstName, &UserOne.Password, &UserOne.Gender)
 
 	UserOne.Email = html.UnescapeString(UserOne.Email)
-	UserOne.NickName= html.UnescapeString(UserOne.NickName)
+	UserOne.NickName = html.UnescapeString(UserOne.NickName)
 	UserOne.Password = html.UnescapeString(UserOne.Password)
 	UserOne.LastName = html.UnescapeString(UserOne.LastName)
-	UserOne.FirstName= html.UnescapeString(UserOne.FirstName)
-	errr := row.Err()
-	return errr
+	UserOne.FirstName = html.UnescapeString(UserOne.FirstName)
+
+	return err
 }
 
 func SelectOneData(db *sql.DB) (User, error) {
@@ -108,5 +100,3 @@ func IsUserExist(db *sql.DB, email string) (string, error) {
 
 	return userEmail, nil
 }
-
-

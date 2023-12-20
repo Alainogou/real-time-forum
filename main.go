@@ -60,10 +60,10 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getHandler(w http.ResponseWriter, r *http.Request) {
-	// Handle GET request
-	fmt.Fprintf(w, "GET request received")
-}
+// func getHandler(w http.ResponseWriter, r *http.Request) {
+// 	// Handle GET request
+// 	fmt.Fprintf(w, "GET request received")
+// }
 
 func main() {
 

@@ -118,6 +118,11 @@ hr {
   background: #3ba626;
 }
 
+.errorStyle{
+  color: red;
+  font-size: 0.75rem;
+}
+
 
 @media (max-width: 900px) {
     .home-view  {

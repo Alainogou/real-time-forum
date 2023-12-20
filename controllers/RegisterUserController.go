@@ -3,11 +3,12 @@ package controllers
 import (
 	// "fmt"
 	"database/sql"
-	"fmt"
 	"html"
 	"io/ioutil"
 	"net/http"
 	"regexp"
+
+	"strconv"
 
 	"encoding/json"
 	"realtimeforum/models"
@@ -22,11 +23,9 @@ var DB *sql.DB
 
 // var user = models.User{}
 type ErrorResponse struct {
-	MessagePassword string `json:"message_pawword"`
-	MessageNickname string `json:"message_nick"`
-	MessageEmailUser string `json:"message_emailUser"`
-	Message         string `json:"message"`
-	Code            int    `json:"code"`
+	ErrorClass string `json:"error_class"`
+	Message    string `json:"message"`
+	Code       int    `json:"code"`
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -42,27 +41,67 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser.FirstName = html.EscapeString(strings.TrimSpace(newUser.FirstName))
-	newUser.LastName = html.EscapeString(strings.TrimSpace(newUser.LastName))
-	newUser.Email = html.EscapeString(strings.TrimSpace(newUser.Email))
-	newUser.NickName = html.EscapeString(strings.TrimSpace(newUser.NickName))
-	newUser.Gender = html.EscapeString(strings.TrimSpace(newUser.Gender))
-
-	if !verifLen(newUser.FirstName, newUser.NickName, newUser.Password) {
-		Error = "Enter at least 4 input characters"
+	if len(newUser.NickName) < 3 || len(newUser.NickName) > 6 || isEmailValid(strings.ToLower(newUser.Gender)) {
+		Error = "Please enter a valid nickname (3 to 5 characters)"
 		errorResponse := ErrorResponse{
-			Message: Error,
-			Code:    http.StatusBadRequest,
+			Message:    Error,
+			ErrorClass: "errNickname",
+			Code:       http.StatusBadRequest,
 		}
 		sendReponseError(w, errorResponse, http.StatusBadRequest)
 		return
 	}
+
+	if newUser.Age == 0 {
+		Error = "Invalid age"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "errAge",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+	}
+
+	if strings.ToLower(newUser.Gender) != "male" && strings.ToLower(newUser.Gender) != "female" {
+		Error = "Invalid gender"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "errGender",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+
+	}
+	if !verifLen(newUser.LastName) {
+		Error = "Invalid lastname"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "errLastName",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+	}
+
+	if !verifLen(newUser.FirstName) {
+		Error = "Invalid FirstName"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "errFirstName",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+	}
+
 	if !isEmailValid(newUser.Email) {
 		Error = "bad format of email"
 		errorResponse := ErrorResponse{
-			Message: Error,
-			
-			Code:    http.StatusBadRequest,
+			Message:    Error,
+			ErrorClass: "errEmail",
+			Code:       http.StatusBadRequest,
 		}
 		sendReponseError(w, errorResponse, http.StatusBadRequest)
 		return
@@ -71,24 +110,30 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		Error = "Passwords do not match"
 		errorResponse := ErrorResponse{
 			// Message: Error,
-			MessagePassword: Error,
-			Code:            http.StatusBadRequest,
+			ErrorClass: "errPassword",
+			Message:    Error,
+			Code:       http.StatusBadRequest,
 		}
-		fmt.Println(errorResponse.Message)
+
 		sendReponseError(w, errorResponse, http.StatusBadRequest)
 		return
 	} else {
 		haspassword, erft := bcrypt.GenerateFromPassword([]byte(newUser.Password), 5)
 		newUser.Password = string(haspassword)
+		newUser.FirstName = html.EscapeString(strings.TrimSpace(newUser.FirstName))
+		newUser.LastName = html.EscapeString(strings.TrimSpace(newUser.LastName))
+		newUser.Email = html.EscapeString(strings.TrimSpace(newUser.Email))
+		newUser.NickName = html.EscapeString(strings.TrimSpace(newUser.NickName))
+		newUser.Gender = html.EscapeString(strings.TrimSpace(newUser.Gender))
 		err = newUser.InsertData(DB, newUser.Age, newUser.NickName, newUser.Email, newUser.LastName, newUser.FirstName, newUser.Password, newUser.Gender)
 
 		if err != nil || erft != nil {
 			if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
 				Error = "Email or NickName already  exists"
 				errorResponse := ErrorResponse{
-					Message: Error,
-					MessageEmailUser: Error,
-					Code:    http.StatusBadRequest,
+					ErrorClass: "errEmailorNickname",
+					Message:    Error,
+					Code:       http.StatusBadRequest,
 				}
 				sendReponseError(w, errorResponse, http.StatusBadRequest)
 				return
@@ -123,11 +168,11 @@ func isEmailValid(e string) bool {
 	return emailRegex.MatchString(e)
 }
 
-func verifLen(data ...string) bool {
-	for _, v := range data {
-		if len(v) < 4 {
-			return false
-		}
-	}
-	return true
+func isNumber(s string) bool {
+	_, err := strconv.Atoi(s)
+	return err == nil
+}
+
+func verifLen(data string) bool {
+	return data != "" && !isNumber(data)
 }

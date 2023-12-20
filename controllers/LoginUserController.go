@@ -2,33 +2,26 @@ package controllers
 
 import (
 	// "fmt"
-	
-	"realtimeforum/models"
+
+	"fmt"
 	"html"
 	"net/http"
-	
+	"realtimeforum/models"
+
 	"io/ioutil"
-	"fmt"
-	
 
 	"encoding/json"
 	// "strings"
 	// "time"
-
 	// // "github.com/gofrs/uuid"
-
 	// "github.com/gofrs/uuid"
 	// "golang.org/x/crypto/bcrypt"
 )
 
 type LoginRequest struct {
-	
-	EmailOrUsername  string `json:"EmailOrUsername"`
-	Password  string `json:"Password"`
-	
+	EmailOrUsername string `json:"EmailOrUsername"`
+	Password        string `json:"Password"`
 }
-
-
 
 // var u1 = uuid.Must(uuid.NewV4())
 // var Datas = UserData{}
@@ -40,40 +33,35 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 	}
-	err = json.Unmarshal(reqBody, &newLog )
-	
+	err = json.Unmarshal(reqBody, &newLog)
+
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	user1 := models.User{}
+	user := models.User{}
 
-	var  errMail error
-	var  errNickname error
+	if isEmailValid(newLog.EmailOrUsername) {
+		err = user.GetOneUser(DB, html.EscapeString(newLog.EmailOrUsername))
+	} else {
+		err = user.GetOneUserWithNickName(DB, html.EscapeString(newLog.EmailOrUsername))
 
-    if isEmailValid(newLog.EmailOrUsername){
-		errMail= user1.GetOneUser(DB, html.EscapeString(newLog.EmailOrUsername))
-		fmt.Println("ici", user1,  errMail)
 	}
 
-	user2 := models.User{}
-	errNickname= user2.GetOneUserWithNickName(DB, html.EscapeString(newLog.EmailOrUsername))
-	fmt.Println("user2", user2, errNickname)
+	if err != nil {
+		fmt.Println(err)
 
-	
-	if (errMail==nil && errNickname==nil){
-		if (user1.Email==user2.Email){
-
-		}else{
-			// errorMessage
+		Error = "You don't have account"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "logNotMatch",
+			Code:       http.StatusBadRequest,
 		}
-	}else if (errMail==nil && errNickname!=nil){
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
 
-	}else if (errMail!=nil && errNickname==nil){
-
-	}else{
-		// errorMessage
 	}
+
 	// Error = ""
 	// // Datas.IsAuth = false
 	// if strings.ToLower(r.Method) == "get" {
@@ -85,8 +73,6 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	// 	// 	return
 	// 	// }
 	// } else if strings.ToLower(r.Method) == "post" {
-
-		
 
 	// 	// user := models.User{}
 	// 	// errr := user.GetOneUser(DB, html.EscapeString(email))
@@ -122,4 +108,3 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	// 	// helper.ErrorPage(w, 405)
 	// }
 }
-
