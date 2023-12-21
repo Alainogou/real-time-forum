@@ -6,11 +6,14 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"realtimeforum/helper"
 	"realtimeforum/models"
 
 	"io/ioutil"
 
 	"encoding/json"
+
+	"golang.org/x/crypto/bcrypt"
 	// "strings"
 	// "time"
 	// // "github.com/gofrs/uuid"
@@ -83,27 +86,31 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	// 	// 	return
 	// 	// }
 
-	// 	ispassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	ispassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(newLog.Password))
 
-	// 	if ispassword != nil {
-	// 		// Datas.ErrorLog = "Invalid email or password"
-	// 		// time.Sleep(2 * time.Second)
-	// 		// http.Redirect(w, r, "/login", 302)
-	// 		return
-	// 	} else {
+	if ispassword != nil {
+		Error = "Password is incorrect"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "logNotMatch",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+	} else {
 
-	// 		// sssid := helper.SetCookieInDB(w)
-	// 		// errss := helper.SessionAddOrUpdate(DB, sssid, user.Email)
-	// 		// if errss != nil {
-	// 		// 	fmt.Println(errss)
-	// 		// 	helper.ErrorPage(w, 500)
-	// 		// 	return
-	// 		// }
-	// 		// Datas.ErrorLog = ""
-	// 		// http.Redirect(w, r, "/", 302)
-	// 		// sssid = ""
-	// 		// return
-	// 	}
+		sssid := helper.SetCookieInDB(w)
+		errss := helper.SessionAddOrUpdate(DB, sssid, user.Email)
+		if errss != nil {
+			fmt.Println(errss)
+			// helper.ErrorPage(w, 500)
+			return
+		}
+		// Datas.ErrorLog = ""
+		// http.Redirect(w, r, "/", 302)
+		sssid = ""
+		return
+	}
 	// } else {
 	// 	// helper.ErrorPage(w, 405)
 	// }

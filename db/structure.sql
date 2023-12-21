@@ -35,11 +35,10 @@ CREATE TABLE comment (
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
-    id TEXT PRIMARY KEY NOT NULL,
-    user_id TEXT NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    id INTEGER PRIMARY KEY NOT NULL,
+    sessionId varchar(250),
+    email VARCHAR(250)  NOT NULL,
+    expires_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE user_post_reaction (

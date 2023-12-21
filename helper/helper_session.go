@@ -1,123 +1,78 @@
-package helpers
+package helper
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
-	"realtimeforum/controllers"
-	"realtimeforum/models"
 	"time"
 
 	"github.com/gofrs/uuid"
 )
 
-// Example function to create and send a login session cookie
-func AddSession(w http.ResponseWriter, userID uuid.UUID, db *sql.DB) {
+var u1 = uuid.Must(uuid.NewV4())
 
-	expiration := time.Now().Add(24 * time.Hour)
-	if userID != uuid.Nil {
-		session := models.Session{
-			UserID:    userID,
-			ExpiresAt: expiration,
-			CreatedAt: time.Now(),
-		}
-		sessionID, err := controllers.CreateSession(db, session) // You'll need to implement this function
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		// Create the session cookie
-		cookie := http.Cookie{
-			Name:     "sessionID",
-			Value:    sessionID.String(),
-			Expires:  expiration,
-			HttpOnly: true,
-			Path:     "/",
-		}
-
-		http.SetCookie(w, &cookie)
+func SetCookieInDB(w http.ResponseWriter) string {
+	sssid := u1.String() + "-" + time.Now().GoString()
+	cookie := http.Cookie{
+		Name:     "sessionid",
+		Value:    sssid,
+		Expires:  time.Now().Add(time.Hour * 24 * 3),
+		Path:     "/",
+		MaxAge:   3600 * 24 * 3,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 	}
-
+	http.SetCookie(w, &cookie)
+	return sssid
 }
-
-func UpdateSession(db *sql.DB, sessionID uuid.UUID, newExpiration time.Time) error {
-	query := `
-		UPDATE sessions
-		SET expires_at = ?
-		WHERE id = ?;
-	`
-
-	_, err := db.Exec(query, newExpiration, sessionID)
+func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
+	req := `SELECT sessionId,email, expires_at from sessions Where email='` + useremail + `';`
+	// req:=fmt.Sprintf(`SELECT * from Session Where email=?;`)
+	row, err := db.Query(req)
+	var sessionid, email string
+	var expires_at time.Time
+	var errsession error
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
-	return nil
+	for row.Next() {
+		row.Scan(&sessionid, &email, &expires_at)
+
+	}
+
+	if email == useremail {
+		_, errsession = db.Exec("UPDATE sessions SET sessionId=?,  expires_at=? where email=?;", sssid, time.Now().Add(time.Hour*24*3), email)
+	} else {
+		_, errsession = db.Exec("INSERT INTO sessions (sessionId,email, expires_at) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Hour*24*3))
+	}
+	return errsession
+
 }
 
-func IsEmptySession(s models.Session) bool {
-	return s == models.Session{}
-}
+func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
-func GetSessionRequest(r *http.Request) (uuid.UUID, error) {
-	// Retrieve the session cookie named "sessionID"
-	cookie, err := r.Cookie("sessionID")
+	sessionpi, err := r.Cookie("sessionid")
+	if err != nil || sessionpi.String() == "" {
+		return false, ""
+	}
+	var Id int
+	var sessionId, email string
+	var expires_at time.Time
+	req := `SELECT * from sessions Where sessionId=?;`
+	row, err := Db.Query(req, sessionpi.Value)
+
 	if err != nil {
-		// No session cookie foun
-		return uuid.Nil, err
+		return false, ""
+	}
+	for row.Next() {
+		row.Scan(&Id, &sessionId, &email, &expires_at)
 	}
 
-	// Extract the value of the session cookie
-	sessionid := cookie.Value
-
-	sessionID, err := uuid.FromString(sessionid)
-	if err != nil {
-		return uuid.Nil, err
+	if sessionId != "" && email != "" && expires_at.After(time.Now()) {
+		return true, email
 	}
-
-	return sessionID, nil
-
-}
-
-func VerifySession(db *sql.DB, sessionID uuid.UUID) bool {
-	session, err := controllers.GetSessionByID(db, sessionID)
-	if err != nil {
-		return false
-	}
-	if &session == nil {
-		return false
-	}
-	return true
-}
-
-func DeleteSession(w http.ResponseWriter, r *http.Request) {
-	// Create a new cookie with the same name as the session cookie
-	cookie := http.Cookie{
-		Name:     "sessionID",
-		Value:    "",         // Empty value
-		Expires:  time.Now(), // Set to a time in the past
-		HttpOnly: true,
-		Path:     "/",
-	}
-
-	// Set the cookie in the response, effectively deleting it
-	http.SetCookie(w, &cookie)
-}
-
-// Example function to create and send a login session cookie
-func UpdateCookieSession(w http.ResponseWriter, sessionID uuid.UUID, db *sql.DB) {
-
-	expiration := time.Now().Add(24 * time.Hour)
-
-	// Create the session cookie
-	cookie := http.Cookie{
-		Name:     "sessionID",
-		Value:    sessionID.String(),
-		Expires:  expiration,
-		HttpOnly: true,
-		Path:     "/",
-	}
-
-	http.SetCookie(w, &cookie)
-	UpdateSession(db, sessionID, expiration)
+	return false, ""
 }

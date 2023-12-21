@@ -60,7 +60,6 @@ loginForm.addEventListener('submit', handleLogin);
 
 
 
-
 function handleRegistration(event) {
     event.preventDefault();
     
@@ -138,14 +137,6 @@ function handleRegistration(event) {
             errEmail.innerHTML=response['message']
         }
         
-        // if (response['message_pawword']!=="") {
-        //     errPassword.innerHTML=response['message_pawword']
-           
-        // }else if (response['message_emailUser']!==""){
-        //     errEmailUser.innerHTML=response['message_emailUser']
-        // }else (response['message']==="Enter at least 4 input characters") ;{
-        //     errNickname.innerHTML=response['message']
-        // }
         setTimeout(function() {
             errPassword.innerHTML = '';
             errNickname.innerHTML= ''
@@ -156,8 +147,7 @@ function handleRegistration(event) {
             errGender.innerHTML=''
             
         }, 5000);
-        // console.log(response.status);
-        // console.log("ass1",response['message']);
+      ;
 
 
     })
@@ -171,51 +161,41 @@ function handleRegistration(event) {
 
 
 // Fonction pour gérer la connexion
-function handleLogin(event) {
-   event.preventDefault();
-   const formData = new FormData(event.target);
- 
-    let logRequest={
-        
-        EmailOrUsername  :formData.get("email-nickname"),
-        Password:formData.get("password")
-          
-    }  
-    console.log(logRequest);
-    fetch('http://localhost:8081/login', {
-        method: 'POST',
-        headers: {
-           'Content-Type': 'application/json', 
-       },
-       body: JSON.stringify(logRequest),
-     
-   })
-   .then(response => {
-       if (response.ok) {
-        
-        console.log("yes");
-        window.location.hash = '#forum'
+async function handleLogin(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    let logRequest = {
+        EmailOrUsername: formData.get("email-nickname"),
+        Password: formData.get("password")
+    }
+
+    try {
+        const response = await fetch('http://localhost:8081/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(logRequest),
+        });
+
+        if (response.ok) {
+            console.log("yes");
+            window.location.hash = '#forum'
         } else {
+            const data = await response.json();
+            let logNotMatch = document.querySelector(".logNotMatch");
+            console.log("log: " + logNotMatch);
+            if (data['error_class'] === "logNotMatch") {
+                logNotMatch.innerHTML = data['message']
+            }
             
-            return response.json();
-         
-        }
-    })
-    .then(response => { 
-        let logNotMatch = document.querySelector(".logNotMatch")
-        console.log("log: "+ logNotMatch);
-        if (response['error_class']==="logNotMatch"){
-            logNotMatch.innerHTML=response['message']
-        }
 
-        setTimeout(function() {
-            logNotMatch.innerHTML = ''       
-        }, 5000);
-    })
-   
-   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
-  
-
-  
-   
+            setTimeout(function () {
+                logNotMatch.innerHTML = ''
+            }, 5000);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la création de l\'utilisateur:', error);
+    }
 }
