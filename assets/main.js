@@ -1,4 +1,4 @@
-let app=document.getElementById('app')
+let app=document.getElementById('add')
 let loginForm=document.getElementById('loginForm')
 
 let registrationForm=document.getElementById('registrationForm')
@@ -13,17 +13,23 @@ import {loadConnexionPage} from './components/forum.js'
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {http://localhost:8081/
+   
     fetch('http://localhost:8081/auth')
     .then(response => response.json())
     .then(data => {
         
         if (data.IsAuth){
+            homeView.style.display="none"
             loadConnexionPage(app)
         }else{
+           
+            
             document.querySelector(".button-new-account").addEventListener("click", function(event){
-                register.style.display="block"
+                // register.style.display="block"
+                console.log("cii");
                 homeView.style.display="none"
+                register.style.display="block"
                 createNewAccount(registrationForm)
             })
             
@@ -75,7 +81,7 @@ function loadNotFoundPage(container) {
 closeForm.addEventListener("click", function(){
     register.style.display="none"
     homeView.style.display="flex"
-    window.location.hash = ''
+  
    
 })
 
@@ -125,7 +131,7 @@ function handleRegistration(event) {
        if (response.ok) {
         register.remove()
         homeView.style.display="block"
-        window.location.hash = ''
+      
         // window.location.hash= '#accueil'
        
        
@@ -136,7 +142,7 @@ function handleRegistration(event) {
             // window.location.hash = '#createNewAccount';
             registrationForm.reset();
 
-             return response.json();
+            return response.json();
         //    console.error('Erreur lors de la création de l\'utilisateur:', response.status);
         }
     })
@@ -206,12 +212,13 @@ async function handleLogin(event) {
 
         if (response.ok) {
             console.log("yes");
-            // window.location.hash = '#forum'
+           
+            homeView.style.display="none"
             loadConnexionPage(app)
         } else {
             const data = await response.json();
             let logNotMatch = document.querySelector(".logNotMatch");
-            console.log("log: " + logNotMatch);
+            
             if (data['error_class'] === "logNotMatch") {
                 logNotMatch.innerHTML = data['message']
             }

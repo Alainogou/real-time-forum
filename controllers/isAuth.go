@@ -29,9 +29,9 @@ func IsAuth(w http.ResponseWriter, r *http.Request) {
 	
 	if er!=nil{
 		fmt.Println(er)
-		return
+		
 	}
-	fmt.Println(email)
+	
 	info:=authInfo{
 		IsAuth:isConnect, 
 		User: userConnect,
