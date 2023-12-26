@@ -60,6 +60,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 // func getHandler(w http.ResponseWriter, r *http.Request) {
 // 	// Handle GET request
 // 	fmt.Fprintf(w, "GET request received")
@@ -72,6 +73,7 @@ func main() {
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/register", controllers.RegisterUser)
 	http.HandleFunc("/login", controllers.LoginUser)
+	http.HandleFunc("/auth", controllers.IsAuth)
 
 	fmt.Println("Server running on http://localhost" + Port)
 

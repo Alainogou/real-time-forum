@@ -12,14 +12,39 @@ import {createNewAccount} from './components/createNewAccount.js'
 import {loadConnexionPage} from './components/forum.js'
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
+    fetch('http://localhost:8081/auth')
+    .then(response => response.json())
+    .then(data => {
+        
+        if (data.IsAuth){
+            loadConnexionPage(app)
+        }else{
+            document.querySelector(".button-new-account").addEventListener("click", function(event){
+                register.style.display="block"
+                homeView.style.display="none"
+                createNewAccount(registrationForm)
+            })
+            
+         
+        }   
+       
+    
+    })
+    .catch(error => console.error('Erreur:', error));
+
    
-    navigate();
+    
+
+
+
 });
 
-  
+
+
 register.style.display="none" 
-window.addEventListener('hashchange', navigate);
+// window.addEventListener('hashchange', navigate);
 
 function navigate() {
     let route = window.location.hash.slice(1) || 'accueil';
@@ -43,9 +68,9 @@ function loadNotFoundPage(container) {
 }
 
 
-document.querySelector(".button-new-account").addEventListener("click", function(event){
-    window.location.hash = '#createNewAccount'
-})
+// document.querySelector(".button-new-account").addEventListener("click", function(event){
+//     window.location.hash = '#createNewAccount'
+// })
 
 closeForm.addEventListener("click", function(){
     register.style.display="none"
@@ -108,7 +133,7 @@ function handleRegistration(event) {
 
            
             // console.log(response.status);
-            window.location.hash = '#createNewAccount';
+            // window.location.hash = '#createNewAccount';
             registrationForm.reset();
 
              return response.json();
@@ -181,7 +206,8 @@ async function handleLogin(event) {
 
         if (response.ok) {
             console.log("yes");
-            window.location.hash = '#forum'
+            // window.location.hash = '#forum'
+            loadConnexionPage(app)
         } else {
             const data = await response.json();
             let logNotMatch = document.querySelector(".logNotMatch");
