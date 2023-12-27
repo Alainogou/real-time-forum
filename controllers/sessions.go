@@ -62,15 +62,15 @@ func GetSessionUserID(db *sql.DB, sessionID uuid.UUID) (uuid.UUID, error) {
 }
 
 // DeleteSession deletes a session by ID from the database.
-func DeleteSession(db *sql.DB, sessionID uuid.UUID) error {
-	query := `
-        DELETE FROM sessions
-        WHERE id = ?;
-    `
+// func DeleteSession(db *sql.DB, sessionID uuid.UUID) error {
+// 	query := `
+//         DELETE FROM sessions
+//         WHERE id = ?;
+//     `
 
-	_, err := db.Exec(query, sessionID)
-	return err
-}
+// 	_, err := db.Exec(query, sessionID)
+// 	return err
+// }
 
 // ValidateSession checks if a session is valid based on its expiration time.
 func ValidateSession(session models.Session) bool {
