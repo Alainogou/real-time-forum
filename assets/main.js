@@ -1,38 +1,95 @@
+
 let app=document.getElementById('add')
-let loginForm=document.getElementById('loginForm')
 
-let registrationForm=document.getElementById('registrationForm')
-const homeView = document.querySelector(".home-view");
 
-let register= document.querySelector("#registration-form")
-let closeForm=document.querySelector("#close-register-form")
+let ap=document.getElementById('add1')
+
+
 
 
 import {createNewAccount} from './components/createNewAccount.js'
 import {loadConnexionPage} from './components/forum.js'
 
 
-
-document.addEventListener('DOMContentLoaded', () => {http://localhost:8081/
+document.addEventListener('DOMContentLoaded', () => {
+    // let tabContents = document.querySelectorAll('.tab');
+    // console.log(tabContents);
+    
+    // tabContents.forEach(function (tabContent) {
+    //     tabContent.classList.remove('active');
+    // });
    
+  
+    
     fetch('http://localhost:8081/auth')
     .then(response => response.json())
     .then(data => {
         
+
         if (data.IsAuth){
-            homeView.style.display="none"
-            loadConnexionPage(app)
+          
+           ap.remove()
+           loadConnexionPage(app)
         }else{
+            let divz=document.createElement('div')
+            divz.innerHTML=`<div class="container flex"  id="part1"  >
+            <div class="home-view flex">
+              <div class="text">
+                <h1>REAL TIME FORUM</h1>
+                <p>Connect, Collaborate, Communicate<br>  
+                   Real-Time Conversations Unleashed! </p>
+              </div>
+              
+              <div class="loginForm" id="login">
+                <div><span class="errorStyle logNotMatch"></span></div> 
+                <form id="loginForm">
+                    <input type="text"  name="email-nickname" placeholder="Nickname or email" >
+                    <input type="password"  name="password" placeholder="Password">
+                    <div class="link">
+                      <button type="submit" class="login">Login</button>
+                    </div>
+                </form>
+             
+                <hr>
+                <div class="button-new-account">
+                    <button type="submit" class="login">Create new account</button>
+                </div>
+              </div>
+            </div>
+        
+          </div>
+        
+          <div class="registration" style="display: none;" id="part2">
+            <button class="close" id="close-register-form">X</button>
+            <form id="registrationForm">
+              
+            </form>
+          </div>
+         `
+           ap.appendChild(divz)
+           let loginForm=document.getElementById('loginForm')
+
+           let registrationForm=document.getElementById('registrationForm')
+           const homeView = document.querySelector(".home-view");
            
+           let register= document.querySelector(".registration")
+           let closeForm=document.querySelector("#close-register-form")
+        
+            registrationForm.addEventListener('submit', handleRegistration);
+            loginForm.addEventListener('submit', handleLogin);
             
             document.querySelector(".button-new-account").addEventListener("click", function(event){
-                // register.style.display="block"
-                console.log("cii");
                 homeView.style.display="none"
                 register.style.display="block"
                 createNewAccount(registrationForm)
             })
-            
+
+            closeForm.addEventListener("click", function(){
+                register.style.display="none"
+                homeView.style.display="flex"
+              
+               
+            })
          
         }   
        
@@ -40,32 +97,12 @@ document.addEventListener('DOMContentLoaded', () => {http://localhost:8081/
     })
     .catch(error => console.error('Erreur:', error));
 
-   
-    
 
 
 
 });
 
 
-
-register.style.display="none" 
-// window.addEventListener('hashchange', navigate);
-
-function navigate() {
-    let route = window.location.hash.slice(1) || 'accueil';
-    
-    console.log(route)
-    if (route==="createNewAccount"){
-        
-        register.style.display="block"
-        homeView.style.display="none"
-        createNewAccount(registrationForm)
-    }else if (route=="forum"){ 
-        loadConnexionPage(app)
-    }
-   
-}
 
 
 
@@ -74,19 +111,11 @@ function loadNotFoundPage(container) {
 }
 
 
-// document.querySelector(".button-new-account").addEventListener("click", function(event){
-//     window.location.hash = '#createNewAccount'
-// })
 
-closeForm.addEventListener("click", function(){
-    register.style.display="none"
-    homeView.style.display="flex"
-  
-   
-})
 
-registrationForm.addEventListener('submit', handleRegistration);
-loginForm.addEventListener('submit', handleLogin);
+
+
+
 
 
 
@@ -129,11 +158,11 @@ function handleRegistration(event) {
    })
    .then(response => {
        if (response.ok) {
+        const homeView = document.querySelector(".home-view");
+        let register= document.querySelector(".registration")
         register.remove()
-        homeView.style.display="block"
+        homeView.style.display="flex"
       
-        // window.location.hash= '#accueil'
-       
        
         } else {
 
@@ -211,9 +240,7 @@ async function handleLogin(event) {
         });
 
         if (response.ok) {
-            console.log("yes");
-           
-            homeView.style.display="none"
+            ap.remove()
             loadConnexionPage(app)
         } else {
             const data = await response.json();
@@ -225,6 +252,7 @@ async function handleLogin(event) {
             
 
             setTimeout(function () {
+            
                 logNotMatch.innerHTML = ''
             }, 5000);
         }

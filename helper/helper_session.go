@@ -16,7 +16,7 @@ func SetCookieInDB(w http.ResponseWriter) string {
 	cookie := http.Cookie{
 		Name:     "sessionid",
 		Value:    sssid,
-		Expires:  time.Now().Add(time.Hour * 24 * 3),
+		Expires:  time.Now().Add(time.Minute *30) ,
 		Path:     "/",
 		MaxAge:   3600 * 24 * 3,
 		HttpOnly: true,
@@ -44,9 +44,9 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 	}
 
 	if email == useremail {
-		_, errsession = db.Exec("UPDATE sessions SET sessionId=?,  expires_at=? where email=?;", sssid, time.Now().Add(time.Hour*24*3), email)
+		_, errsession = db.Exec("UPDATE sessions SET sessionId=?,  expires_at=? where email=?;", sssid, time.Now().Add(time.Minute*30), email)
 	} else {
-		_, errsession = db.Exec("INSERT INTO sessions (sessionId,email, expires_at) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Hour*24*3))
+		_, errsession = db.Exec("INSERT INTO sessions (sessionId,email, expires_at) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Minute*30))
 	}
 	return errsession
 

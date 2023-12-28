@@ -1,5 +1,7 @@
 export const loadConnexionPage=(container) =>{
+
     container.innerHTML = `
+    
     <nav>
     <div class="left">
         <div class="logo">
@@ -24,7 +26,7 @@ export const loadConnexionPage=(container) =>{
         </div>         
     </div>
 </nav>
-
+   
 
 <div class="main">
     <!------------------left------------------->
