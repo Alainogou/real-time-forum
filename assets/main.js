@@ -27,30 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.getElementById("logoutHeader").addEventListener("click",()=>{
                 logout(ap)
-                
-            // fetch('http://localhost:8081/logout', {
-            //     method: 'POST',
-            //     headers: {
-            //     'Content-Type': 'application/json', 
-            // },
-            
-            
-            // })
-            // .then(response => {
-            //     if (response.ok) {
-                
-            //     console.log("body"); 
-            //     app.style.display="none"
-            //     ap.style.display="block"
-            //     sendForm(ap)
-              
-            //     } else {
-
-                    
-            //     }
-            // })
-            // .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error))
-            
+          
             })
         //    loadConnexionPage(app)
 
@@ -233,6 +210,11 @@ async function handleLogin(event) {
             ap.style.display="none"
             app.style.display="block"
             headerPage(app)
+            
+            document.getElementById("logoutHeader").addEventListener("click",()=>{
+                logout(ap)
+          
+            })
             // loadConnexionPage(app)
         } else {
             const data = await response.json();
