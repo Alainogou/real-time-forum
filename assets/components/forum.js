@@ -1,11 +1,10 @@
-export const loadConnexionPage=(container) =>{
+export const headerPage=(container)=>{
 
-    container.innerHTML = `
-    
+    container.innerHTML= `
     <nav>
     <div class="left">
         <div class="logo">
-            <h1>REAL TIME FORUM</h1>
+            <h1 class='mnele'>REAL TIME FORUM</h1>
             <!-- <img src="/assets/image/logo.png"> -->
         </div>
         <!-- <div class="search_bar">
@@ -18,14 +17,21 @@ export const loadConnexionPage=(container) =>{
        
         <div class="nav-connection">
             <!-- <i class="fa-solid fa-list-ul"></i> -->
-            <i class="fa-brands fa-facebook-messenger"></i>
-            <i class="fa-solid fa-bell"></i>
-            <i class="fa-solid fa-moon"></i>
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-brands fa-facebook-messenger" id = "messageHeader"></i>
+            <i class="fa-solid fa-user" id = "userHeader"></i>
+            <i  class="fa-solid fa-right-from-bracket" id ="logoutHeader"></i>
             <!-- <img src="/assets/images/profil.png"> -->
         </div>         
     </div>
 </nav>
+    
+    `
+}
+export const loadConnexionPage=(container, name) =>{
+
+    container.innerHTML = `
+    
+   
    
 
 <div class="main">

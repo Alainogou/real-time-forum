@@ -8,18 +8,11 @@ let ap=document.getElementById('add1')
 
 
 import {createNewAccount} from './components/createNewAccount.js'
-import {loadConnexionPage} from './components/forum.js'
-
+import {headerPage, loadConnexionPage} from './components/forum.js'
+import { sendForm } from './components/loginForm.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-    // let tabContents = document.querySelectorAll('.tab');
-    // console.log(tabContents);
-    
-    // tabContents.forEach(function (tabContent) {
-    //     tabContent.classList.remove('active');
-    // });
-   
-  
+
     
     fetch('http://localhost:8081/auth')
     .then(response => response.json())
@@ -27,46 +20,43 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         if (data.IsAuth){
-          
-           ap.remove()
-           loadConnexionPage(app)
+            ap.style.display="none"
+        //    ap.remove()
+            headerPage(app)
+            document.querySelector(".mnele").style.color="red"
+
+            document.getElementById("logoutHeader").addEventListener("click",()=>{
+                logout(ap)
+                
+            // fetch('http://localhost:8081/logout', {
+            //     method: 'POST',
+            //     headers: {
+            //     'Content-Type': 'application/json', 
+            // },
+            
+            
+            // })
+            // .then(response => {
+            //     if (response.ok) {
+                
+            //     console.log("body"); 
+            //     app.style.display="none"
+            //     ap.style.display="block"
+            //     sendForm(ap)
+              
+            //     } else {
+
+                    
+            //     }
+            // })
+            // .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error))
+            
+            })
+        //    loadConnexionPage(app)
+
         }else{
-            let divz=document.createElement('div')
-            divz.innerHTML=`<div class="container flex"  id="part1"  >
-            <div class="home-view flex">
-              <div class="text">
-                <h1>REAL TIME FORUM</h1>
-                <p>Connect, Collaborate, Communicate<br>  
-                   Real-Time Conversations Unleashed! </p>
-              </div>
-              
-              <div class="loginForm" id="login">
-                <div><span class="errorStyle logNotMatch"></span></div> 
-                <form id="loginForm">
-                    <input type="text"  name="email-nickname" placeholder="Nickname or email" >
-                    <input type="password"  name="password" placeholder="Password">
-                    <div class="link">
-                      <button type="submit" class="login">Login</button>
-                    </div>
-                </form>
-             
-                <hr>
-                <div class="button-new-account">
-                    <button type="submit" class="login">Create new account</button>
-                </div>
-              </div>
-            </div>
-        
-          </div>
-        
-          <div class="registration" style="display: none;" id="part2">
-            <button class="close" id="close-register-form">X</button>
-            <form id="registrationForm">
-              
-            </form>
-          </div>
-         `
-           ap.appendChild(divz)
+           
+           sendForm(ap)
            let loginForm=document.getElementById('loginForm')
 
            let registrationForm=document.getElementById('registrationForm')
@@ -240,8 +230,10 @@ async function handleLogin(event) {
         });
 
         if (response.ok) {
-            ap.remove()
-            loadConnexionPage(app)
+            ap.style.display="none"
+            app.style.display="block"
+            headerPage(app)
+            // loadConnexionPage(app)
         } else {
             const data = await response.json();
             let logNotMatch = document.querySelector(".logNotMatch");
@@ -260,3 +252,59 @@ async function handleLogin(event) {
         console.error('Erreur lors de la création de l\'utilisateur:', error);
     }
 }
+
+
+async function logout(ap) {
+    
+
+    try {
+        const response = await fetch('http://localhost:8081/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            
+        });
+
+        if (response.ok) {
+            
+            app.style.display="none"
+            ap.style.display="block"
+            sendForm(ap)
+            let loginForm=document.getElementById('loginForm')
+
+            let registrationForm=document.getElementById('registrationForm')
+            const homeView = document.querySelector(".home-view");
+            
+            let register= document.querySelector(".registration")
+            let closeForm=document.querySelector("#close-register-form")
+            
+            registrationForm.addEventListener('submit', handleRegistration);
+            loginForm.addEventListener('submit', handleLogin);
+            
+            document.querySelector(".button-new-account").addEventListener("click", function(event){
+                homeView.style.display="none"
+                register.style.display="block"
+                createNewAccount(registrationForm)
+            })
+
+            closeForm.addEventListener("click", function(){
+                register.style.display="none"
+                homeView.style.display="flex"
+              
+               
+            })
+
+
+            // loadConnexionPage(app)
+        } else {
+           
+        
+        }
+    } catch (error) {
+        console.error('Erreur lors de la création de l\'utilisateur:', error);
+    }
+}
+
+
+

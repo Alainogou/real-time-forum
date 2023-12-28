@@ -3,38 +3,34 @@ package controllers
 import (
 	// "fmt"
 	"database/sql"
-	
-    "time"
-	"net/http"
+
 	"fmt"
+	"net/http"
+	"time"
 
 	"encoding/json"
 	"realtimeforum/models"
-	
-
-	
 )
 
 type authInfo struct {
-	IsAuth     bool `json:"IsAuth"`
-	User  models.User    `json:"User"`
-	
+	IsAuth bool        `json:"IsAuth"`
+	User   models.User `json:"User"`
 }
 
 func IsAuth(w http.ResponseWriter, r *http.Request) {
 
-	isConnect, email:=Auth(DB, r)
-	userConnect:=models.User{}
-	er:=userConnect.GetOneUser(DB, email)
-	
-	if er!=nil{
+	isConnect, email := Auth(DB, w, r)
+	userConnect := models.User{}
+	er := userConnect.GetOneUser(DB, email)
+
+	if er != nil {
 		fmt.Println(er)
-		
+
 	}
-	
-	info:=authInfo{
-		IsAuth:isConnect, 
-		User: userConnect,
+
+	info := authInfo{
+		IsAuth: isConnect,
+		User:   userConnect,
 	}
 
 	err := json.NewEncoder(w).Encode(info)
@@ -44,9 +40,7 @@ func IsAuth(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
-func Auth(Db *sql.DB, r *http.Request) (bool, string) {
+func Auth(Db *sql.DB, w http.ResponseWriter, r *http.Request) (bool, string) {
 
 	sessionpi, err := r.Cookie("sessionid")
 	if err != nil || sessionpi.String() == "" {
@@ -67,6 +61,17 @@ func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
 	if sessionId != "" && email != "" && datef.After(time.Now()) {
 		return true, email
+	}
+
+	if sessionId != "" && email != "" && !datef.After(time.Now()) {
+
+		http.SetCookie(w, &http.Cookie{
+			Name:  "sessionid",
+			Value: "",
+			Path:  "/",
+		})
+		DeleteSession(DB, sessionId)
+		return false, ""
 	}
 	return false, ""
 }

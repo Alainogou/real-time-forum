@@ -1,5 +1,5 @@
 #Use base image with golang latest version
-FROM golang:latest
+FROM golang:1.21.1
 
 
 LABEL AUTHORS="@alo - @alogou"

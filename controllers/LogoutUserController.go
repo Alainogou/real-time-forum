@@ -31,7 +31,7 @@ func LogoutUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteSession(db *sql.DB, ssid string) error {
-	req := `DELETE from Session Where sessionId=?;`
+	req := `DELETE from sessions Where sessionId=?;`
 	_, err := db.Exec(req, ssid)
 	return err
 }

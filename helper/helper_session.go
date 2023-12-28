@@ -16,7 +16,7 @@ func SetCookieInDB(w http.ResponseWriter) string {
 	cookie := http.Cookie{
 		Name:     "sessionid",
 		Value:    sssid,
-		Expires:  time.Now().Add(time.Minute *30) ,
+		Expires:  time.Now().Add(time.Minute *2) ,
 		Path:     "/",
 		MaxAge:   3600 * 24 * 3,
 		HttpOnly: true,
@@ -44,35 +44,12 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 	}
 
 	if email == useremail {
-		_, errsession = db.Exec("UPDATE sessions SET sessionId=?,  expires_at=? where email=?;", sssid, time.Now().Add(time.Minute*30), email)
+		_, errsession = db.Exec("UPDATE sessions SET sessionId=?,  expires_at=? where email=?;", sssid, time.Now().Add(time.Minute*2), email)
 	} else {
-		_, errsession = db.Exec("INSERT INTO sessions (sessionId,email, expires_at) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Minute*30))
+		_, errsession = db.Exec("INSERT INTO sessions (sessionId,email, expires_at) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Minute*2))
 	}
 	return errsession
 
 }
 
-func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
-	sessionpi, err := r.Cookie("sessionid")
-	if err != nil || sessionpi.String() == "" {
-		return false, ""
-	}
-	var Id int
-	var sessionId, email string
-	var expires_at time.Time
-	req := `SELECT * from sessions Where sessionId=?;`
-	row, err := Db.Query(req, sessionpi.Value)
-
-	if err != nil {
-		return false, ""
-	}
-	for row.Next() {
-		row.Scan(&Id, &sessionId, &email, &expires_at)
-	}
-
-	if sessionId != "" && email != "" && expires_at.After(time.Now()) {
-		return true, email
-	}
-	return false, ""
-}
