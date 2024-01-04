@@ -1,15 +1,17 @@
 
-let app=document.getElementById('add')
+let app=document.getElementById('connexion')
 
 
-let ap=document.getElementById('add1')
+let ap=document.getElementById('enter')
 
 
 
 
 import {createNewAccount} from './components/createNewAccount.js'
-import {headerPage, loadConnexionPage} from './components/forum.js'
+import {displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
 import { sendForm } from './components/loginForm.js'
+import {createPostbutton, postForm} from './components/postForm.js'
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -20,17 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         if (data.IsAuth){
-            ap.style.display="none"
-        //    ap.remove()
-            headerPage(app)
-            document.querySelector(".mnele").style.color="red"
-
-            document.getElementById("logoutHeader").addEventListener("click",()=>{
-                logout(ap)
-          
-            })
-        //    loadConnexionPage(app)
-
+            handleSuccessfulLogin(data) 
+        
         }else{
            
            sendForm(ap)
@@ -42,16 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
            let register= document.querySelector(".registration")
            let closeForm=document.querySelector("#close-register-form")
         
-            registrationForm.addEventListener('submit', handleRegistration);
-            loginForm.addEventListener('submit', handleLogin);
+           if (register) registrationForm.addEventListener('submit', handleRegistration);
+           if (loginForm) loginForm.addEventListener('submit', handleLogin);
             
-            document.querySelector(".button-new-account").addEventListener("click", function(event){
+            let creatNewacc=document.querySelector(".button-new-account")
+
+            if (creatNewacc) creatNewacc.addEventListener("click", function(){
                 homeView.style.display="none"
                 register.style.display="block"
                 createNewAccount(registrationForm)
             })
+            
 
-            closeForm.addEventListener("click", function(){
+            if (closeForm) closeForm.addEventListener("click", function(){
                 register.style.display="none"
                 homeView.style.display="flex"
               
@@ -78,8 +74,44 @@ function loadNotFoundPage(container) {
 }
 
 
+function handleSuccessfulLogin(data) {
+    
+    ap.style.display="none";
+    headerPage(app);
+    let main=document.createElement('div');
+    let center=document.createElement('div')
+    center.classList.add('center');
 
+    main.classList.add('main');
+    displayCategories(main, data.User.FirstName, data.User.LastName);
+    createPostbutton(center, data.User.LastName)
+    
+    let postform= document.createElement('div')
+    app.appendChild(postform)
+    main.appendChild(center)
+    app.appendChild(main);
 
+    let showPostForm= document.querySelector(".showPostForm")
+    if (showPostForm) showPostForm.addEventListener("click", function(event){
+        postform.style.display='block'
+        postForm(postform)
+
+        let closeForm=document.querySelector(".btn-close")
+        
+        if (closeForm) closeForm.addEventListener("click", function(){
+            postform.style.display='none'
+          
+       })
+    })
+
+   
+
+    let logoutHeader=document.getElementById("logoutHeader");
+    if (logoutHeader) logoutHeader.addEventListener("click",()=>{
+        logout(ap);
+    });
+
+}
 
 
 
@@ -94,6 +126,7 @@ function handleRegistration(event) {
    
     let newUser={
         Id:1,
+
         LastName :formData.get("last-name"),
         FirstName: formData.get("first-name"),
         NickName:formData.get("nickname"),
@@ -134,8 +167,6 @@ function handleRegistration(event) {
         } else {
 
            
-            // console.log(response.status);
-            // window.location.hash = '#createNewAccount';
             registrationForm.reset();
 
             return response.json();
@@ -207,15 +238,20 @@ async function handleLogin(event) {
         });
 
         if (response.ok) {
+            // handleSuccessfulLogin(await response.json());
             ap.style.display="none"
             app.style.display="block"
-            headerPage(app)
+            fetch('http://localhost:8081/auth')
+            .then(response => response.json())
+            .then(data => {
+                if (data.IsAuth){
+                    handleSuccessfulLogin(data) 
+
+                }  
             
-            document.getElementById("logoutHeader").addEventListener("click",()=>{
-                logout(ap)
-          
             })
-            // loadConnexionPage(app)
+            .catch(error => console.error('Erreur:', error));
+            
         } else {
             const data = await response.json();
             let logNotMatch = document.querySelector(".logNotMatch");
@@ -226,7 +262,6 @@ async function handleLogin(event) {
             
 
             setTimeout(function () {
-            
                 logNotMatch.innerHTML = ''
             }, 5000);
         }
@@ -238,7 +273,6 @@ async function handleLogin(event) {
 
 async function logout(ap) {
     
-
     try {
         const response = await fetch('http://localhost:8081/logout', {
             method: 'POST',

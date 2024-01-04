@@ -30,7 +30,7 @@ export const createNewAccount=(container) =>{
         <input type="password" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm password" >
         
 
-        <div class="link submitRegister" class="">
+        <div class="link submitRegister" >
             <button type="submit" class="login">Register</button>
         </div>   
     </form>

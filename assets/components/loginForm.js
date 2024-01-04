@@ -1,7 +1,6 @@
 
 
 
-
 export function sendForm(ap){
     let form=document.createElement('div')
             form.innerHTML=`<div class="container flex"  id="part1"  >

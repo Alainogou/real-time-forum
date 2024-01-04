@@ -2,31 +2,70 @@ export const headerPage=(container)=>{
 
     container.innerHTML= `
     <nav>
-    <div class="left">
-        <div class="logo">
-            <h1 class='mnele'>REAL TIME FORUM</h1>
-            <!-- <img src="/assets/image/logo.png"> -->
-        </div>
+        <div class="left">
+            <div class="logo">
+                <h1 class='mnele'>REAL TIME FORUM</h1>
+                <!-- <img src="/assets/image/logo.png"> -->
+            </div>
         <!-- <div class="search_bar">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Search">
         </div> -->
-                
-    </div> 
-    <div class="right">
-       
-        <div class="nav-connection">
-            <!-- <i class="fa-solid fa-list-ul"></i> -->
-            <i class="fa-brands fa-facebook-messenger" id = "messageHeader"></i>
-            <i class="fa-solid fa-user" id = "userHeader"></i>
-            <i  class="fa-solid fa-right-from-bracket" id ="logoutHeader"></i>
-            <!-- <img src="/assets/images/profil.png"> -->
-        </div>         
-    </div>
-</nav>
+                    
+        </div> 
+        <div class="right">
+        
+            <div class="nav-connection">
+                <!-- <i class="fa-solid fa-list-ul"></i> -->
+                <i class="fa-brands fa-facebook-messenger" id = "messageHeader"></i>
+                <i class="fa-solid fa-user" id = "userHeader"></i>
+                <i  class="fa-solid fa-right-from-bracket" id ="logoutHeader"></i>
+                <!-- <img src="/assets/images/profil.png"> -->
+            </div>         
+        </div>
+    </nav>
     
     `
 }
+
+export const displayCategories=(container, firstName, lastName)=>{
+    container.innerHTML=`
+        <div class="left">
+        <div>
+            <div class="img">
+                <img src="/assets/image/profile.png">
+                <p>${firstName} ${lastName}  </p>
+            </div>
+            <hr>
+        </div>
+    
+        <h2>Categories</h2>
+        
+        <div class="shortcuts">
+            <img src="/assets/image/shortcuts_1.png">
+            <p>MOBILE GAMES</p>
+        </div>
+        <div class="shortcuts">
+            <img src="/assets/image/shortcuts_2.jpeg">
+            <p>Online Education</p>
+        </div>
+        <div class="shortcuts">
+            <img src="/assets/image/shortcuts_3.webp">
+            <p>Food Lovers</p>
+        </div>
+        <div class="shortcuts">
+            <img src="/assets/image/shortcuts_4.png">
+            <p>Social Media Academy</p>
+        </div>
+        <div class="shortcuts">
+            <img src="/assets/image/shortcuts_5.webp">
+            <p>PC Shop</p>
+        </div>
+        
+    </div>`
+}
+
+
 export const loadConnexionPage=(container, name) =>{
 
     container.innerHTML = `
