@@ -335,21 +335,21 @@ async function logout(ap) {
 async function handleCreatePost(event, postform) {
     event.preventDefault();
     const formData = new FormData(event.target);
-
+ 
     let PostContent = {
         ID:1,
         User_id : formData.get("user_id"),
         Category_id:1,
         Title :formData.get("title"),
-        Content  :formData.get("content"),
+        Content :formData.get("content"),
      
-        Cat   : Array.from(formData.getAll("cat")).map(Number),
+        Cat  : Array.from(formData.getAll("cat")).map(Number),
         ImageName: formData.get("postimage").name,
         ImageType: formData.get("postimage").type,
         ImageSize: formData.get("postimage").size,
     }
- 
-
+  
+    
     try {
         const response = await fetch('http://localhost:8081/createPost', {
             method: 'POST',
@@ -364,20 +364,36 @@ async function handleCreatePost(event, postform) {
             console.log("it's match")
             
         } else {
-            console.log("not match")
-            // const data = await response.json();
-            // let logNotMatch = document.querySelector(".logNotMatch");
-            
-            // if (data['error_class'] === "logNotMatch") {
-            //     logNotMatch.innerHTML = data['message']
-            // }
-            
-
-            // setTimeout(function () {
-            //     logNotMatch.innerHTML = ''
-            // }, 5000);
+           
+                console.log("not match")
+                const data = await response.json();
+                switch (data['error_class']) {
+                  case 'categoryNofound':
+                    let errCategorie = document.querySelector(".messageErrorCategorie");
+                    errCategorie.innerHTML = data['message'];
+                    setTimeout(() => {
+                      errCategorie.innerHTML = '';
+                    }, 5000);
+                    break;
+                  case 'titleNoFound':
+                    let errTitle = document.querySelector(".messageErrorTitle");
+                    errTitle.innerHTML = data['message'];
+                    setTimeout(() => {
+                      errTitle.innerHTML = '';
+                    }, 5000);
+                    break;
+                  case 'contentNofound':
+                    let errContent = document.querySelector(".messageErrorContent");
+                    
+                    errContent.innerHTML = data['message'];
+                    setTimeout(() => {
+                      errContent.innerHTML = '';
+                    }, 5000);
+                    break;
+                }
+               
         }
     } catch (error) {
         console.error('Erreur lors de la création de l\'utilisateur:', error);
     }
-}
+ }

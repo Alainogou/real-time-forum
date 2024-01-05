@@ -47,7 +47,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("new post", newPost)
 	if newPost.Title == "" {
-		Error = "Enter a title"
+		Error = " Please Enter a title"
 		errorResponse := ErrorResponse{
 			Message:    Error,
 			ErrorClass: "titleNoFound",
@@ -58,7 +58,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(newPost.Cat) == 0 {
-		Error = "choose a category"
+		Error = " Please choose a category"
 		errorResponse := ErrorResponse{
 			Message:    Error,
 			ErrorClass: "categoryNofound",
@@ -68,7 +68,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if newPost.Content == "" {
-		Error = "Enter your message"
+		Error = " Please Enter your message"
 		errorResponse := ErrorResponse{
 			Message:    Error,
 			ErrorClass: "contentNofound",

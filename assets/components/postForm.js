@@ -35,11 +35,13 @@ export function postForm(container, userId){
         <form  enctype="multipart/form-data"  class="form-modal" id='postForm'>
             <input type="hidden" name="user_id" value="${userId}">
             <div class="input-form-m">
+            <div><span class="errorStyle messageErrorTitle"></span></div> 
                 <label for="title-form">Title</label>
                 <input type="text" name="title" placeholder="Title"  id="title-form">
             </div>
     
             <div class="box">
+            <div><span class="errorStyle messageErrorCategorie"></span></div> 
                 <details>
                     <summary>Categories</summary>
                     <ul>
@@ -59,6 +61,7 @@ export function postForm(container, userId){
             </div>
     
             <div class="input-form-m">
+            <div><span class="errorStyle messageErrorContent"></span></div> 
                 <label for="content-form">Content</label>
                 <textarea  name="content" id="content-form" cols="30" rows="10"></textarea>
             </div>
