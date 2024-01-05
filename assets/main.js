@@ -84,7 +84,7 @@ function handleSuccessfulLogin(data) {
 
     main.classList.add('main');
     displayCategories(main, data.User.FirstName, data.User.LastName);
-    createPostbutton(center, data.User.LastName)
+    createPostbutton(center, data.User.NickName)
     
     let postform= document.createElement('div')
     app.appendChild(postform)

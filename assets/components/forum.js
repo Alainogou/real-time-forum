@@ -33,7 +33,9 @@ export const displayCategories=(container, firstName, lastName)=>{
         <div class="left">
         <div>
             <div class="img">
-                <img src="/assets/image/profile.png">
+                <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+                 <i class="fa-solid fa-user" ></i>
+                 </div>
                 <p>${firstName} ${lastName}  </p>
             </div>
             <hr>

@@ -1,10 +1,15 @@
-export function createPostbutton(container, lastName) {
+export function createPostbutton(container, nickname) {
     container.innerHTML = `
     <div class="my_post">
         <div class="post_top">
-            <img src="/assets/image/profile.png">
+       
+            
+             <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+                <i class="fa-solid fa-user" ></i>
+            </div>
+          
             <div class="showPostForm">
-              <button type="submit" >What's on you mind, ${lastName}?</button>
+              <button type="submit" >Add your post here, ${nickname}</button>
             </div>
         </div>
         <hr>
@@ -48,8 +53,8 @@ export function postForm(container, userId){
             </div>
             
             <div class="input-form-m">
-                <label for="postimage"> <i class="fa-solid fa-images green"></i> Photo</label>
-                <input type="file" name="postimage" id="postimage" >
+                <label for="postimage"> <i class="fa-solid fa-images green"></i> Image</label>
+                <input type="file" name="postimage" id="postimage" onchange="ValideFile()">
                 <div id="imgfile"></div>
             </div>
     
