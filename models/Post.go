@@ -8,19 +8,19 @@ import (
 )
 
 type Post struct {
-	ID          int
-	User_id     int
-	Category_id int
-	Title       string
-	Content     string
-	Image       string
-	cat         []string
-	Date        time.Time
+	ID          int       `json:"ID"`
+	User_id     int       `json:"User_id"`
+	Category_id int       `json:"Category_id"`
+	Title       string    `json:"Title"`
+	Content     string    `json:"Content"`
+	Image       string    `json:"Image"`
+	Cat         []string  `json:"Cat"`
+	Date        time.Time `json:"Date"`
 }
 type UserData struct {
-	Datas      interface{}
-	IsAuth     bool
-	Cats       []Category
+	Datas  interface{}
+	IsAuth bool
+	Cats   []Category
 	// Pagin      models.Metadata
 	User       User
 	Comments   []Comment
@@ -163,6 +163,7 @@ func (user *User) GetUserPosts(db *sql.DB, pagination Pagination, cat_id string)
 	}
 	return Allpost, row.Err()
 }
+
 func (user *User) GetLikedPosts(db *sql.DB, pagination Pagination, cat_id string) ([]AllPost, error) {
 	Allpost := []AllPost{}
 	var err error

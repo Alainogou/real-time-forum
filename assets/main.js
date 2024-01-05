@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
            let register= document.querySelector(".registration")
            let closeForm=document.querySelector("#close-register-form")
         
-           if (register) registrationForm.addEventListener('submit', handleRegistration);
+           if (registrationForm) registrationForm.addEventListener('submit', handleRegistration);
            if (loginForm) loginForm.addEventListener('submit', handleLogin);
             
             let creatNewacc=document.querySelector(".button-new-account")
@@ -75,7 +75,7 @@ function loadNotFoundPage(container) {
 
 
 function handleSuccessfulLogin(data) {
-    
+   
     ap.style.display="none";
     headerPage(app);
     let main=document.createElement('div');
@@ -94,7 +94,7 @@ function handleSuccessfulLogin(data) {
     let showPostForm= document.querySelector(".showPostForm")
     if (showPostForm) showPostForm.addEventListener("click", function(event){
         postform.style.display='block'
-        postForm(postform)
+        postForm(postform, data.User.Id)
 
         let closeForm=document.querySelector(".btn-close")
         
@@ -102,9 +102,17 @@ function handleSuccessfulLogin(data) {
             postform.style.display='none'
           
        })
+
+       let postForms=document.querySelector("#postForm")
+       if (postForms) {
+            postForms.addEventListener('submit', function(event) {
+                handleCreatePost(event, postform);
+            });
+       }
+      
     })
 
-   
+    
 
     let logoutHeader=document.getElementById("logoutHeader");
     if (logoutHeader) logoutHeader.addEventListener("click",()=>{
@@ -324,3 +332,52 @@ async function logout(ap) {
 
 
 
+async function handleCreatePost(event, postform) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    let PostContent = {
+        ID:1,
+        User_id : formData.get("user_id"),
+        Category_id:1,
+        Title :formData.get("title"),
+        Content  :formData.get("content"),
+     
+        Cat   : Array.from(formData.getAll("cat")).map(Number),
+        ImageName: formData.get("postimage").name,
+        ImageType: formData.get("postimage").type,
+        ImageSize: formData.get("postimage").size,
+    }
+ 
+
+    try {
+        const response = await fetch('http://localhost:8081/createPost', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(PostContent),
+        });
+        
+        if (response.ok) {
+            postform.style.display='none'
+            console.log("it's match")
+            
+        } else {
+            console.log("not match")
+            // const data = await response.json();
+            // let logNotMatch = document.querySelector(".logNotMatch");
+            
+            // if (data['error_class'] === "logNotMatch") {
+            //     logNotMatch.innerHTML = data['message']
+            // }
+            
+
+            // setTimeout(function () {
+            //     logNotMatch.innerHTML = ''
+            // }, 5000);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la création de l\'utilisateur:', error);
+    }
+}

@@ -74,7 +74,7 @@ func main() {
 	http.HandleFunc("/login", controllers.LoginUser)
 	http.HandleFunc("/auth", controllers.IsAuth)
 	http.HandleFunc("/logout", controllers.LogoutUser)
-	http.HandleFunc("/Post", controllers.CreatePost)
+	http.HandleFunc("/createPost", controllers.CreatePost)
 	http.HandleFunc("/Posts/", controllers.Posts)
 	fmt.Println("Server running on http://localhost" + Port)
 

@@ -41,7 +41,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(newUser.NickName) < 3 || len(newUser.NickName) > 6 || isEmailValid(strings.ToLower(newUser.Gender)) {
+	if len(newUser.NickName) < 3 || len(newUser.NickName) > 10 || isEmailValid(strings.ToLower(newUser.NickName)) {
 		Error = "Please enter a valid nickname (3 to 5 characters)"
 		errorResponse := ErrorResponse{
 			Message:    Error,
@@ -106,7 +106,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		sendReponseError(w, errorResponse, http.StatusBadRequest)
 		return
 	}
-	
+
 	if newUser.Password != newUser.ConfirmPassword {
 		Error = "Passwords do not match"
 		errorResponse := ErrorResponse{
