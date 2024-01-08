@@ -10,7 +10,8 @@ let ap=document.getElementById('enter')
 import {createNewAccount} from './components/createNewAccount.js'
 import {displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
 import { sendForm } from './components/loginForm.js'
-import {createPostbutton, postForm} from './components/postForm.js'
+import {createPostbutton, fetchPosthtml, postForm} from './components/postForm.js'
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,10 +86,31 @@ function handleSuccessfulLogin(data) {
     main.classList.add('main');
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
-    
+
+   
+
     let postform= document.createElement('div')
-    app.appendChild(postform)
+
+    for (let i=0; i<1;i++){
+
+       let essai=document.createElement('div');
+       const postHtml = fetchPosthtml(
+           `/assets/image/post_${i+1}.jpg`,
+           'Senuda De Silva',
+           '16h.',
+           'I have been developing, updating, and supporting this extension for over three years...',
+           'You, Charith Disanayaka and 25K others',
+           '421',
+           '1.3K',
+           '/assets/image/profile.png'
+       );
+       essai.innerHTML=postHtml
+       center.appendChild(essai)
+   }
+
+    
     main.appendChild(center)
+    app.appendChild(postform)
     app.appendChild(main);
 
     let showPostForm= document.querySelector(".showPostForm")
@@ -154,7 +176,6 @@ function handleRegistration(event) {
     let errGender= document.querySelector(".messageErrorGender")
     // let errorStyle= document.querySelectorAll(".errorStyle")
     
-   
 
     fetch('http://localhost:8081/register', {
         method: 'POST',
@@ -173,8 +194,7 @@ function handleRegistration(event) {
       
        
         } else {
-
-           
+   
             registrationForm.reset();
 
             return response.json();
@@ -183,7 +203,7 @@ function handleRegistration(event) {
     })
     .then(response => { 
         // response.JSON()
-       
+       if (response){
         if (response['error_class']==="errNickname"){
             errNickname.innerHTML=response['message']
         }else if (response['error_class']==="errAge"){
@@ -214,6 +234,8 @@ function handleRegistration(event) {
             
         }, 5000);
       ;
+       }
+       
 
 
     })
@@ -314,6 +336,7 @@ async function logout(ap) {
 
             closeForm.addEventListener("click", function(){
                 register.style.display="none"
+    
                 homeView.style.display="flex"
               
                
@@ -330,70 +353,81 @@ async function logout(ap) {
     }
 }
 
-
-
-async function handleCreatePost(event, postform) {
+function handleCreatePost(event, postform) {
     event.preventDefault();
     const formData = new FormData(event.target);
- 
-    let PostContent = {
-        ID:1,
-        User_id : formData.get("user_id"),
-        Category_id:1,
-        Title :formData.get("title"),
-        Content :formData.get("content"),
-     
-        Cat  : Array.from(formData.getAll("cat")).map(Number),
-        ImageName: formData.get("postimage").name,
-        ImageType: formData.get("postimage").type,
-        ImageSize: formData.get("postimage").size,
+   
+    let postContent = {
+        User_id: parseInt(formData.get("user_id")),    
+        Title: formData.get("title"),
+        Content: formData.get("content"),     
+        Category: Array.from(formData.getAll("cat")).map(Number),
     }
-  
     
-    try {
-        const response = await fetch('http://localhost:8081/createPost', {
+    let file = document.querySelector('input[type="file"]').files[0];
+    let reader = new FileReader();
+
+    reader.onloadend = function() {
+        let base64File = reader.result
+        console.log(base64File)
+        if (file) {
+            postContent.Image = base64File;
+        }
+
+        fetch('http://localhost:8081/createPost', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json', 
             },
-            body: JSON.stringify(PostContent),
-        });
-        
-        if (response.ok) {
-            postform.style.display='none'
-            console.log("it's match")
-            
-        } else {
-           
-                console.log("not match")
-                const data = await response.json();
-                switch (data['error_class']) {
-                  case 'categoryNofound':
-                    let errCategorie = document.querySelector(".messageErrorCategorie");
-                    errCategorie.innerHTML = data['message'];
-                    setTimeout(() => {
-                      errCategorie.innerHTML = '';
-                    }, 5000);
-                    break;
-                  case 'titleNoFound':
-                    let errTitle = document.querySelector(".messageErrorTitle");
-                    errTitle.innerHTML = data['message'];
-                    setTimeout(() => {
-                      errTitle.innerHTML = '';
-                    }, 5000);
-                    break;
-                  case 'contentNofound':
-                    let errContent = document.querySelector(".messageErrorContent");
-                    
-                    errContent.innerHTML = data['message'];
-                    setTimeout(() => {
-                      errContent.innerHTML = '';
-                    }, 5000);
-                    break;
+            body: JSON.stringify(postContent),
+        })
+        .then(response => {
+            if (response.ok) {
+                postform.style.display = 'none';
+                console.log("it's a match");
+            } else {
+                return response.json();
+            }
+        })
+        .then(errorResponse => {
+            if (errorResponse) {
+                console.log("not a match");
+                
+                switch (errorResponse ['error_class']) {
+                    case 'categoryNofound':
+                        showError(".messageErrorCategorie", errorResponse['message']);
+                        break;
+                    case 'titleNoFound':
+                        showError(".messageErrorTitle", errorResponse['message']);
+                        break;
+                    case 'contentNofound':
+                        showError(".messageErrorContent", errorResponse['message']);
+                        break;
+                    case 'imageNoCorrect':
+                        showError(".messageErrorImage", errorResponse['message']);
+                        break;
+                    default:
+                        console.error('Erreur inattendue:', errorResponse);
                 }
-               
-        }
-    } catch (error) {
-        console.error('Erreur lors de la création de l\'utilisateur:', error);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la création de l\'utilisateur:', error);
+        });
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        reader.onloadend();
     }
- }
+}
+
+function showError(selector, message) {
+    let errorElement = document.querySelector(selector);
+    errorElement.innerHTML = message;
+    setTimeout(() => {
+        errorElement.innerHTML = '';
+    }, 5000);
+}
+

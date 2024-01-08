@@ -55,8 +55,9 @@ export function postForm(container, userId){
             </div>
             
             <div class="input-form-m">
+            <div><span class="errorStyle messageErrorImage"></span></div> 
                 <label for="postimage"> <i class="fa-solid fa-images green"></i> Image</label>
-                <input type="file" name="postimage" id="postimage" onchange="ValideFile()">
+                <input type="file" name="postimage" id="postimage">
                 <div id="imgfile"></div>
             </div>
     
@@ -73,5 +74,69 @@ export function postForm(container, userId){
 `
 }
 
+
+export function fetchPosthtml(postImage, friendName, postTime, postText, likeCount, commentCount, shareCount, profileImage) {
+    return `
+      <div class="friends_post">
+          <div class="friend_post_top">
+              <div class="img_and_name">
+                  <img src="${postImage}">
+                  <div class="friends_name">
+                      <p class="friends_name">
+                          ${friendName}
+                      </p>
+                      
+                      <p class="time">${postTime}<i class="fa-solid fa-user-group"></i></p>
+                  </div>
+              </div>
+              <div class="menu">
+                  <i class="fa-solid fa-ellipsis"></i>
+              </div>
+          </div>
+          <div>
+              <p>${postText}</p>
+              <br></br>
+          </div>
+          <img src="${postImage}">
+          <div class="info">
+              <div class="emoji_img">
+                  <img src="/assets/image/like.png">
+                  <img src="/assets/image/haha.png">
+                  <img src="/assets/image/heart.png">
+                  <p>${likeCount}</p>
+              </div>
+              <div class="comment">
+                  <p>${commentCount} Comments</p>
+                  <p>${shareCount} Shares</p>
+              </div>
+          </div>
+          <hr>
+          <div class="like">
+              <div class="like_icon">
+                  <i class="fa-solid fa-thumbs-up activi"></i>
+                  <p>Like</p>
+              </div>
+              <div class="like_icon">
+                  <i class="fa-solid fa-message"></i>
+                  <p>Comments</p>
+              </div>
+              <div class="like_icon">
+                  <i class="fa-solid fa-share"></i>
+                  <p>Share</p>
+              </div>
+          </div>
+          <hr>
+          <div class="comment_warpper">
+              <img src="${profileImage}">
+              <div class="circle"></div>
+              <div class="comment_search">
+                  <input type="text" placeholder="Write a comment">
+                  <i class="fa-regular fa-face-smile"></i>
+                  <i class="fa-solid fa-camera"></i>
+                  <i class="fa-regular fa-note-sticky"></i>
+              </div>
+          </div>
+      </div>`;
+  }
 
 // onchange="ValideFile()"
