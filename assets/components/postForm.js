@@ -75,7 +75,11 @@ export function postForm(container, userId){
 }
 
 
-export function fetchPosthtml(postImage, friendName, postTime, postText, likeCount, commentCount, shareCount, profileImage) {
+export function fetchPosthtml(postImage, friendName, postTime, postText, likeCount, commentCount, title, category) {
+   
+    let categoryHtml = category.map(cat => `<h2>${cat}</h2>`).join('');
+    let imageHtml = (postImage!=='./assets/imageUpload/') ? `<img src="${postImage}">` : '';
+
     return `
       <div class="friends_post">
           <div class="friend_post_top">
@@ -94,14 +98,21 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
                   </div>
               </div>
               <div class="menu">
-                  <i class="fa-solid fa-ellipsis"></i>
+                   
+                    ${categoryHtml}
+            
+                 
               </div>
+
           </div>
+          
           <div>
+             <h1 style="font-size:20px">${title}</h1>
+             <br></br>
               <p>${postText}</p>
               <br></br>
           </div>
-          <img src="${postImage}">
+          ${imageHtml}
           <div class="info">
               <div class="emoji_img">
                   <img src="/assets/image/like.png">
@@ -135,7 +146,7 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
           </div>
         
           
-
+              
             
               <div class="comment_search">
                   <input type="text" placeholder="Write a comment">
@@ -148,3 +159,15 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
   }
 
 // onchange="ValideFile()"
+
+function generateMenu(categories) {
+    let menuHtml = '<div class="menu">';
+    categories.forEach((category) => {
+        menuHtml += `<h2>${category}</h2>`;
+    });
+    menuHtml += '</div>';
+    return menuHtml;
+ }
+ 
+//  let categories = ['Education', 'Technology', 'Art'];
+//  console.log(generateMenu(categories));

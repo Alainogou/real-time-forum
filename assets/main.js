@@ -91,7 +91,7 @@ function handleSuccessfulLogin(data) {
     .then(response => response.json())
     .then(data => {
         
-        console.log("mes post ", data[0]);
+        // postImage, friendName, postTime, postText, likeCount, commentCount, title, category
         
 
         for (let i=0; i<data.length;i++){
@@ -104,9 +104,10 @@ function handleSuccessfulLogin(data) {
                 data[i].Content,
                 data[i].Nbrlike + ' Likes',
                 data[i].NbrComments,      
-                '1.3K',
+                data[i].Title,
+               
+                data[i].Category,
                 
-                // './assets/imageUpload/'+data[i].ImageName
             );
             essai.innerHTML=postHtml
             center.appendChild(essai)
