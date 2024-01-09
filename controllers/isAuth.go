@@ -41,6 +41,9 @@ func IsAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func Auth(Db *sql.DB, w http.ResponseWriter, r *http.Request) (bool, string) {
+	post := models.Post{}
+	str, err := post.GetAllPosts(DB)
+	fmt.Println(str, err)
 
 	sessionpi, err := r.Cookie("sessionid")
 	if err != nil || sessionpi.String() == "" {

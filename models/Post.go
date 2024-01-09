@@ -3,17 +3,15 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	
-	
 )
 
 type Post struct {
-	ID          int       
-	User_id     int      
-	Title       string    
-	Content     string    
-	ImageName       string    
-	Category    []int    
+	ID        int
+	User_id   int
+	Title     string
+	Content   string
+	ImageName string
+	Category  []int
 }
 type UserData struct {
 	Datas  interface{}
@@ -27,53 +25,50 @@ type UserData struct {
 }
 
 type AllPost struct {
-	OnePost     Post
-	Poster      User
-	Nbrlike     int
-	NbrDislike  int
-	NbrComments int
+	Post_id     int      `json:"Post_id"`
+	Title       string   `json:"Title"`
+	Content     string   `json:"Content"`
+	ImageName   string   `json:"ImageName"`
+	NickName    string   `json:"NickName"`
+	User_id     int      `json:"User_id"`
+	Nbrlike     int      `json:"Nbrlike"`
+	NbrComments int      `json:"NbrComments"`
+	Category    []string `json:"Category"`
 }
 
-// func (post *Post) GetAllPosts(db *sql.DB, pagination Pagination, cat_id string) ([]AllPost, error) {
-// 	Allpost := []AllPost{}
-// 	var err error
-// 	var row *sql.Rows
-// 	Cat_idd, errconv := strconv.Atoi(cat_id)
-// 	if cat_id != "" && errconv == nil {
+func (post *Post) GetAllPosts(db *sql.DB) ([]AllPost, error) {
+	Allpost := []AllPost{}
+	var err error
+	var row *sql.Rows
 
-// 		req := `SELECT p.id, p.title,p.content,p.image,p."date", u.username,
-// 		( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "like"=1) as "likes",
-// 		( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "dislike"=1) as "dislikes",
-// 		( SELECT count(*) FROM "Comment" "c" WHERE p.id=c."Pos_id" ) as "Comments"
-// 		FROM "Post" p
-// 		LEFT JOIN "Post_Category" pt on  pt."Pos_id"=p.id
-// 		JOIN "User" "u" ON p.Use_id = u.id  where pt."Cat_id"=? ORDER BY p.id DESC LIMIT $1 OFFSET $2`
+	req := `SELECT p.id, p.title, p.content, p.imgUrl, u.nickName, u.id,
+					( SELECT count(*) FROM "user_post_reaction" "a" WHERE p.id=a."postId" AND isLiked) as "liked",
+					( SELECT count(*) FROM "comment" "c" WHERE p.id=c."postId" ) as "Comments"
+				FROM "Post" "p"
+				JOIN "User" "u" ON p.userId = u.id ORDER BY p.id DESC;
+				`
+	row, err = db.Query(req)
 
-// 		row, err = db.Query(req, Cat_idd, pagination.Limit(), pagination.Offset())
-// 	} else {
-// 		req := `SELECT p.id, p.title,p.content,p.image, p."date", u.username,
-// 					( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "like"=1) as "likes",
-// 					( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "dislike"=1) as "dislikes",
-// 					( SELECT count(*) FROM "Comment" "c" WHERE p.id=c."Pos_id" ) as "Comments"
-// 				FROM "Post" "p"
-// 				JOIN "User" "u" ON p.Use_id = u.id ORDER BY p.id DESC LIMIT $1 OFFSET $2;
-// 				`
-// 		row, err = db.Query(req, pagination.Limit(), pagination.Offset())
-// 	}
+	if err != nil {
+		fmt.Println("eer", err)
+		return []AllPost{}, err
+	}
 
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return []AllPost{}, err
-// 	}
-// 	for row.Next() {
-// 		user := User{}
-// 		OnePosts := AllPost{Poster: user, OnePost: *post}
-// 		row.Scan(&OnePosts.OnePost.ID, &OnePosts.OnePost.Title, &OnePosts.OnePost.Content, &OnePosts.OnePost.Image, &OnePosts.OnePost.Date, &OnePosts.Poster.NickName, &OnePosts.Nbrlike, &OnePosts.NbrDislike, &OnePosts.NbrComments)
-// 		Allpost = append(Allpost, OnePosts)
-// 	}
-// 	return Allpost, row.Err()
-// }
+	for row.Next() {
 
+		OnePosts := AllPost{}
+
+		row.Scan(&OnePosts.Post_id, &OnePosts.Title, &OnePosts.Content, &OnePosts.ImageName, &OnePosts.NickName, &OnePosts.User_id, &OnePosts.Nbrlike, &OnePosts.NbrComments)
+		category := Category{}
+		err = category.GetCategory(db, OnePosts.Post_id)
+		if err != nil {
+			fmt.Println("err lors avec GetCAt")
+		}
+		OnePosts.Category = category.Name
+		Allpost = append(Allpost, OnePosts)
+	}
+	return Allpost, row.Err()
+}
 
 func (post *Post) InsertPost(db *sql.DB) error {
 	req := `INSERT INTO post ( userId,title,content, imgUrl) VALUES (?,?,?,?)`
@@ -84,7 +79,7 @@ func (post *Post) InsertPost(db *sql.DB) error {
 	}
 
 	i, errres := data.LastInsertId()
-	if errres != nil {	
+	if errres != nil {
 		fmt.Println(errres)
 		return errres
 	}
@@ -97,12 +92,12 @@ func (post *Post) InsertPost(db *sql.DB) error {
 		}
 	}
 	return nil
-	
+
 }
 
 // func (post *Post) GetOnPostComment(db *sql.DB, id int) (AllPost, error) {
 // 	Allpost := AllPost{}
-// 	req := `SELECT p.id,p.title,p.content,p.image,p."date",u.username, 
+// 	req := `SELECT p.id,p.title,p.content,p.image,p."date",u.username,
 // 	( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND a.like=1) as "likes",
 // 	( SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND a.dislike=1) as "dislikes"
 // 	 FROM "Post" "p" inner JOIN "User" "u" ON p."Use_id"=u.id WHERE p.id=? ORDER BY p.id DESC`
@@ -130,7 +125,7 @@ func (post *Post) InsertPost(db *sql.DB) error {
 // 	Cat_idd, errconv := strconv.Atoi(cat_id)
 // 	if cat_id != "" && errconv == nil {
 
-// 		req := `SELECT p.id, p.title,p.content,p.image,p."date",u.username, 
+// 		req := `SELECT p.id, p.title,p.content,p.image,p."date",u.username,
 // 		(SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "like"=1) as "likes",
 // 		(SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "dislike"=1) as "dislikes",
 // 		(SELECT count(*) FROM "Comment" "c" WHERE p.id=c."Pos_id" ) as "Comments"
@@ -140,7 +135,7 @@ func (post *Post) InsertPost(db *sql.DB) error {
 // 				WHERE u.id =?  and pt."Cat_id"=? ORDER BY p.id DESC LIMIT $1 OFFSET $2`
 // 		row, err = db.Query(req, user.Id, Cat_idd, pagination.Limit(), pagination.Offset())
 // 	} else {
-// 		req := `SELECT p.id, p.title,p.content,p.image,p."date",u.username, 
+// 		req := `SELECT p.id, p.title,p.content,p.image,p."date",u.username,
 // 			(SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "like"=1) as "likes",
 // 			(SELECT count(*) FROM "Appreciation" "a" WHERE p.id=a."Pos_id" AND "dislike"=1) as "dislikes",
 // 			(SELECT count(*) FROM "Comment" "c" WHERE p.id=c."Pos_id" ) as "Comments"

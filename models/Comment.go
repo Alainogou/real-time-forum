@@ -39,7 +39,6 @@ func (Com *Comment) GetComments(db *sql.DB, post_id int) ([]Comment, error) {
 	return comments, row.Err()
 }
 
-
 func (Com *Comment) InsertComments(db *sql.DB, post_id, user_id int, content string) error {
 	req := `INSERT INTO Comment (Use_id,Pos_id,content) VALUES(?,?,?);`
 	_, errr := db.Exec(req, user_id, post_id, content)

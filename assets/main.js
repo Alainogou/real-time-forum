@@ -87,26 +87,45 @@ function handleSuccessfulLogin(data) {
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
 
-   
+    fetch('http://localhost:8081/fetchPost')
+    .then(response => response.json())
+    .then(data => {
+        
+        console.log("mes post ", data[0]);
+        
+
+        for (let i=0; i<data.length;i++){
+
+            let essai=document.createElement('div');
+            const postHtml = fetchPosthtml(
+                './assets/imageUpload/'+data[i].ImageName,
+                data[i].NickName,
+                '16h.',
+                data[i].Content,
+                data[i].Nbrlike + ' Likes',
+                data[i].NbrComments,      
+                '1.3K',
+                
+                // './assets/imageUpload/'+data[i].ImageName
+            );
+            essai.innerHTML=postHtml
+            center.appendChild(essai)
+        }
+        // if (data.IsAuth){
+           
+        
+        // }else{
+             
+         
+        // }   
+       
+    
+    })
+    .catch(error => console.error('Erreur:', error));
+
 
     let postform= document.createElement('div')
 
-    for (let i=0; i<1;i++){
-
-       let essai=document.createElement('div');
-       const postHtml = fetchPosthtml(
-           `/assets/image/post_${i+1}.jpg`,
-           'Senuda De Silva',
-           '16h.',
-           'I have been developing, updating, and supporting this extension for over three years...',
-           'You, Charith Disanayaka and 25K others',
-           '421',
-           '1.3K',
-           '/assets/image/profile.png'
-       );
-       essai.innerHTML=postHtml
-       center.appendChild(essai)
-   }
 
     
     main.appendChild(center)

@@ -76,6 +76,7 @@ func main() {
 	http.HandleFunc("/logout", controllers.LogoutUser)
 	http.HandleFunc("/createPost", controllers.CreatePost)
 	http.HandleFunc("/Posts/", controllers.Posts)
+	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	fmt.Println("Server running on http://localhost" + Port)
 
 	handler := cors.Default().Handler(http.DefaultServeMux)

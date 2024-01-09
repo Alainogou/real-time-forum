@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -19,16 +19,16 @@ func Posts(w http.ResponseWriter, r *http.Request) {
 }
 
 type PostContent struct {
-	User_id     int `json:"User_id"`
-	Title       string `json:"Title"`
-	Content     string `json:"Content"`
-	Category    []int  `json:"Category"`
-	Image  		string `json:"Image"`
-	
+	User_id  int    `json:"User_id"`
+	Title    string `json:"Title"`
+	Content  string `json:"Content"`
+	Category []int  `json:"Category"`
+	Image    string `json:"Image"`
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
 	post := models.Post{}
+
 	var newPost PostContent
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -45,7 +45,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
 	if newPost.Title == "" {
 		Error = " Please Enter a title"
 		errorResponse := ErrorResponse{
@@ -56,7 +55,6 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		sendReponseError(w, errorResponse, http.StatusBadRequest)
 		return
 	}
-	
 
 	if len(newPost.Category) == 0 {
 		Error = " Please choose a category"
@@ -79,15 +77,12 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
-	
 	if newPost.Image != "" {
 
-
 		imageType := strings.SplitN(newPost.Image, ";", 2)[0][5:]
-		ext:=imageType[6:]
+		ext := imageType[6:]
 
-		if !CheckExtension(imageType){
+		if !CheckExtension(imageType) {
 			Error = "image type incorrect (jpeg, jpg, png, gif)"
 			errorResponse := ErrorResponse{
 				Message:    Error,
@@ -107,9 +102,9 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 				ErrorClass: "internalError",
 				Code:       http.StatusBadRequest,
 			}
-			sendReponseError(w, errorResponse,  http.StatusInternalServerError)
+			sendReponseError(w, errorResponse, http.StatusInternalServerError)
 			return
-			
+
 		}
 
 		if len(imageData)/1000000 >= 20 {
@@ -122,13 +117,12 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 			sendReponseError(w, errorResponse, http.StatusBadRequest)
 			return
 		}
-		
-		
+
 		// Supprimez les espaces blancs
 		newPost.Image = strings.ReplaceAll(newPost.Image, " ", "")
 
 		// Créez le chemin du fichier
-		filename:= fmt.Sprintf("%d-postImage.%s", time.Now().UnixNano(), ext)
+		filename := fmt.Sprintf("%d-postImage.%s", time.Now().UnixNano(), ext)
 		// Écrivez les données décodées dans un fichier
 		err = ioutil.WriteFile("./assets/imageUpload/"+filename, imageData, 0644)
 		if err != nil {
@@ -138,51 +132,45 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 				ErrorClass: "internalError",
 				Code:       http.StatusBadRequest,
 			}
-			sendReponseError(w, errorResponse,  http.StatusInternalServerError)
+			sendReponseError(w, errorResponse, http.StatusInternalServerError)
 			return
-			
+
 		}
-	
-		post =models.Post{
-			
-			User_id: newPost.User_id,
-			Title:  newPost.Title,
-			Content: newPost.Content,
+
+		post = models.Post{
+
+			User_id:   newPost.User_id,
+			Title:     newPost.Title,
+			Content:   newPost.Content,
 			ImageName: filename,
-			Category: newPost.Category,
-		 }
-		 
+			Category:  newPost.Category,
+		}
 
-	}else{
+	} else {
 
-		post =models.Post{
-			User_id: newPost.User_id,
-			Title:  newPost.Title,
-			Content: newPost.Content,
+		post = models.Post{
+			User_id:  newPost.User_id,
+			Title:    newPost.Title,
+			Content:  newPost.Content,
 			Category: newPost.Category,
-		 }
-		
+		}
 
 	}
-	
+
 	errpos := post.InsertPost(DB)
-	
-	if errpos!=nil{
-		fmt.Println(errpos)
-			
-				// helper.ErrorPage(w, 404)
-		return
-			
-	}
-	
 
+	if errpos != nil {
+		fmt.Println(errpos)
+
+		// helper.ErrorPage(w, 404)
+		return
+
+	}
 
 }
 
-
-
 func CheckExtension(ext string) bool {
-	extensions := []string{"image/jpeg", "image/png", "image/gif","image/jpg"}
+	extensions := []string{"image/jpeg", "image/png", "image/gif", "image/jpg"}
 	for _, validExt := range extensions {
 		if strings.ToLower(ext) == validExt {
 			return true

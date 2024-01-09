@@ -15,7 +15,6 @@ import (
 type Data struct {
 	Datas     interface{}
 	IsAuth    bool
-	Cats      models.CatPost
 	Pagin     models.Metadata
 	User      models.User
 	CurrenCat int
@@ -135,79 +134,115 @@ func ParseCatId(cat []string) ([]int, error) {
 	return catid, nil
 }
 
-func GetData(r *http.Request, db *sql.DB, f func(*sql.DB, models.Pagination, string) ([]models.AllPost, error), pagination models.Pagination, w http.ResponseWriter, isAuth bool, metadata models.Metadata, user models.User) (Data, error) {
-	var category models.Category
-	// CatPost:=models.CatPost{}
-	Cat, errcookie := r.Cookie("cat")
-	Cats := ""
-	if errcookie == nil {
-		Cats = Cat.Value
-	}
-	data, errs := f(db, pagination, Cats)
-	if errs != nil {
-		return Data{}, errs
-	}
+// func GetAllPosts(db *sql.DB) ([]models.AllPost, error) {
+// 	allpost := []models.AllPost{}
+// 	var err error
+// 	var row *sql.Rows
 
-	categories, errc := category.GetCategory(db)
-	if errc != nil {
-		return Data{}, errc
-	}
-	Data := Data{Datas: data, IsAuth: isAuth, Cats: categories, Pagin: metadata, User: user}
-	return Data, nil
-}
+// 	req := `SELECT p.id, p.title, p.content, p.imgUrl, u.nickName,
+// 					( SELECT count(*) FROM "user_post_reaction" "a" WHERE p.id=a."postId" AND isLiked) as "liked",
+// 					( SELECT count(*) FROM "comment" "c" WHERE p.id=c."postId" ) as "Comments"
+// 				FROM "Post" "p"
+// 				JOIN "User" "u" ON p.userId = u.id ORDER BY p.id DESC;
+// 				`
+// 	row, err = db.Query(req)
 
-func SetPagination(db *sql.DB, r *http.Request, user models.User, query string) (models.Pagination, models.Metadata, error) {
-	pageParam := r.URL.Query().Get("page")
-	if pageParam == "" {
-		pageParam = "1"
-	}
-	var err error
-	models.ActualPage, err = strconv.Atoi(pageParam)
-	if err != nil || models.ActualPage <= 0 {
-		models.ActualPage = 1
-	}
-	pagination := models.Pagination{
-		PageSize: 6,
-		Page:     models.ActualPage,
-	}
-	totalRecords, err := models.GetTotalRecords(query, user, db)
-	if err != nil {
-		return models.Pagination{}, models.Metadata{}, err
-	}
-	metadata := models.GetMetadata(totalRecords, pagination.Page, pagination.PageSize)
-	if pagination.Page > metadata.LastPage {
-		pagination.Page = metadata.LastPage
-		metadata.CurrentPage = pagination.Page
-	}
-	return pagination, metadata, nil
-}
+// 	if err != nil {
+// 		fmt.Println("eer", err)
+// 		return allpost, err
+// 	}
 
-func GetFilterCat(ListPost_id []int, posts []models.AllPost) []models.AllPost {
-	FilterPosts := []models.AllPost{}
-	if len(ListPost_id) > 0 {
-		for _, v := range posts {
-			fmt.Println(v.OnePost.ID)
-			for _, y := range ListPost_id {
-				if v.OnePost.ID == y {
-					FilterPosts = append(FilterPosts, v)
-					break
-				}
-			}
-		}
-		return FilterPosts
-	}
-	return posts
-}
+// 	for row.Next() {
 
-func List_posts_id(db *sql.DB, cat_id string) []int {
-	caId, err := strconv.Atoi(cat_id)
-	if err != nil {
-		return []int{}
-	}
-	categorie := models.Category{}
-	ListPost_id, errPost := categorie.Post_id(db, caId)
-	if errPost != nil {
-		return []int{}
-	}
-	return ListPost_id
-}
+// 		user := models.User{}
+// 		OnePosts := models.AllPost{Poster: user, OnePost: models.Post{}}
+
+// 		row.Scan(&OnePosts.OnePost.ID, &OnePosts.OnePost.Title, &OnePosts.OnePost.Content, &OnePosts.OnePost.ImageName, &OnePosts.Poster.NickName, &OnePosts.Nbrlike, &OnePosts.NbrComments)
+
+// 		category := models.Category{}
+// 		err = category.GetCategory(db, OnePosts.OnePost.ID)
+// 		if err != nil {
+// 			fmt.Println("err lors avec GetCAt")
+// 		}
+// 		OnePosts.Category = category.Name
+// 		allpost = append(allpost, OnePosts)
+// 	}
+// 	return allpost, row.Err()
+// }
+
+// func GetData(r *http.Request, db *sql.DB, f func(*sql.DB, models.Pagination, string) ([]models.AllPost, error), pagination models.Pagination, w http.ResponseWriter, isAuth bool, metadata models.Metadata, user models.User) (Data, error) {
+// 	var category models.Category
+// 	// CatPost:=models.CatPost{}
+// 	Cat, errcookie := r.Cookie("cat")
+// 	Cats := ""
+// 	if errcookie == nil {
+// 		Cats = Cat.Value
+// 	}
+// 	data, errs := f(db, pagination, Cats)
+// 	if errs != nil {
+// 		return Data{}, errs
+// 	}
+
+// 	categories, errc := category.GetCategory(db)
+// 	if errc != nil {
+// 		return Data{}, errc
+// 	}
+// 	Data := Data{Datas: data, IsAuth: isAuth, Cats: categories, Pagin: metadata, User: user}
+// 	return Data, nil
+// }
+
+// func SetPagination(db *sql.DB, r *http.Request, user models.User, query string) (models.Pagination, models.Metadata, error) {
+// 	pageParam := r.URL.Query().Get("page")
+// 	if pageParam == "" {
+// 		pageParam = "1"
+// 	}
+// 	var err error
+// 	models.ActualPage, err = strconv.Atoi(pageParam)
+// 	if err != nil || models.ActualPage <= 0 {
+// 		models.ActualPage = 1
+// 	}
+// 	pagination := models.Pagination{
+// 		PageSize: 6,
+// 		Page:     models.ActualPage,
+// 	}
+// 	totalRecords, err := models.GetTotalRecords(query, user, db)
+// 	if err != nil {
+// 		return models.Pagination{}, models.Metadata{}, err
+// 	}
+// 	metadata := models.GetMetadata(totalRecords, pagination.Page, pagination.PageSize)
+// 	if pagination.Page > metadata.LastPage {
+// 		pagination.Page = metadata.LastPage
+// 		metadata.CurrentPage = pagination.Page
+// 	}
+// 	return pagination, metadata, nil
+// }
+
+// func GetFilterCat(ListPost_id []int, posts []models.AllPost) []models.AllPost {
+// 	FilterPosts := []models.AllPost{}
+// 	if len(ListPost_id) > 0 {
+// 		for _, v := range posts {
+// 			fmt.Println(v.OnePost.ID)
+// 			for _, y := range ListPost_id {
+// 				if v.OnePost.ID == y {
+// 					FilterPosts = append(FilterPosts, v)
+// 					break
+// 				}
+// 			}
+// 		}
+// 		return FilterPosts
+// 	}
+// 	return posts
+// }
+
+// func List_posts_id(db *sql.DB, cat_id string) []int {
+// 	caId, err := strconv.Atoi(cat_id)
+// 	if err != nil {
+// 		return []int{}
+// 	}
+// 	categorie := models.Category{}
+// 	ListPost_id, errPost := categorie.Post_id(db, caId)
+// 	if errPost != nil {
+// 		return []int{}
+// 	}
+// 	return ListPost_id
+// }

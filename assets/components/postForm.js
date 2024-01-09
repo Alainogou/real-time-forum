@@ -80,7 +80,11 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
       <div class="friends_post">
           <div class="friend_post_top">
               <div class="img_and_name">
-                  <img src="${postImage}">
+                 
+              <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+              <i class="fa-solid fa-user" ></i>
+              </div>
+             
                   <div class="friends_name">
                       <p class="friends_name">
                           ${friendName}
@@ -107,7 +111,7 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
               </div>
               <div class="comment">
                   <p>${commentCount} Comments</p>
-                  <p>${shareCount} Shares</p>
+                
               </div>
           </div>
           <hr>
@@ -120,15 +124,19 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
                   <i class="fa-solid fa-message"></i>
                   <p>Comments</p>
               </div>
-              <div class="like_icon">
-                  <i class="fa-solid fa-share"></i>
-                  <p>Share</p>
-              </div>
+            
           </div>
           <hr>
           <div class="comment_warpper">
-              <img src="${profileImage}">
-              <div class="circle"></div>
+          
+          <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+          <i class="fa-solid fa-user" ></i>
+         
+          </div>
+        
+          
+
+            
               <div class="comment_search">
                   <input type="text" placeholder="Write a comment">
                   <i class="fa-regular fa-face-smile"></i>
