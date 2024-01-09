@@ -45,9 +45,10 @@ export function postForm(container, userId){
                 <details>
                     <summary>Categories</summary>
                     <ul>
-                            <label><input type="checkbox" name="cat" value="1" />Education</label>
-                            <label><input type="checkbox" name="cat" value="2" />Games</label>
-                            <label><input type="checkbox" name="cat" value="3" />Education</label>
+                            <label><input type="checkbox" name="cat" value="1" />Sport</label>
+                            <label><input type="checkbox" name="cat" value="2" />Art</label>
+                            <label><input type="checkbox" name="cat" value="3" />Informatics</label>
+                            <label><input type="checkbox" name="cat" value="4" />Religion</label>
                             <label><input type="checkbox" name="cat" value="4" />Games</label>
 
                     </ul>

@@ -135,6 +135,9 @@ function handleSuccessfulLogin(data) {
     let showPostForm= document.querySelector(".showPostForm")
     if (showPostForm) showPostForm.addEventListener("click", function(event){
         postform.style.display='block'
+
+        postform.style.position = "relative"
+        postform.style.top = "0px"
         postForm(postform, data.User.Id)
 
         let closeForm=document.querySelector(".btn-close")
