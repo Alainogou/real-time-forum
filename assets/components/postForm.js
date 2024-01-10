@@ -32,7 +32,7 @@ export function postForm(container, userId){
 
         </div>
 
-        <form  enctype="multipart/form-data"  class="form-modal" id='postForm'>
+        <form  enctype="multipart/form-data"  class="form-modal" id='postForm' >
             <input type="hidden" name="user_id" value="${userId}">
             <div class="input-form-m">
             <div><span class="errorStyle messageErrorTitle"></span></div> 
@@ -132,30 +132,17 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
                   <i class="fa-solid fa-thumbs-up activi"></i>
                   <p>Like</p>
               </div>
-              <div class="like_icon">
+              <div class="like_icon commentButton">
                   <i class="fa-solid fa-message"></i>
                   <p>Comments</p>
               </div>
             
           </div>
-          <hr>
-          <div class="comment_warpper">
           
-          <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-          <i class="fa-solid fa-user" ></i>
-         
+          <div class="addComment">
+
           </div>
-        
-          
-              
-            
-              <div class="comment_search">
-                  <input type="text" placeholder="Write a comment">
-                  <i class="fa-regular fa-face-smile"></i>
-                  <i class="fa-solid fa-camera"></i>
-                  <i class="fa-regular fa-note-sticky"></i>
-              </div>
-          </div>
+
       </div>`;
   }
 

@@ -44,24 +44,24 @@ export const displayCategories=(container, firstName, lastName)=>{
         <h2>Categories</h2>
         
         <div class="shortcuts">
-            <img src="/assets/image/shortcuts_1.png">
-            <p>MOBILE GAMES</p>
+            <img src="/assets/image/sport.avif">
+            <p>Sport</p>
         </div>
         <div class="shortcuts">
-            <img src="/assets/image/shortcuts_2.jpeg">
-            <p>Online Education</p>
+            <img src="/assets/image/art.avif">
+            <p>Art</p>
         </div>
         <div class="shortcuts">
-            <img src="/assets/image/shortcuts_3.webp">
-            <p>Food Lovers</p>
+            <img src="/assets/image/informatique.avif">
+            <p>Informatics</p>
         </div>
         <div class="shortcuts">
-            <img src="/assets/image/shortcuts_4.png">
-            <p>Social Media Academy</p>
+            <img src="/assets/image/religion.avif">
+            <p>Religion</p>
         </div>
         <div class="shortcuts">
-            <img src="/assets/image/shortcuts_5.webp">
-            <p>PC Shop</p>
+            <img src="/assets/image/game.avif">
+            <p>Game</p>
         </div>
         
     </div>`

@@ -111,7 +111,22 @@ function handleSuccessfulLogin(data) {
             );
             essai.innerHTML=postHtml
             center.appendChild(essai)
+          
         }
+      
+        let addComment = document.querySelector('.addComment');
+
+        
+
+        let commentButton = document.querySelector('.commentButton');
+        console.log("commentButton", commentButton);
+
+        commentButton.addEventListener("click",()=>{
+            addComment.innerText ="asss"
+        })
+
+
+       
         // if (data.IsAuth){
            
         
@@ -128,7 +143,8 @@ function handleSuccessfulLogin(data) {
     let postform= document.createElement('div')
 
 
-    
+
+
     main.appendChild(center)
     app.appendChild(postform)
     app.appendChild(main);

@@ -14,9 +14,7 @@ import (
 
 var Datas = models.UserData{}
 
-func Posts(w http.ResponseWriter, r *http.Request) {
 
-}
 
 type PostContent struct {
 	User_id  int    `json:"User_id"`

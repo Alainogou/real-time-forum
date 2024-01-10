@@ -18,7 +18,7 @@ type Comment struct {
 
 func (Com *Comment) GetComments(db *sql.DB, post_id int) ([]Comment, error) {
 
-	req := `SELECT c.id,c.content,u.username,(SELECT count(id)  FROM "Appreciation" a  WHERE a."Com_id"=c.id AND like =1 ) as like,
+	req := `SELECT c.id,c.content,u.Nickname,(SELECT count(id)  FROM "Appreciation" a  WHERE a."Com_id"=c.id AND like =1 ) as like,
 	(SELECT count(id)  FROM "Appreciation" a  WHERE a."Com_id"=c.id AND dislike =1 ) as dislike
 	FROM "Comment" c 
 	INNER JOIN "User" u on c."Use_id"=u.id  WHERE c."Pos_id"=?;`
