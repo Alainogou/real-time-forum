@@ -2,16 +2,15 @@ package controllers
 
 import (
 	"fmt"
-	// "realtimeforum/models"
+	"realtimeforum/models"
 	"encoding/json"
-
 	"io/ioutil"
 	"net/http"
 	
 )
 
 type CommentJson struct {
-	User_id int `json:"User_id"`
+	UserId int `json:"UserId"`
 	Post_id		int  `json:"Post_id"`
 	Content       string `json:"Content"`
 	
@@ -31,7 +30,20 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 	}
 	err = json.Unmarshal(reqBody, &comments)
-	fmt.Println(comments)
+	fmt.Println("alo",comments)
+
+
+	if len(comments.Content)==0{
+		Error = "content is empty"
+		errorResponse := ErrorResponse{
+			Message:    Error,
+			ErrorClass: "emptycomment",
+			Code:       http.StatusBadRequest,
+		}
+		sendReponseError(w, errorResponse, http.StatusBadRequest)
+		return
+	}
+
 
 	// _, email := Auth(DB,w, r)
 	// user := models.User{}
@@ -50,15 +62,15 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// 	// helper.ErrorPage(w, 404)
 	// 	return
 	// }
-	// if len(comment) > 0 {
-	// 	com := models.Comment{}
-	// 	errinsert := com.InsertComments(DB, post_id, user.Id, comment)
+	
+		com := models.Comment{}
+		errinsert := com.InsertComments(DB, comments.Post_id, comments.UserId, comments.Content)
 
-	// 	if errinsert != nil {
-	// 		fmt.Println(errinsert)
-	// 		// helper.ErrorPage(w, 500)
-	// 		return
-	// 	}
-	// }
+		if errinsert != nil {
+			fmt.Println(errinsert)
+			// helper.ErrorPage(w, 500)
+			return
+		}
+	
 	// http.Redirect(w, r, "post/"+strconv.Itoa(post_id), 302)
 }

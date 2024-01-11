@@ -7,7 +7,7 @@ import (
 )
 
 func GetPosts(w http.ResponseWriter, r *http.Request) {
-
+	
 	post := models.Post{}
 
 	allpost, err := post.GetAllPosts(DB)

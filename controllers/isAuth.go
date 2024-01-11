@@ -18,6 +18,7 @@ type authInfo struct {
 }
 
 func IsAuth(w http.ResponseWriter, r *http.Request) {
+	
 
 	isConnect, email := Auth(DB, w, r)
 	userConnect := models.User{}

@@ -78,17 +78,18 @@ function loadNotFoundPage(container) {
 
 function handleComment(event, userId){
     event.preventDefault();
+    console.log('yes')
     
     const formData = new FormData(event.target);
    
     let newComment={
-        UserId :userId,
+        UserId :parseInt(userId),
         Content: formData.get("content"),
-        Post_id:formData.get("post_id"),
+        Post_id:parseInt(formData.get("post_id")),
         
     } 
     
-    fetch('http://localhost:8081/register', {
+    fetch('http://localhost:8081/createComment', {
         method: 'POST',
         headers: {
            'Content-Type': 'application/json', 
@@ -204,7 +205,7 @@ function handleSuccessfulLogin(data) {
                let postId = commentButton.querySelector('input[name="post_id"]').value;
               
                event.preventDefault();
-               renderCommentForm(addComment, data.User.Id, postId)
+               renderCommentForm(addComment, postId)
                
                if (addComment.style.display !== 'block') {
                    addComment.style.display = 'block';
@@ -212,9 +213,18 @@ function handleSuccessfulLogin(data) {
                    addComment.style.display = 'none';
                }
 
-                let comment=document.querySelector(`.submit-comment-${postId}`)
+                let commentForms=document.querySelector(`.commentform-${postId}`)
+                console.log(commentForms);
+
+                commentForms.addEventListener('submit', function(event) {
+                   
+                    handleComment(event, data.User.Id);
+                    console.log("comment", commentForms)
+
+                });
                 
-                console.log(comment)
+                
+                
            });
         }
         

@@ -1,4 +1,4 @@
-function renderCommentForm(container, userId, postId) {
+function renderCommentForm(container,  postId) {
     // Rendu du formulaire de commentaire
     container.innerHTML = `
         <hr>
@@ -11,13 +11,14 @@ function renderCommentForm(container, userId, postId) {
         
             </div>
             <div class="comment_search">
-                <form>
-                        <input type="hidden" name="post_id" value="${userId}">
-                        <input class="nc-ct" type="text" name="content" placeholder=    "write your comment here...">
+                <form  enctype="multipart/form-data" class="commentform-${postId}">
+                        <input type="hidden" name="post_id" value="${postId}">
+
+                        <input class="nc-ct" type="text" name="content" placeholder= "write your comment here...">
                         <div class="nc-cm-btn-p">
                         </br>
                          
-                        <button class="submit-comment-${postId}" type="submit"><i class="fa-solid fa-paper-plane"></i>Add comment</button>
+                        <button class="submit-comment" type="submit"><i class="fa-solid fa-paper-plane"></i>Add comment</button>
                         </div>
                 </form>
             </div>
@@ -33,10 +34,10 @@ function renderCommentForm(container, userId, postId) {
 export {renderCommentForm}
 
 
-{/* <div class="comment_search">
-<input type="text" name="commentText" placeholder="Write a comment">
-<input type="hidden" name="user_commented" value="${userId}">
+// {/* <div class="comment_search">
+// <input type="text" name="commentText" placeholder="Write a comment">
+// <input type="hidden" name="user_commented" value="${userId}">
 
-<i class="fa-solid fa-paper-plane"></i>  
+// <i class="fa-solid fa-paper-plane"></i>  
         
-</div> */}
+// </div> */}

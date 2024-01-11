@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"realtimeforum/controllers"
-
+	
 	"github.com/rs/cors"
 )
 
@@ -106,6 +106,7 @@ func main() {
 	// http.HandleFunc("/createPost", controllers.CommentPost)
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	http.HandleFunc("/createComment", controllers.CreateComment)
+	http.HandleFunc("/ ", controllers.GetComments)
 	
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
@@ -113,3 +114,5 @@ func main() {
 	defer controllers.DB.Close()
 
 }
+
+
