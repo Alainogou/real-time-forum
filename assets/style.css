@@ -784,6 +784,7 @@ nav .right  img{
 .main .center .friends_post .like .like_icon{
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .main .center .friends_post .like .like_icon i{
   font-size: 20px;
@@ -830,7 +831,7 @@ nav .right  img{
 }
 .main .center .friends_post .comment_warpper .comment_search i{
   padding: 0 5px;
-  color: #919191;
+  color: #1f1414;
 }
 .main .center .loard{
   display: flex;

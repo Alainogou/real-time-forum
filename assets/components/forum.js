@@ -28,6 +28,7 @@ export const headerPage=(container)=>{
     `
 }
 
+
 export const displayCategories=(container, firstName, lastName)=>{
     container.innerHTML=`
         <div class="left">
@@ -36,7 +37,7 @@ export const displayCategories=(container, firstName, lastName)=>{
                 <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
                  <i class="fa-solid fa-user" ></i>
                  </div>
-                <p>${firstName} ${lastName}  </p>
+                <p>${firstName} ${lastName}</p>
             </div>
             <hr>
         </div>

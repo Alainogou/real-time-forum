@@ -103,10 +103,10 @@ func main() {
 	http.HandleFunc("/auth", controllers.IsAuth)
 	http.HandleFunc("/logout", controllers.LogoutUser)
 	http.HandleFunc("/createPost", controllers.CreatePost)
-	http.HandleFunc("/createPost", controllers.CommentPost)
+	// http.HandleFunc("/createPost", controllers.CommentPost)
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
+	http.HandleFunc("/createComment", controllers.CreateComment)
 	
-
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
 

@@ -7,6 +7,7 @@ let ap=document.getElementById('enter')
 
 
 
+import { renderCommentForm } from './components/commentForm.js'
 import {createNewAccount} from './components/createNewAccount.js'
 import {displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
 import { sendForm } from './components/loginForm.js'
@@ -75,6 +76,78 @@ function loadNotFoundPage(container) {
 }
 
 
+function handleComment(event, userId){
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+   
+    let newComment={
+        UserId :userId,
+        Content: formData.get("content"),
+        Post_id:formData.get("post_id"),
+        
+    } 
+    
+    fetch('http://localhost:8081/register', {
+        method: 'POST',
+        headers: {
+           'Content-Type': 'application/json', 
+       },
+       body: JSON.stringify(newComment),
+     
+    })
+   .then(response => {
+       if (response.ok) {
+            console.log(newComment);
+           
+        } else {       
+
+            return response.json();
+        }
+    })
+    .then(response => { 
+        // response.JSON()
+    //    if (response){
+    //     if (response['error_class']==="errNickname"){
+    //         errNickname.innerHTML=response['message']
+    //     }else if (response['error_class']==="errAge"){
+    //         errAge.innerHTML=response['message']
+    //     }else if (response['error_class']==="errGender"){
+    //         errGender.innerHTML=response['message']
+    //     }else if (response['error_class']==="errLastName"){
+    //         errLastName.innerHTML=response['message']
+    //     }else if (response['error_class']==="errFirstName"){
+    //         errFirstName.innerHTML=response['message']
+    //     }else if (response['error_class']==="errEmail"){
+    //         errEmail.innerHTML=response['message']
+    //     }else if (response['error_class']==="errPassword"){
+    //         errPassword.innerHTML=response['message']
+    //     }else if (response['error_class']==="errEmailorNickname"){
+    //         errNickname.innerHTML=response['message']
+    //         errEmail.innerHTML=response['message']
+    //     }
+        
+    //     setTimeout(function() {
+    //         errPassword.innerHTML = '';
+    //         errNickname.innerHTML= ''
+    //         errEmail.innerHTML=''
+    //         errFirstName.innerHTML=''
+    //         errLastName.innerHTML=''
+    //         errAge.innerHTML=''
+    //         errGender.innerHTML=''
+            
+    //     }, 5000);
+    //   ;
+    //    }
+       
+
+
+    })
+ 
+   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
+  
+}
+
 function handleSuccessfulLogin(data) {
    
     ap.style.display="none";
@@ -86,27 +159,28 @@ function handleSuccessfulLogin(data) {
     main.classList.add('main');
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
+    
 
     fetch('http://localhost:8081/fetchPost')
     .then(response => response.json())
-    .then(data => {
+    .then(response => {
         
         // postImage, friendName, postTime, postText, likeCount, commentCount, title, category
-        
 
-        for (let i=0; i<data.length;i++){
+        for (let i=0; i<response.length;i++){
 
             let essai=document.createElement('div');
             const postHtml = fetchPosthtml(
-                './assets/imageUpload/'+data[i].ImageName,
-                data[i].NickName,
+                response[i].Post_id,
+                './assets/imageUpload/'+response[i].ImageName,
+                response[i].NickName,
                 '16h.',
-                data[i].Content,
-                data[i].Nbrlike + ' Likes',
-                data[i].NbrComments,      
-                data[i].Title,
+                response[i].Content,
+                response[i].Nbrlike + ' Likes',
+                response[i].NbrComments,      
+                response[i].Title,
                
-                data[i].Category,
+                response[i].Category,
                 
             );
             essai.innerHTML=postHtml
@@ -114,18 +188,38 @@ function handleSuccessfulLogin(data) {
           
         }
       
-        let addComment = document.querySelector('.addComment');
-
         
 
-        let commentButton = document.querySelector('.commentButton');
-        console.log("commentButton", commentButton);
+        
+        let commentButtons = document.querySelectorAll('.comment_btn');
+       
+        
+        for (let i = 0; i < commentButtons.length; i++) {
+           let commentButton = commentButtons[i];
+           let postId = commentButton.querySelector('input[name="post_id"]').value;
+            
+           let addComment = document.querySelector(`.addComment_${postId}`);
 
-        commentButton.addEventListener("click",()=>{
-            addComment.innerText ="asss"
-        })
+           commentButton.addEventListener("click", (event) => {
+               let postId = commentButton.querySelector('input[name="post_id"]').value;
+              
+               event.preventDefault();
+               renderCommentForm(addComment, data.User.Id, postId)
+               
+               if (addComment.style.display !== 'block') {
+                   addComment.style.display = 'block';
+               } else {
+                   addComment.style.display = 'none';
+               }
 
-
+                let comment=document.querySelector(`.submit-comment-${postId}`)
+                
+                console.log(comment)
+           });
+        }
+        
+     
+       
        
         // if (data.IsAuth){
            

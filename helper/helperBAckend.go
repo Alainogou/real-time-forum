@@ -15,7 +15,7 @@ import (
 type Data struct {
 	Datas     interface{}
 	IsAuth    bool
-	Pagin     models.Metadata
+	
 	User      models.User
 	CurrenCat int
 	ErrorLog  string

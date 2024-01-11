@@ -76,7 +76,7 @@ export function postForm(container, userId){
 }
 
 
-export function fetchPosthtml(postImage, friendName, postTime, postText, likeCount, commentCount, title, category) {
+export function fetchPosthtml(postId, postImage, friendName, postTime, postText, likeCount, commentCount, title, category) {
    
     let categoryHtml = category.map(cat => `<h2>${cat}</h2>`).join('');
     let imageHtml = (postImage!=='./assets/imageUpload/') ? `<img src="${postImage}">` : '';
@@ -132,30 +132,22 @@ export function fetchPosthtml(postImage, friendName, postTime, postText, likeCou
                   <i class="fa-solid fa-thumbs-up activi"></i>
                   <p>Like</p>
               </div>
-              <div class="like_icon commentButton">
-                  <i class="fa-solid fa-message"></i>
-                  <p>Comments</p>
-              </div>
+              
+           
+              <div class="like_icon comment_btn">
+                    <input type="hidden" name="post_id" value="${postId}">
+                    <i class="fa-solid fa-message"></i>
+                    <p>Comments</p>
+             </div>
             
           </div>
           
-          <div class="addComment">
+          <div class="addComment_${postId}">
 
           </div>
+         
 
       </div>`;
   }
 
-// onchange="ValideFile()"
 
-function generateMenu(categories) {
-    let menuHtml = '<div class="menu">';
-    categories.forEach((category) => {
-        menuHtml += `<h2>${category}</h2>`;
-    });
-    menuHtml += '</div>';
-    return menuHtml;
- }
- 
-//  let categories = ['Education', 'Technology', 'Art'];
-//  console.log(generateMenu(categories));
