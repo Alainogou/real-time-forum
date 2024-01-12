@@ -2,7 +2,7 @@ function renderCommentForm(container,  postId) {
     // Rendu du formulaire de commentaire
     container.innerHTML = `
         <hr>
-        
+        <div><span class="errorStyle EmptyContent"></span></div> 
         <div class="comment_warpper">
        
         
@@ -10,7 +10,9 @@ function renderCommentForm(container,  postId) {
                 <i class="fa-solid fa-user" ></i>
         
             </div>
+           
             <div class="comment_search">
+
                 <form  enctype="multipart/form-data" class="commentform-${postId}">
                         <input type="hidden" name="post_id" value="${postId}">
 

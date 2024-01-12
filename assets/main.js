@@ -107,9 +107,17 @@ function handleComment(event, userId){
         }
     })
     .then(response => { 
-        // response.JSON()
-    //    if (response){
-    //     if (response['error_class']==="errNickname"){
+       
+       if (response){
+        console.log("ici");
+        let emptyContent= document.querySelector(".EmptyContent")
+        if (response['error_class']==="emptycomment"){
+            emptyContent.innerHTML=response['message']
+        }
+        setTimeout(() => {
+            emptyContent.innerHTML=''
+        }, 5000);
+    }
     //         errNickname.innerHTML=response['message']
     //     }else if (response['error_class']==="errAge"){
     //         errAge.innerHTML=response['message']
@@ -215,16 +223,19 @@ function handleSuccessfulLogin(data) {
 
                 let commentForms=document.querySelector(`.commentform-${postId}`)
                 
-               
+               console.log(commentForms);
                 let containerComment=document.createElement('div')
                 containerComment.classList.add("containerComment")
                 commentForms.addEventListener('submit', function(event) {
                     
                     handleComment(event, data.User.Id);
+                    event.target.reset();
                     fetchComment(containerComment, postId)
                   
 
                 });
+                
+
                
                 fetchComment(containerComment , postId)
                 addComment.appendChild(containerComment)
@@ -584,14 +595,14 @@ function handleCreatePost(event, postform) {
         .then(response => {
             if (response.ok) {
                 postform.style.display = 'none';
-                console.log("it's a match");
+                
             } else {
                 return response.json();
             }
         })
         .then(errorResponse => {
             if (errorResponse) {
-                console.log("not a match");
+               
                 
                 switch (errorResponse ['error_class']) {
                     case 'categoryNofound':
