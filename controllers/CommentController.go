@@ -1,26 +1,23 @@
 package controllers
 
 import (
-	"fmt"
-	"realtimeforum/models"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-	
+	"realtimeforum/models"
 )
 
 type CommentJson struct {
-	UserId int `json:"UserId"`
-	Post_id		int  `json:"Post_id"`
-	Content       string `json:"Content"`
-	
+	UserId  int    `json:"UserId"`
+	Post_id int    `json:"Post_id"`
+	Content string `json:"Content"`
 }
 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	comments := CommentJson{}
 
-	
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
@@ -30,10 +27,13 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 	}
 	err = json.Unmarshal(reqBody, &comments)
-	fmt.Println("alo",comments)
 
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 
-	if len(comments.Content)==0{
+	}
+
+	if len(comments.Content) == 0 {
 		Error = "content is empty"
 		errorResponse := ErrorResponse{
 			Message:    Error,
@@ -44,33 +44,13 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	com := models.Comment{}
+	errinsert := com.InsertComments(DB, comments.Post_id, comments.UserId, comments.Content)
 
-	// _, email := Auth(DB,w, r)
-	// user := models.User{}
-	// erru := user.GetOneUser(DB, email)
-	// errf := r.ParseForm()
-	// if errf != nil || erru != nil {
-	// 	// helper.ErrorPage(w, 500)
-	// 	return
-	// }
+	if errinsert != nil {
+		fmt.Println(errinsert)
+		// helper.ErrorPage(w, 500)
+		return
+	}
 
-	// comment := strings.TrimSpace((r.FormValue("comment")))
-	// post_id, errconv := strconv.Atoi(r.FormValue("post_id"))
-
-	// if errconv != nil {
-	// 	fmt.Println(errconv)
-	// 	// helper.ErrorPage(w, 404)
-	// 	return
-	// }
-	
-		com := models.Comment{}
-		errinsert := com.InsertComments(DB, comments.Post_id, comments.UserId, comments.Content)
-
-		if errinsert != nil {
-			fmt.Println(errinsert)
-			// helper.ErrorPage(w, 500)
-			return
-		}
-	
-	// http.Redirect(w, r, "post/"+strconv.Itoa(post_id), 302)
 }

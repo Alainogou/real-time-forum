@@ -197,13 +197,13 @@ function handleSuccessfulLogin(data) {
         
         for (let i = 0; i < commentButtons.length; i++) {
            let commentButton = commentButtons[i];
-           let postId = commentButton.querySelector('input[name="post_id"]').value;
+           
             
-           let addComment = document.querySelector(`.addComment_${postId}`);
 
            commentButton.addEventListener("click", (event) => {
                let postId = commentButton.querySelector('input[name="post_id"]').value;
-              
+               let addComment = document.querySelector(`.addComment_${postId}`);
+
                event.preventDefault();
                renderCommentForm(addComment, postId)
                
@@ -214,15 +214,20 @@ function handleSuccessfulLogin(data) {
                }
 
                 let commentForms=document.querySelector(`.commentform-${postId}`)
-                console.log(commentForms);
-
+                
+               
+                let containerComment=document.createElement('div')
+                containerComment.classList.add("containerComment")
                 commentForms.addEventListener('submit', function(event) {
-                   
+                    
                     handleComment(event, data.User.Id);
-                    console.log("comment", commentForms)
+                    fetchComment(containerComment, postId)
+                  
 
                 });
-                
+               
+                fetchComment(containerComment , postId)
+                addComment.appendChild(containerComment)
                 
                 
            });
@@ -244,9 +249,9 @@ function handleSuccessfulLogin(data) {
     .catch(error => console.error('Erreur:', error));
 
 
+
+
     let postform= document.createElement('div')
-
-
 
 
     main.appendChild(center)
@@ -288,7 +293,59 @@ function handleSuccessfulLogin(data) {
 
 
 
+function fetchComment(addcomment, postId){
 
+    fetch(`http://localhost:8081/fetchComment/${postId}`)
+    .then(response => response.json())
+    .then(data => {
+        addcomment.innerHTML=''
+
+        for (let p=0;p<data.length;p++){
+            let comment=data[p]
+
+            let mainComment= document.createElement('div')
+            mainComment.classList.add("mainComment")
+
+
+            let commentProfile= document.createElement('div')
+            commentProfile.classList.add("commentProfile")
+
+            let iconeProfile= document.createElement('div')
+            iconeProfile.innerHTML=`<div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+                                        <i class="fa-solid fa-user" ></i>
+                                     </div>`
+            iconeProfile.classList.add("iconeProfile")
+        
+            let userComment= document.createElement('p')
+            userComment.classList.add("userComment")
+            userComment.innerText=`${comment.NickName} :`
+            commentProfile.append(iconeProfile,userComment);
+            // commentProfile.appendChild(userComment);
+
+            let contentComment= document.createElement('div')
+            let pContent= document.createElement('p')
+
+            contentComment.classList.add("contentComment")
+
+            pContent.innerText=`${comment.Content}`
+            contentComment.appendChild(pContent)
+            mainComment.appendChild(commentProfile)
+            mainComment.appendChild(contentComment)
+
+
+          
+           
+            addcomment.appendChild(mainComment)
+            
+        }
+ 
+        
+    
+    })
+    .catch(error => console.error('Erreur:', error));
+
+
+}
 
 
 

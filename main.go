@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"realtimeforum/controllers"
-	
+
 	"github.com/rs/cors"
 )
 
@@ -37,7 +37,7 @@ const (
 func InitMessage() {
 	fmt.Printf(Cyan + "===============================================\n" + Reset)
 	fmt.Printf(Magenta + "Starting Realtime forum\n" + Reset)
-	fmt.Printf(Magenta + "Server running on "+ Green+ "http://localhost"+ Port + "\n" + Reset)
+	fmt.Printf(Magenta + "Server running on " + Green + "http://localhost" + Port + "\n" + Reset)
 	fmt.Printf(Magenta + "Server started at: " + Blue + time.Now().Format(currentTime) + "\n" + Reset)
 	fmt.Printf(Magenta + "Write" + Blue + " status" + Reset + Magenta + " to see loged in users\n" + Reset)
 	fmt.Printf(Magenta + "Press Ctrl+C to stop the server\n" + Reset)
@@ -106,13 +106,11 @@ func main() {
 	// http.HandleFunc("/createPost", controllers.CommentPost)
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	http.HandleFunc("/createComment", controllers.CreateComment)
-	http.HandleFunc("/ ", controllers.GetComments)
-	
+	http.HandleFunc("/fetchComment/", controllers.GetComments)
+
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
 
 	defer controllers.DB.Close()
 
 }
-
-
