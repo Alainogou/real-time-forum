@@ -9,9 +9,12 @@ let ap=document.getElementById('enter')
 
 import { renderCommentForm } from './components/commentForm.js'
 import {createNewAccount} from './components/createNewAccount.js'
-import {displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
+import {Messenger, displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
 import { sendForm } from './components/loginForm.js'
 import {createPostbutton, fetchPosthtml, postForm} from './components/postForm.js'
+import { FormMessage } from './components/privateMessages.js'
+
+
 
 
 
@@ -118,38 +121,8 @@ function handleComment(event, userId){
             emptyContent.innerHTML=''
         }, 5000);
     }
-    //         errNickname.innerHTML=response['message']
-    //     }else if (response['error_class']==="errAge"){
-    //         errAge.innerHTML=response['message']
-    //     }else if (response['error_class']==="errGender"){
-    //         errGender.innerHTML=response['message']
-    //     }else if (response['error_class']==="errLastName"){
-    //         errLastName.innerHTML=response['message']
-    //     }else if (response['error_class']==="errFirstName"){
-    //         errFirstName.innerHTML=response['message']
-    //     }else if (response['error_class']==="errEmail"){
-    //         errEmail.innerHTML=response['message']
-    //     }else if (response['error_class']==="errPassword"){
-    //         errPassword.innerHTML=response['message']
-    //     }else if (response['error_class']==="errEmailorNickname"){
-    //         errNickname.innerHTML=response['message']
-    //         errEmail.innerHTML=response['message']
-    //     }
-        
-    //     setTimeout(function() {
-    //         errPassword.innerHTML = '';
-    //         errNickname.innerHTML= ''
-    //         errEmail.innerHTML=''
-    //         errFirstName.innerHTML=''
-    //         errLastName.innerHTML=''
-    //         errAge.innerHTML=''
-    //         errGender.innerHTML=''
-            
-    //     }, 5000);
-    //   ;
-    //    }
+   
        
-
 
     })
  
@@ -157,114 +130,53 @@ function handleComment(event, userId){
   
 }
 
+
 function handleSuccessfulLogin(data) {
    
     ap.style.display="none";
     headerPage(app);
     let main=document.createElement('div');
+    let right = document.createElement('div');
     let center=document.createElement('div')
     center.classList.add('center');
 
+    right.classList.add('right');
     main.classList.add('main');
+    
+
+    let globalPosts= document.createElement('div')
+    globalPosts.classList.add('mainPost')
+   
+
+    
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
+    Messenger(right)
     
+    main.appendChild(right);
+    setTimeout(() => {
+        let contact = document.querySelector(".contact")
 
-    fetch('http://localhost:8081/fetchPost')
-    .then(response => response.json())
-    .then(response => {
-        
-        // postImage, friendName, postTime, postText, likeCount, commentCount, title, category
-
-        for (let i=0; i<response.length;i++){
-
-            let essai=document.createElement('div');
-            const postHtml = fetchPosthtml(
-                response[i].Post_id,
-                './assets/imageUpload/'+response[i].ImageName,
-                response[i].NickName,
-                '16h.',
-                response[i].Content,
-                response[i].Nbrlike + ' Likes',
-                response[i].NbrComments,      
-                response[i].Title,
-               
-                response[i].Category,
-                
-            );
-            essai.innerHTML=postHtml
-            center.appendChild(essai)
-          
-        }
-      
-        
-
-        
-        let commentButtons = document.querySelectorAll('.comment_btn');
-       
-        
-        for (let i = 0; i < commentButtons.length; i++) {
-           let commentButton = commentButtons[i];
+        console.log(contact);
+        contact.addEventListener("click",()=>{
+            console.log("contact clicked");
            
-            
 
-           commentButton.addEventListener("click", (event) => {
-               let postId = commentButton.querySelector('input[name="post_id"]').value;
-               let addComment = document.querySelector(`.addComment_${postId}`);
-
-               event.preventDefault();
-               renderCommentForm(addComment, postId)
-               
-               if (addComment.style.display !== 'block') {
-                   addComment.style.display = 'block';
-               } else {
-                   addComment.style.display = 'none';
-               }
-
-                let commentForms=document.querySelector(`.commentform-${postId}`)
-                
-               console.log(commentForms);
-                let containerComment=document.createElement('div')
-                containerComment.classList.add("containerComment")
-                commentForms.addEventListener('submit', function(event) {
-                    
-                    handleComment(event, data.User.Id);
-                    event.target.reset();
-                    fetchComment(containerComment, postId)
-                  
-
-                });
-                
-
-               
-                fetchComment(containerComment , postId)
-                addComment.appendChild(containerComment)
-                
-                
-           });
-        }
-        
-     
-       
-       
-        // if (data.IsAuth){
-           
-        
-        // }else{
-             
-         
-        // }   
-       
-    
-    })
-    .catch(error => console.error('Erreur:', error));
-
-
-
-
+        FormMessage(right)
+        let closeMesenger= document.querySelector(".btn-close2")
+        closeMesenger.addEventListener("click",()=>{
+            console.log("alogou");
+            let clickClose = document.querySelector(".chat-card")
+            clickClose.remove()
+        })
+        })
+        }, 1000);
+   
+    fetchPost(globalPosts,data.User.Id)
+   
     let postform= document.createElement('div')
 
-
+    center.appendChild(globalPosts)
     main.appendChild(center)
     app.appendChild(postform)
     app.appendChild(main);
@@ -457,6 +369,90 @@ function handleRegistration(event) {
 }
 
 
+function fetchPost  (globalPosts,UserId) {
+    globalPosts.innerHTML=''
+    fetch('http://localhost:8081/fetchPost')
+    .then(response => response.json())
+    .then(response => {
+        
+        // postImage, friendName, postTime, postText, likeCount, commentCount, title, category
+
+        for (let i=0; i<response.length;i++){
+
+            let essai=document.createElement('div');
+            const postHtml = fetchPosthtml(
+                response[i].Post_id,
+                './assets/imageUpload/'+response[i].ImageName,
+                response[i].NickName,
+                '16h.',
+                response[i].Content,
+                response[i].Nbrlike + ' Likes',
+                response[i].NbrComments,      
+                response[i].Title,
+               
+                response[i].Category,
+                
+            );
+            essai.innerHTML=postHtml
+            globalPosts.appendChild(essai)
+          
+        }
+      
+        
+        let commentButtons = document.querySelectorAll('.comment_btn');
+       
+        
+        for (let i = 0; i < commentButtons.length; i++) {
+           let commentButton = commentButtons[i];
+           
+            
+
+           commentButton.addEventListener("click", (event) => {
+               let postId = commentButton.querySelector('input[name="post_id"]').value;
+               let addComment = document.querySelector(`.addComment_${postId}`);
+
+               event.preventDefault();
+               renderCommentForm(addComment, postId)
+               
+               if (addComment.style.display !== 'block') {
+                   addComment.style.display = 'block';
+               } else {
+                   addComment.style.display = 'none';
+               }
+
+                let commentForms=document.querySelector(`.commentform-${postId}`)
+                
+               
+                let containerComment=document.createElement('div')
+                containerComment.classList.add("containerComment")
+                commentForms.addEventListener('submit', function(event) {
+                    
+                    handleComment(event, UserId);
+                    event.target.reset();
+                    fetchComment(containerComment, postId)
+                    let commentNumber= document.getElementById(`commentNumber-${postId}`)
+                    console.log(commentNumber.textContent);
+                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
+                  
+
+                });
+                
+
+               
+                fetchComment(containerComment , postId)
+                addComment.appendChild(containerComment)
+                
+                
+           });
+        }
+       
+    
+    })
+    .catch(error => console.error('Erreur:', error));
+
+
+}
+
 
 
 // Fonction pour gérer la connexion
@@ -568,8 +564,9 @@ function handleCreatePost(event, postform) {
     event.preventDefault();
     const formData = new FormData(event.target);
    
+    let userid= parseInt(formData.get("user_id"))
     let postContent = {
-        User_id: parseInt(formData.get("user_id")),    
+        User_id: userid,    
         Title: formData.get("title"),
         Content: formData.get("content"),     
         Category: Array.from(formData.getAll("cat")).map(Number),
@@ -595,6 +592,8 @@ function handleCreatePost(event, postform) {
         .then(response => {
             if (response.ok) {
                 postform.style.display = 'none';
+                let globalPosts=document.querySelector('.mainPost')
+                fetchPost(globalPosts, userid)
                 
             } else {
                 return response.json();

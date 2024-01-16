@@ -30,6 +30,7 @@ CREATE TABLE comment (
  userId INTEGER NOT NULL,
  postId INTEGER NOT NULL,
  content TEXT NOT NULL,
+ created_at TIMESTAMP NOT NULL,
  FOREIGN KEY(userId) REFERENCES user(id),
  FOREIGN KEY(postId) REFERENCES post(id)
 );

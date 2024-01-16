@@ -122,7 +122,7 @@ export function fetchPosthtml(postId, postImage, friendName, postTime, postText,
                   <p>${likeCount}</p>
               </div>
               <div class="comment">
-                  <p>${commentCount} Comments</p>
+                  <p ><span id="commentNumber-${postId}">${commentCount} </span> Comments</p>
                 
               </div>
           </div>
