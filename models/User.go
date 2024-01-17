@@ -20,6 +20,7 @@ type User struct {
 	Age             int    `json:"Age"`
 	Gender          string `json:"Gender"`
 	ConfirmPassword string `json:"ConfirmPassword"`
+	Status          string `json:"Status"`
 }
 
 type Session struct {
@@ -70,6 +71,37 @@ func (UserOne *User) GetOneUserWithNickName(db *sql.DB, nickName string) error {
 	UserOne.FirstName = html.UnescapeString(UserOne.FirstName)
 
 	return err
+}
+
+func GetAllUser(db *sql.DB) ([]*User, error) {
+	req := `SELECT id, age, nickName, email, lastName, firstName, password, gender FROM ` + Table
+	rows, err := db.Query(req)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []*User
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.Id, &user.Age, &user.NickName, &user.Email, &user.LastName, &user.FirstName, &user.Password, &user.Gender)
+		if err != nil {
+			return nil, err
+		}
+
+		user.Email = html.UnescapeString(user.Email)
+		user.NickName = html.UnescapeString(user.NickName)
+		user.Password = html.UnescapeString(user.Password)
+		user.LastName = html.UnescapeString(user.LastName)
+		user.FirstName = html.UnescapeString(user.FirstName)
+
+		users = append(users, &user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func SelectOneData(db *sql.DB) (User, error) {

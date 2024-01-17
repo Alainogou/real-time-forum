@@ -7,10 +7,11 @@ import (
 	"os"
 	"realtimeforum/config"
 	"time"
-
+	"realtimeforum/websocket"
 	"realtimeforum/controllers"
-
+	
 	"github.com/rs/cors"
+	
 )
 
 var (
@@ -44,6 +45,8 @@ func InitMessage() {
 	fmt.Printf(Cyan + "===============================================\n" + Reset)
 }
 
+
+
 func init() {
 
 	var err error
@@ -53,21 +56,7 @@ func init() {
 		fmt.Println("connection database Error")
 		os.Exit(0)
 	}
-	// req:=`
-	// CREATE TABLE IF NOT EXISTS Session (
-	// 	 id        integer  not null,
-	// 	 sessionId varchar(250) ,
-	// 	 email		varchar(250),
-	// 	 datefin		TIMESTAMP,
-	// 	 constraint PK_SESS primary key (id)
-	//  );
-	// `
-	// _,erree:=controllers.DB.Exec(req)
-	// if erree!=nil{
-	// 	fmt.Println("Erreur lors de la creation de la table session")
-	// 	os.Exit(0)
-	// }
-
+	
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +96,10 @@ func main() {
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	http.HandleFunc("/createComment", controllers.CreateComment)
 	http.HandleFunc("/fetchComment/", controllers.GetComments)
-
+	
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		wbs.HandleConnections(w, r, controllers.DB) 
+	})
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
 

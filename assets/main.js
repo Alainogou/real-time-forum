@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         if (data.IsAuth){
-            handleSuccessfulLogin(data) 
+            handleSuccessfulLogin(data)
+
+            
         
         }else{
            
@@ -112,7 +114,7 @@ function handleComment(event, userId){
     .then(response => { 
        
        if (response){
-        console.log("ici");
+       
         let emptyContent= document.querySelector(".EmptyContent")
         if (response['error_class']==="emptycomment"){
             emptyContent.innerHTML=response['message']
@@ -151,9 +153,7 @@ function handleSuccessfulLogin(data) {
     
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
-    Messenger(right)
-    
-    main.appendChild(right);
+   
     setTimeout(() => {
         let contact = document.querySelector(".contact")
 
@@ -209,9 +209,46 @@ function handleSuccessfulLogin(data) {
 
     let logoutHeader=document.getElementById("logoutHeader");
     if (logoutHeader) logoutHeader.addEventListener("click",()=>{
-        logout(ap);
+        logout(ap, data.User.NickName);
     });
 
+    
+    const socket = new WebSocket('ws://localhost:8081/ws');
+
+    socket.onopen = (event) => {
+        let message = JSON.stringify({NickName: data.User.NickName});
+        socket.send(message);
+        console.log('WebSocket connection opened');
+    };
+
+            // Écoutez les messages entrants
+    socket.onmessage = function(event) {
+        let msg = JSON.parse(event.data);
+
+        console.log(msg.AllUser,"ass"); 
+        
+        setTimeout(function() {
+             
+            for (let k=0;k<msg.AllUser.length;k++){
+                Messenger(right, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
+            }
+            
+        }, 5000);
+       
+    };
+           
+
+            // socket.onclose = () => {
+            //     console.log('WebSocket connection closed');
+            // };
+
+    socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`);
+    };
+
+   
+    
+    main.appendChild(right);
 }
 
 
@@ -508,15 +545,17 @@ async function handleLogin(event) {
 }
 
 
-async function logout(ap) {
-    
+async function logout(ap, userName) {
+    let userDeconn = {
+      NickName: userName,
+    }
     try {
         const response = await fetch('http://localhost:8081/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            
+            body: JSON.stringify(userDeconn),
         });
 
         if (response.ok) {

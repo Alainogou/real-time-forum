@@ -68,132 +68,43 @@ export const displayCategories=(container, firstName, lastName)=>{
     </div>`
 }
 
-{/* <div class="online-indicator"></div> */}
-export const Messenger= (container, nickname)=>{
-    container.innerHTML=`
-         <div class="right">
-    
+export const Messenger = (container, nickname) => {
+   let div = document.createElement('div');
+   div.className = 'third_warpper';
 
+   let contactTagDiv = document.createElement('div');
+   contactTagDiv.className = 'contact_tag';
+   let h2 = document.createElement('h2');
+   h2.innerText = 'Contacts';
+   contactTagDiv.appendChild(h2);
+   div.appendChild(contactTagDiv);
 
-            <div class="third_warpper">
+   let contactDiv = document.createElement('div');
+   contactDiv.className = 'contact';
 
-                <div class="contact_tag">
+   let userImageDiv = document.createElement('div');
+   userImageDiv.className = 'user-image';
+   let userDiv = document.createElement('div');
+   userDiv.className = 'user';
+   userDiv.style.backgroundColor = '#efefef';
+   userDiv.style.height = '30px';
+   userDiv.style.width = '30px';
+   userDiv.style.textAlign = 'center';
+   userDiv.style.borderRadius = '50%';
+   userDiv.style.paddingTop = '4px';
+   let i = document.createElement('i');
+   i.className = 'fa-solid fa-user';
+   userDiv.appendChild(i);
+   userImageDiv.appendChild(userDiv);
+   contactDiv.appendChild(userImageDiv);
 
-                    <h2>Contacts</h2>
-                </div>
+   let p = document.createElement('p');
+   p.innerText = nickname;
+   contactDiv.appendChild(p);
+   div.appendChild(contactDiv);
 
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                     
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-
-                     <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                    <p>ALdji Malick</p>
-
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>ALdji Malick</p>
-                </div>
-
-                <div class="contact">
-
-                <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                    <p>ALdji Malick</p>
-
-                </div>
-
-                <div class="contact">
-                <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                    <p>ALdji Malick</p>
-
-                </div>
-
-                <div class="contact">
-
-                <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                    <p>Sandra</p>
-
-                </div>
-                <div class="contact">
-                    <div class="user-image">
-                         <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
-                <i class="fa-solid fa-user" ></i>
-            </div>
-                        
-                    </div>
-                    <p>Sandra</p>
-                </div>
-
-              
-
-            </div>
-
-         </div>
-    `
-    
-}
+   container.appendChild(div);
+};
 
 
 export const loadConnexionPage=(container, name) =>{

@@ -5,7 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"realtimeforum/websocket"
+	"io/ioutil"
+
+	"encoding/json"
 )
+type UserDeconn  struct  {
+	NickName string `json:"NickName"`
+}
 
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
 	ok, _ := CheckRequest(r, "/logout", "post")
@@ -14,6 +21,20 @@ func LogoutUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("errologout")
 		return
 	}
+
+	deconn_user := UserDeconn{}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+	}
+	err = json.Unmarshal(reqBody, &deconn_user)
+
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	fmt.Println(deconn_user)
+
 	session, err := r.Cookie("sessionid")
 
 	errDelete := DeleteSession(DB, session.Value)
@@ -27,6 +48,8 @@ func LogoutUser(w http.ResponseWriter, r *http.Request) {
 		Value: "",
 		Path:  session.Path,
 	})
+	wbs.RemoveUserFromMap(deconn_user.NickName)
+	fmt.Println("Decoonexion", wbs.UsersMap)
 
 }
 
