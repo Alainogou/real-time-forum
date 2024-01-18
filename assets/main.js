@@ -105,6 +105,9 @@ function handleComment(event, userId){
    .then(response => {
        if (response.ok) {
             console.log(newComment);
+            let commentNumber= document.getElementById(`commentNumber-${newComment.Post_id}`)
+                    console.log(commentNumber.textContent);
+                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
            
         } else {       
 
@@ -143,6 +146,10 @@ function handleSuccessfulLogin(data) {
     center.classList.add('center');
 
     right.classList.add('right');
+    let h2 = document.createElement('h2');
+   h2.innerText = 'Contacts';
+   right.appendChild(h2);
+   h2.style.marginBottom= '10px'
     main.classList.add('main');
     
 
@@ -154,23 +161,23 @@ function handleSuccessfulLogin(data) {
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
    
-    // setTimeout(() => {
-    //     let contact = document.querySelector(".contact")
+    setTimeout(() => {
+        let contact = document.querySelector(".contact")
 
-    //     console.log(contact);
-    //     contact.addEventListener("click",()=>{
-    //         console.log("contact clicked");
+        console.log(contact);
+        contact.addEventListener("click",()=>{
+            console.log("contact clicked");
            
 
-    //     FormMessage(right)
-    //     let closeMesenger= document.querySelector(".btn-close2")
-    //     closeMesenger.addEventListener("click",()=>{
-    //         console.log("alogou");
-    //         let clickClose = document.querySelector(".chat-card")
-    //         clickClose.remove()
-    //     })
-    //     })
-    // }, 1000);
+        FormMessage(right)
+        let closeMesenger= document.querySelector(".btn-close2")
+        closeMesenger.addEventListener("click",()=>{
+            console.log("alogou");
+            let clickClose = document.querySelector(".chat-card")
+            clickClose.remove()
+        })
+        })
+        }, );
    
     fetchPost(globalPosts,data.User.Id)
    
@@ -221,36 +228,26 @@ function handleSuccessfulLogin(data) {
         console.log('WebSocket connection opened');
     };
 
-     // Écoutez les messages entrants
+            // Écoutez les messages entrants
     socket.onmessage = function(event) {
-        right.innerHTML=''
-
         let msg = JSON.parse(event.data);
-        console.log('il y a un message entrant')
-       let div = document.createElement('div');
-        div.className = 'third_warpper';
-         
-        let contactTagDiv = document.createElement('div');
-        contactTagDiv.className = 'contact_tag';
-        let h2 = document.createElement('h2');
-        h2.innerText = 'Contacts';
-        contactTagDiv.appendChild(h2);
-        div.appendChild(contactTagDiv);
+
+        console.log(msg.AllUser,"ass"); 
         
-        
-            
+        setTimeout(function() {
+             
             for (let k=0;k<msg.AllUser.length;k++){
-                Messenger(div, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
+                Messenger(right, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
             }
             
+        }, 1000);
        
-        right.appendChild(div)
     };
            
 
-    socket.onclose = () => {
-        console.log('WebSocket connection closed');
-    };
+            // socket.onclose = () => {
+            //     console.log('WebSocket connection closed');
+            // };
 
     socket.onerror = (error) => {
         console.log(`WebSocket error: ${error}`);
@@ -477,9 +474,7 @@ function fetchPost  (globalPosts,UserId) {
                     handleComment(event, UserId);
                     event.target.reset();
                     fetchComment(containerComment, postId)
-                    let commentNumber= document.getElementById(`commentNumber-${postId}`)
-                    console.log(commentNumber.textContent);
-                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
+                    
                   
 
                 });
