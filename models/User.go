@@ -8,19 +8,21 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
+	"github.com/gorilla/websocket"
 )
 
 type User struct {
-	Id              int    `json:"Id"`
-	NickName        string `json:"NickName"`
-	Email           string `json:"Email"`
-	LastName        string `json:"LastName"`
-	FirstName       string `json:"FirstName"`
-	Password        string `json:"Password"`
-	Age             int    `json:"Age"`
-	Gender          string `json:"Gender"`
-	ConfirmPassword string `json:"ConfirmPassword"`
-	Status          string `json:"Status"`
+	Id              int             `json:"Id"`
+	NickName        string          `json:"NickName"`
+	Email           string          `json:"Email"`
+	LastName        string          `json:"LastName"`
+	FirstName       string          `json:"FirstName"`
+	Password        string          `json:"Password"`
+	Age             int             `json:"Age"`
+	Gender          string          `json:"Gender"`
+	ConfirmPassword string          `json:"ConfirmPassword"`
+	Status          string          `json:"Status"`
+	Conn            *websocket.Conn `json:"Conn"`
 }
 
 type Session struct {

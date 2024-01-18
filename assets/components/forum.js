@@ -69,21 +69,12 @@ export const displayCategories=(container, firstName, lastName)=>{
 }
 
 export const Messenger = (container, nickname) => {
-   let div = document.createElement('div');
-   div.className = 'third_warpper';
-
-   let contactTagDiv = document.createElement('div');
-   contactTagDiv.className = 'contact_tag';
-   let h2 = document.createElement('h2');
-   h2.innerText = 'Contacts';
-   contactTagDiv.appendChild(h2);
-   div.appendChild(contactTagDiv);
+   
 
    let contactDiv = document.createElement('div');
    contactDiv.className = 'contact';
 
-   let userImageDiv = document.createElement('div');
-   userImageDiv.className = 'user-image';
+   
    let userDiv = document.createElement('div');
    userDiv.className = 'user';
    userDiv.style.backgroundColor = '#efefef';
@@ -95,15 +86,14 @@ export const Messenger = (container, nickname) => {
    let i = document.createElement('i');
    i.className = 'fa-solid fa-user';
    userDiv.appendChild(i);
-   userImageDiv.appendChild(userDiv);
-   contactDiv.appendChild(userImageDiv);
+   contactDiv.appendChild(userDiv);
 
    let p = document.createElement('p');
    p.innerText = nickname;
    contactDiv.appendChild(p);
-   div.appendChild(contactDiv);
+  container.appendChild(contactDiv);
 
-   container.appendChild(div);
+   
 };
 
 
