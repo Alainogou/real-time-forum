@@ -96,11 +96,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			}
 
 		}
-		fmt.Println(userConnect)
+		
 		// Envoyer un message au client
 		allUserStatus = AllUserStatus{AllUser: userConnect}
 		Broadcast(allUserStatus, userExist, receivedMsg.NickName)
-		fmt.Println("ok", userExist)
+		
 	}
 }
 
@@ -115,15 +115,15 @@ func RemoveUserFromMap(username string) {
 		}
 	}
 	userExist = removeString(userExist, username)
-	fmt.Println("user here", userExist)
+
 	Broadcast(allUserStatus, userExist, username)
 }
 
 func Broadcast(allUserStatus AllUserStatus, userexist []string, userName string) {
 	for k := 0; k < len(userexist); k++ {
-		if userexist[k] == userName {
-			removeUserStatus(&allUserStatus, userName)
-		}
+		// if userexist[k] == userName {
+		// 	removeUserStatus(&allUserStatus, userName)
+		// }
 		jsonMsg, _ := json.Marshal(allUserStatus)
 		conn := UsersMap[userExist[k]].Conn
 		err := conn.WriteMessage(websocket.TextMessage, jsonMsg)
