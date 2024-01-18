@@ -79,6 +79,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			}
 
 		}
+		fmt.Println(userConnect)
 		// Envoyer un message au client
 		allUserStatus := AllUserStatus{AllUser: userConnect}
 

@@ -105,6 +105,9 @@ function handleComment(event, userId){
    .then(response => {
        if (response.ok) {
             console.log(newComment);
+            let commentNumber= document.getElementById(`commentNumber-${newComment.Post_id}`)
+                    console.log(commentNumber.textContent);
+                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
            
         } else {       
 
@@ -143,6 +146,10 @@ function handleSuccessfulLogin(data) {
     center.classList.add('center');
 
     right.classList.add('right');
+    let h2 = document.createElement('h2');
+   h2.innerText = 'Contacts';
+   right.appendChild(h2);
+   h2.style.marginBottom= '10px'
     main.classList.add('main');
     
 
@@ -170,7 +177,7 @@ function handleSuccessfulLogin(data) {
             clickClose.remove()
         })
         })
-        }, 1000);
+        }, );
    
     fetchPost(globalPosts,data.User.Id)
    
@@ -233,7 +240,7 @@ function handleSuccessfulLogin(data) {
                 Messenger(right, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
             }
             
-        }, 5000);
+        }, 1000);
        
     };
            
@@ -467,9 +474,7 @@ function fetchPost  (globalPosts,UserId) {
                     handleComment(event, UserId);
                     event.target.reset();
                     fetchComment(containerComment, postId)
-                    let commentNumber= document.getElementById(`commentNumber-${postId}`)
-                    console.log(commentNumber.textContent);
-                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
+                    
                   
 
                 });
