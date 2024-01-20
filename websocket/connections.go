@@ -59,6 +59,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			fmt.Println("read:", err)
+
 			return
 		}
 
@@ -96,11 +97,11 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			}
 
 		}
-		
+
 		// Envoyer un message au client
 		allUserStatus = AllUserStatus{AllUser: userConnect}
 		Broadcast(allUserStatus, userExist, receivedMsg.NickName)
-		
+
 	}
 }
 

@@ -83,7 +83,6 @@ function loadNotFoundPage(container) {
 
 function handleComment(event, userId){
     event.preventDefault();
-    console.log('yes')
     
     const formData = new FormData(event.target);
    
@@ -154,23 +153,6 @@ function handleSuccessfulLogin(data) {
     displayCategories(main, data.User.FirstName, data.User.LastName);
     createPostbutton(center, data.User.NickName)
    
-    // setTimeout(() => {
-    //     let contact = document.querySelector(".contact")
-
-    //     console.log(contact);
-    //     contact.addEventListener("click",()=>{
-    //         console.log("contact clicked");
-           
-
-    //     FormMessage(right)
-    //     let closeMesenger= document.querySelector(".btn-close2")
-    //     closeMesenger.addEventListener("click",()=>{
-    //         console.log("alogou");
-    //         let clickClose = document.querySelector(".chat-card")
-    //         clickClose.remove()
-    //     })
-    //     })
-    // }, 1000);
    
     fetchPost(globalPosts,data.User.Id)
    
@@ -227,11 +209,11 @@ function handleSuccessfulLogin(data) {
 
         let msg = JSON.parse(event.data);
         console.log('il y a un message entrant')
-       let div = document.createElement('div');
+        let div = document.createElement('div');
         div.className = 'third_warpper';
          
         let contactTagDiv = document.createElement('div');
-        contactTagDiv.className = 'contact_tag';
+        contactTagDiv.classsName = 'contact_tag';
         let h2 = document.createElement('h2');
         h2.innerText = 'Contacts';
         contactTagDiv.appendChild(h2);
@@ -240,7 +222,36 @@ function handleSuccessfulLogin(data) {
         
             
             for (let k=0;k<msg.AllUser.length;k++){
+                if (msg.AllUser[k].NickName !== data.User.NickName){
                 Messenger(div, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
+                setTimeout(() => {
+                    let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
+                    console.log("message sent",msg.AllUser[k].NickName);
+            
+                    contact.addEventListener("click",()=>{
+                        console.log("contact clicked");
+                       
+            
+                    FormMessage(right,msg.AllUser[k].NickName)
+                    let messageFormId = document.querySelector(`#receved-${msg.AllUser[k].NickName}`)
+                    console.log(messageFormId,"alogou sure");
+                    if (messageFormId){
+                        messageFormId.addEventListener("submit",(event) =>{
+                            handleMessage(event,data.User.NickName);
+                        })
+                    }
+                    let closeMesenger= document.querySelector(`.btn-close2-${msg.AllUser[k].NickName}`)
+                    closeMesenger.addEventListener("click",()=>{
+                        console.log("alogou");
+                        let clickClose = document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                        clickClose.remove()
+                    })
+                    })
+
+                   
+                }, 1000);
+
+            }
             }
             
        
@@ -258,6 +269,7 @@ function handleSuccessfulLogin(data) {
 
    
     
+   
     main.appendChild(right);
 }
 
@@ -690,3 +702,55 @@ function showError(selector, message) {
     }, 5000);
 }
 
+function handleMessage(event, nickname){
+    event.preventDefault();
+    console.log('yes')
+    
+    const formData = new FormData(event.target);
+   
+    let newMessage={
+        FromUser : nickname,
+        Message: formData.get("messagePrivite"),
+        ToUser: formData.get("send-Name"),
+        
+    } 
+
+    console.log(newMessage);
+    
+    fetch('http://localhost:8081/CreateMessage', {
+        method: 'POST',
+        headers: {
+           'Content-Type': 'application/json', 
+       },
+       body: JSON.stringify(newMessage),
+     
+    })
+   .then(response => {
+       if (response.ok) {
+            console.log(newMessage);
+           
+        } else {       
+
+            return response.json();
+        }
+    })
+    .then(response => { 
+       
+       if (response){
+       
+        // let emptyContent= document.querySelector(".EmptyContent")
+        // if (response['error_class']==="emptycomment"){
+        //     emptyContent.innerHTML=response['message']
+        // }
+        // setTimeout(() => {
+        //     emptyContent.innerHTML=''
+        // }, 5000);
+    }
+   
+       
+
+    })
+ 
+   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
+  
+}

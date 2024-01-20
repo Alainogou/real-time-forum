@@ -1,12 +1,17 @@
-export const  FormMessage=(container)=>{
+export const  FormMessage=(container, nickname )=>{
  let premierDiv= document.createElement('div');
  premierDiv.classList.add('chat-card');
+ premierDiv.classList.add(`chat-card-${nickname}`);
+
     premierDiv.innerHTML =`
            
             <div class="chat-header">
             <div class="h2">
-                <p>Private Messenger</p>
-                <button class="btn-close2" >X</button>
+                <div class="user" style="background-color:#efefef; height:30px;width:30px; text-align:center; border-radius:50%; padding-top:4px">
+                    <i class="fa-solid fa-user" ></i>
+                </div>
+                <p>${nickname}  </p>
+                <button class="btn-close2 btn-close2-${nickname}" >X</button>
             </div>
             </div>
             <div class="chat-body">
@@ -21,10 +26,15 @@ export const  FormMessage=(container)=>{
             </div>
             
             </div>
+            <form  enctype="multipart/form-data" id="receved-${nickname}"  >
+            <input type="hidden" name="send-Name" value="${nickname}">
+
+
             <div class="chat-footer">
-            <input placeholder="Type your message" type="text">
+            <input placeholder="Type your message" type="text" name="messagePrivite">
             <button>Send</button>
             </div>
+            </form>
  
   
     `

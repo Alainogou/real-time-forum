@@ -72,16 +72,11 @@ export const Messenger = (container, nickname) => {
    let div = document.createElement('div');
    div.className = 'third_warpper';
    div.style.marginBottom = '10px'
-
-//    let contactTagDiv = document.createElement('div');
-//    contactTagDiv.className = 'contact_tag';
-//    let h2 = document.createElement('h2');
-//    h2.innerText = 'Contacts';
-// //    contactTagDiv.appendChild(h2);
-//    div.appendChild(h2);
-
    let contactDiv = document.createElement('div');
-   contactDiv.className = 'contact';
+   contactDiv.className = `contact-${nickname}`;
+   contactDiv.style.display= 'flex'
+   contactDiv.style.alignItems= 'center'
+   contactDiv.style.cursor='pointer'
 
    
    let userDiv = document.createElement('div');

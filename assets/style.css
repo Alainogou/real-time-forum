@@ -1303,6 +1303,14 @@ button:active {
   width: 100%;
 }
 
+.chat-header .h2 p {
+  font-size: 16px;
+  color: #333;
+  position: absolute;
+  font-style: oblique;
+  left: 40px;
+}
+
 .chat-body {
   padding: 20px;
 }
@@ -1324,7 +1332,7 @@ button:active {
 
 .message p {
   font-size: 14px;
-  color: #333;
+  color: #db3c3c;
   margin: 0;
 }
 
