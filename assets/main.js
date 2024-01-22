@@ -224,28 +224,32 @@ function handleSuccessfulLogin(data) {
             for (let k=0;k<msg.AllUser.length;k++){
                 if (msg.AllUser[k].NickName !== data.User.NickName){
                 Messenger(div, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
+                
                 setTimeout(() => {
                     let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
-                    console.log("message sent",msg.AllUser[k].NickName);
+                    
             
                     contact.addEventListener("click",()=>{
                         console.log("contact clicked");
                        
-            
-                    FormMessage(right,msg.AllUser[k].NickName)
-                    let messageFormId = document.querySelector(`#receved-${msg.AllUser[k].NickName}`)
-                    console.log(messageFormId,"alogou sure");
-                    if (messageFormId){
-                        messageFormId.addEventListener("submit",(event) =>{
-                            handleMessage(event,data.User.NickName);
+                
+                        FormMessage(right,msg.AllUser[k].NickName)
+                        
+                        fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
+                        let messageFormId = document.querySelector(`#receved-${msg.AllUser[k].NickName}`)
+                        
+                        if (messageFormId){
+                            messageFormId.addEventListener("submit",(event) =>{
+                                handleMessage(event,data.User.NickName);
+                                console.log('yes sent message');
+                            })
+                        }
+                        let closeMesenger= document.querySelector(`.btn-close2-${msg.AllUser[k].NickName}`)
+                        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+                            
+                            let clickClose = document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                            clickClose.remove()
                         })
-                    }
-                    let closeMesenger= document.querySelector(`.btn-close2-${msg.AllUser[k].NickName}`)
-                    closeMesenger.addEventListener("click",()=>{
-                        console.log("alogou");
-                        let clickClose = document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
-                        clickClose.remove()
-                    })
                     })
 
                    
@@ -331,7 +335,21 @@ function fetchComment(addcomment, postId){
 
 }
 
+function fetchPrivateMessage(userFrom, toUser){
 
+    fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
+    .then(response => response.json())
+    .then(data => {
+
+        console.log(data)
+        
+        
+    
+    })
+    .catch(error => console.error('Erreur:', error));
+
+
+}
 
 function handleRegistration(event) {
     event.preventDefault();
@@ -707,19 +725,23 @@ function showError(selector, message) {
 }
 
 function handleMessage(event, nickname){
+
+    let form = document.querySelector(`#receved-${nickname}`);
+   
+
     event.preventDefault();
     console.log('yes')
     
     const formData = new FormData(event.target);
    
-    let newMessage={
-        FromUser : nickname,
+    let newMessage = {
+        FromUser: nickname,
         Message: formData.get("messagePrivite"),
         ToUser: formData.get("send-Name"),
-        
-    } 
+        CreateDate: new Date().toISOString() // This will set the current date and time in ISO format
+    };
 
-    console.log(newMessage);
+    
     
     fetch('http://localhost:8081/CreateMessage', {
         method: 'POST',
@@ -731,7 +753,16 @@ function handleMessage(event, nickname){
     })
    .then(response => {
        if (response.ok) {
-            console.log(newMessage);
+            console.log("oo",newMessage);
+
+            // const chatBody = container.querySelector('.chat-body');
+            // const newMessageDiv = document.querySelector('.outgoing');
+            // // newMessageDiv.classList.add('message', 'outgoing');
+            // newMessageDiv.innerHTML = `<p>${newMessage.Message}</p>`;
+            // chatBody.appendChild(newMessageDiv);
+
+            // // Optionally, clear the message input field
+            // form.querySelector('input[name="messagePrivite"]').value = '';
            
         } else {       
 
@@ -757,7 +788,60 @@ function handleMessage(event, nickname){
  
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   
+
 }
+
+
+// export const FormMessage = (container, nickname) => {
+//     // ... (existing code to create and append the form)
+
+//     // Add the event listener for form submission
+//     let form = document.querySelector(`#receved-${nickname}`);
+//     if (form) {
+//         form.addEventListener('submit', (event) => {
+//             event.preventDefault(); // Prevent the default form submission behavior
+
+//             const formData = new FormData(event.target); // Get the form data
+
+//             // Create the message object
+//             let newMessage = {
+//                 FromUser: nickname,
+//                 Message: formData.get("messagePrivite"),
+//                 ToUser: formData.get("send-Name"),
+//                 CreateDate: new Date().toISOString() // Set the current date and time
+//             };
+
+//             // Send the message to the server
+//             fetch('http://localhost:8081/CreateMessage', {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify(newMessage) // Convert the message object to a JSON string
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 if (data.success) {
+//                     // Update the chat UI to include the new message
+//                     const chatBody = container.querySelector('.chat-body');
+//                     const newMessageDiv = document.createElement('div');
+//                     newMessageDiv.classList.add('message', 'outgoing');
+//                     newMessageDiv.innerHTML = `<p>${newMessage.Message}</p>`;
+//                     chatBody.appendChild(newMessageDiv);
+
+//                     // Optionally, clear the message input field
+//                     form.querySelector('input[name="messagePrivite"]').value = '';
+//                 } else {
+//                     // Handle any errors, such as displaying an error message to the user
+//                     console.error('Error sending message:', data.error);
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error sending message:', error);
+//             });
+//         });
+//     }
+// }
 
 // function setupLikeButton(postId) {
 //     console.log("fjff");

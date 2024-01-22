@@ -6,37 +6,42 @@ import (
 )
 
 type MessagePrivate struct {
-	ID       int
-	FromUser       string 
-	ContentMessage string 
-	ToUser         string 
+	ID             int
+	FromUser       string
+	ContentMessage string
+	ToUser         string
 	CreateDate     time.Time
 }
 
-func (Com *Comment) GetMessage(db *sql.DB, post_id int) ([]Comment, error) {
+type MessageSender struct {
+	UserForum    []MessagePrivate
+	UserReceiver []MessagePrivate
+}
 
-	req := `SELECT c.id,c.content,u.Nickname
-	FROM "Comment" c 
-	INNER JOIN "User" u on c."userId"=u.id  WHERE c."postId"=?
-	ORDER BY c."created_at" DESC;`
+func GetMessage(db *sql.DB, userFrom, toUser string) ([]MessagePrivate, error) {
 
-	comments := []Comment{}
+	req := `SELECT m.id,m.message,m.createdDate
+	FROM message m
+	WHERE m."fromUser"=? and m."toUser"=?
+	ORDER BY m."createdDate" ASC;`
 
-	row, err := db.Query(req, post_id)
+	allmessage := []MessagePrivate{}
+
+	row, err := db.Query(req, userFrom, toUser)
 	if err != nil {
-		return comments, err
+		return allmessage, err
 	}
 	for row.Next() {
 
-		comment := Comment{}
-		row.Scan(&comment.ID, &comment.Content, &comment.NickName)
-		comments = append(comments, comment)
+		message := MessagePrivate{}
+		row.Scan(&message.ID, &message.ContentMessage, &message.CreateDate)
+		allmessage = append(allmessage, message)
 	}
-	return comments, row.Err()
+	return allmessage, row.Err()
 }
 
-func (Com *MessagePrivate) InsertMessage(db *sql.DB, fromUser, toUser , contentMessage string) error {
+func (Com *MessagePrivate) InsertMessage(db *sql.DB, fromUser, toUser, contentMessage string, createDate time.Time) error {
 	req := `INSERT INTO message (fromUser,toUser,message,isRead,createdDate) VALUES(?,?,?,?,?);`
-	_, errr := db.Exec(req, fromUser, toUser, contentMessage, 0,time.Now())
+	_, errr := db.Exec(req, fromUser, toUser, contentMessage, 0, time.Now())
 	return errr
 }

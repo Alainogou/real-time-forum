@@ -6,17 +6,22 @@ import (
 	"io/ioutil"
 	"net/http"
 	"realtimeforum/models"
+	"time"
 )
 
 type MessageJson struct {
-	FromUser       string `json:"FromUser"`
-	ContentMessage string `json:"Message"`
-	ToUser         string `json:"ToUser"`
+	FromUser       string    `json:"FromUser"`
+	ContentMessage string    `json:"Message"`
+	ToUser         string    `json:"ToUser"`
+	CreateDate     time.Time `json:"CreateDate"`
 }
 
 func CreateMessage(w http.ResponseWriter, r *http.Request) {
 
 	messengers := MessageJson{}
+	// var currentTime = time.Now()
+	// var formattedTime = currentTime.Format("2006-01-02 15:04:05 -0700 MST")
+	// var formattedDate = messengers.CreateDate.Format("2006-01-02 15:04:05 -0700 MST")
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -46,8 +51,7 @@ func CreateMessage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("mess", messengers)
 	com := models.MessagePrivate{}
-	errinsert := com.InsertMessage(DB, messengers.FromUser, messengers.ToUser, messengers.ContentMessage)
-
+	errinsert := com.InsertMessage(DB, messengers.FromUser, messengers.ToUser, messengers.ContentMessage, messengers.CreateDate)
 	if errinsert != nil {
 		fmt.Println(errinsert)
 		// helper.ErrorPage(w, 500)

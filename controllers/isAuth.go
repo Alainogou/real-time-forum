@@ -18,7 +18,8 @@ type authInfo struct {
 }
 
 func IsAuth(w http.ResponseWriter, r *http.Request) {
-	
+	all, errs := models.GetMessage(DB, "Dembouz", "alo")
+	fmt.Println(all, errs)
 
 	isConnect, email := Auth(DB, w, r)
 	userConnect := models.User{}
@@ -42,7 +43,6 @@ func IsAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func Auth(Db *sql.DB, w http.ResponseWriter, r *http.Request) (bool, string) {
-	
 
 	sessionpi, err := r.Cookie("sessionid")
 	if err != nil || sessionpi.String() == "" {

@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"os"
 	"realtimeforum/config"
-	"time"
-	"realtimeforum/websocket"
 	"realtimeforum/controllers"
-	
+	wbs "realtimeforum/websocket"
+	"time"
+
 	"github.com/rs/cors"
-	
 )
 
 var (
@@ -45,8 +44,6 @@ func InitMessage() {
 	fmt.Printf(Cyan + "===============================================\n" + Reset)
 }
 
-
-
 func init() {
 
 	var err error
@@ -56,7 +53,7 @@ func init() {
 		fmt.Println("connection database Error")
 		os.Exit(0)
 	}
-	
+
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -97,11 +94,10 @@ func main() {
 	http.HandleFunc("/createComment", controllers.CreateComment)
 	http.HandleFunc("/fetchComment/", controllers.GetComments)
 	http.HandleFunc("/CreateMessage", controllers.CreateMessage)
+	http.HandleFunc("/fetchPrivateMessage/", controllers.GetPrivateMessage)
 
-	
-	
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		wbs.HandleConnections(w, r, controllers.DB) 
+		wbs.HandleConnections(w, r, controllers.DB)
 	})
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
