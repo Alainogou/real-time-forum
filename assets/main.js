@@ -171,7 +171,8 @@ function handleSuccessfulLogin(data) {
         postform.style.top = "0px"
         postForm(postform, data.User.Id)
 
-        let closeForm=document.querySelector(".btn-close")
+        let closeForm=document.querySelectorAll(`.btn-close-${data.User.NickName}`)
+    console.log(closeForm);
         
         if (closeForm) closeForm.addEventListener("click", function(){
             postform.style.display='none'
@@ -372,7 +373,9 @@ function fetchPrivateMessage(userFrom, toUser){
         let allMessages = [...data.UserReceiver, ...data.UserForum];
 
         // Call FormMessage with the combined messages array
-        FormMessage(right, toUser, allMessages);
+        FormMessage(right, toUser,userFrom, allMessages);
+     
+
     })
     .catch(error => console.error('Erreur:', error));
 }

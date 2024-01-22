@@ -1322,7 +1322,12 @@ button:active {
 }
 
 .incoming {
-  background-color: #e1e1e1;
+  background-color: #220707;
+  color: #0f9d58;
+}
+.incoming p {
+  /* background-color: #220707; */
+  color: #0f9d58;
 }
 
 .outgoing {
@@ -1335,6 +1340,7 @@ button:active {
   color: #db3c3c;
   margin: 0;
 }
+
 
 .chat-footer {
   padding: 10px;
