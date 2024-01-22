@@ -233,8 +233,8 @@ function handleSuccessfulLogin(data) {
                         console.log("contact clicked");
                        
                 
-                        FormMessage(right,msg.AllUser[k].NickName)
-                        
+                       
+
                         fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
                         let messageFormId = document.querySelector(`#receved-${msg.AllUser[k].NickName}`)
                         
@@ -280,6 +280,7 @@ function handleSuccessfulLogin(data) {
 
 
 function fetchComment(addcomment, postId){
+  
 
     fetch(`http://localhost:8081/fetchComment/${postId}`)
     .then(response => response.json())
@@ -335,21 +336,48 @@ function fetchComment(addcomment, postId){
 
 }
 
+// function fetchPrivateMessage(userFrom, toUser){
+
+//     fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
+//     .then(response => response.json())
+//     .then(data => {
+//     console.log("alo",data);
+   
+//     console.log("userFrom from API response:", data.userFrom);
+
+        
+    
+//     })
+//     .catch(error => console.error('Erreur:', error));
+
+
+// }
+
 function fetchPrivateMessage(userFrom, toUser){
+    // Assuming 'right' is the container where the chat should be displayed
+    
+    var divsRight = document.querySelectorAll('.right');
+    let right=divsRight[1]
+    // right.classList.add('right');
+        // Append 'right' to the DOM if it's not already there
+        // For example, document.body.appendChild(right);
+    
 
     fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
     .then(response => response.json())
     .then(data => {
+        console.log("data from API response:", data);
 
-        console.log(data)
-        
-        
-    
+        // Combine the received and sent messages into one array
+        let allMessages = [...data.UserReceiver, ...data.UserForum];
+
+        // Call FormMessage with the combined messages array
+        FormMessage(right, toUser, allMessages);
     })
     .catch(error => console.error('Erreur:', error));
-
-
 }
+
+
 
 function handleRegistration(event) {
     event.preventDefault();
@@ -726,8 +754,7 @@ function showError(selector, message) {
 
 function handleMessage(event, nickname){
 
-    let form = document.querySelector(`#receved-${nickname}`);
-   
+    
 
     event.preventDefault();
     console.log('yes')
