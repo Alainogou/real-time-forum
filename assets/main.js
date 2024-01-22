@@ -280,6 +280,8 @@ function fetchComment(addcomment, postId){
     fetch(`http://localhost:8081/fetchComment/${postId}`)
     .then(response => response.json())
     .then(data => {
+
+    
         addcomment.innerHTML=''
 
         for (let p=0;p<data.length;p++){
@@ -454,6 +456,8 @@ function fetchPost  (globalPosts,UserId) {
             );
             essai.innerHTML=postHtml
             globalPosts.appendChild(essai)
+            setupLikeButton(response[i].Post_id);
+
           
         }
       
@@ -754,3 +758,81 @@ function handleMessage(event, nickname){
    .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
   
 }
+
+// function setupLikeButton(postId) {
+//     console.log("fjff");
+//     var likeButton = document.getElementById('likeButton-' + postId);
+//     if (likeButton) {
+//         likeButton.addEventListener('click', function() {
+//             var likeIcon = this;
+//             var likeCountElement = document.getElementById('likeCount-' + postId);
+//             var likeCount = parseInt(likeCountElement.textContent, 10);
+//             var isLiked = likeIcon.getAttribute('data-liked') === 'true';
+
+//             if (isLiked) {
+//                 likeCount -= 1;
+//                 likeIcon.setAttribute('data-liked', 'false');
+//                 likeIcon.classList.remove('liked');
+//             } else {
+//                 likeCount += 1;
+//                 likeIcon.setAttribute('data-liked', 'true');
+//                 likeIcon.classList.add('liked');
+//             }
+
+//             likeCountElement.textContent = likeCount + " Likes";
+//             localStorage.setItem('likeCount-' + postId, likeCount);
+//         });
+        
+//         // When the page loads, retrieve the like counts from local storage and update the UI
+//         window.addEventListener('load', function() {
+//             var likeButtons = document.querySelectorAll('[id^="likeButton-"]');
+//             likeButtons.forEach(function(button) {
+//                 var postId = button.id.split('-')[1];
+//                 var storedLikeCount = localStorage.getItem('likeCount-' + postId);
+//                 if (storedLikeCount) {
+//                     var likeCountElement = document.getElementById('likeCount-' + postId);
+//                     likeCountElement.textContent = storedLikeCount;
+//                 }
+//             });
+//         });
+//     }
+// }
+
+// Cette fonction configure le bouton "J'aime" pour un post spécifique.
+function setupLikeButton(postId) {
+    var likeButton = document.getElementById('likeButton-' + postId);
+    var likeCountElement = document.getElementById('likeCount-' + postId);
+
+    // Récupérer l'état "aimé" et le nombre de likes du localStorage
+    var isLiked = localStorage.getItem('liked-' + postId) === 'true';
+    var likeCount = parseInt(localStorage.getItem('likeCount-' + postId)) || 0;
+
+    // Mettre à jour l'interface utilisateur avec les valeurs récupérées
+    likeCountElement.textContent = likeCount + ' Likes';
+    likeButton.setAttribute('data-liked', isLiked.toString());
+    likeButton.classList.toggle('liked', isLiked);
+
+    // Ajouter un écouteur d'événements pour gérer les clics sur le bouton "J'aime"
+    likeButton.addEventListener('click', function() {
+        isLiked = !isLiked;
+        likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+
+        // Mettre à jour l'interface utilisateur
+        likeCountElement.textContent = likeCount + ' Likes';
+        likeButton.setAttribute('data-liked', isLiked.toString());
+        likeButton.classList.toggle('liked', isLiked);
+
+        // Mettre à jour le localStorage avec le nouvel état et le nouveau nombre de likes
+        localStorage.setItem('liked-' + postId, isLiked.toString());
+        localStorage.setItem('likeCount-' + postId, likeCount.toString());
+    });
+}
+
+// Appeler setupLikeButton pour chaque post lorsque la page est chargée.
+document.addEventListener('DOMContentLoaded', function() {
+    var likeButtons = document.querySelectorAll('[id^="likeButton-"]');
+    likeButtons.forEach(function(button) {
+        var postId = button.id.split('-')[1];
+        setupLikeButton(postId);
+    });
+});

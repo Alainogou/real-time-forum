@@ -119,7 +119,7 @@ export function fetchPosthtml(postId, postImage, friendName, postTime, postText,
                   <img src="/assets/image/like.png">
                   <img src="/assets/image/haha.png">
                   <img src="/assets/image/heart.png">
-                  <p>${likeCount}</p>
+                  <p id="likeCount-${postId}">${likeCount} </p>
               </div>
               <div class="comment">
                   <p ><span id="commentNumber-${postId}">${commentCount} </span> Comments</p>
@@ -128,8 +128,8 @@ export function fetchPosthtml(postId, postImage, friendName, postTime, postText,
           </div>
           <hr>
           <div class="like">
-              <div class="like_icon">
-                  <i class="fa-solid fa-thumbs-up activi"></i>
+          <div class="like_icon" id="likeButton-${postId}" data-liked="false">
+          <i class="fa-solid fa-thumbs-up activi"></i>
                   <p>Like</p>
               </div>
               
@@ -147,7 +147,9 @@ export function fetchPosthtml(postId, postImage, friendName, postTime, postText,
           </div>
          
 
-      </div>`;
+      </div>
+      
+      `;
   }
 
 
