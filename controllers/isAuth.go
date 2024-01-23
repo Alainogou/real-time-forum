@@ -18,8 +18,6 @@ type authInfo struct {
 }
 
 func IsAuth(w http.ResponseWriter, r *http.Request) {
-	all, errs := models.GetMessage(DB, "Dembouz", "alo")
-	fmt.Println(all, errs)
 
 	isConnect, email := Auth(DB, w, r)
 	userConnect := models.User{}

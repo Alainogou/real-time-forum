@@ -1319,25 +1319,34 @@ button:active {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
+  
 }
 
 .incoming {
-  background-color: #220707;
+  background-color: #f3eeee;
   color: #0f9d58;
+  display: flex;
+  justify-content: space-between;
 }
 .incoming p {
   /* background-color: #220707; */
   color: #0f9d58;
+ 
 }
 
 .outgoing {
-  background-color: #f2f2f2;
+  background-color: #10ac5686;
   text-align: right;
+  display: flex;
+  justify-content: space-between;
+}
+.outgoing p{
+ color: orange;
 }
 
 .message p {
   font-size: 14px;
-  color: #db3c3c;
+  color: black;
   margin: 0;
 }
 

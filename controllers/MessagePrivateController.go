@@ -49,7 +49,7 @@ func CreateMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("mess", messengers)
+	// fmt.Println("mess", messengers)
 	com := models.MessagePrivate{}
 	errinsert := com.InsertMessage(DB, messengers.FromUser, messengers.ToUser, messengers.ContentMessage, messengers.CreateDate)
 	if errinsert != nil {

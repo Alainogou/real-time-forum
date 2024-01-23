@@ -92,13 +92,14 @@
 //     container.appendChild(premierDiv);
 // };
 
-export const FormMessage = (container, toUser,userFrom, messages) => {
+export const FormMessage = (container, toUser,userFrom, messageRecu ,messageEnvoyer) => {
+    
     let premierDiv = document.createElement('div');
     premierDiv.classList.add('chat-card');
     premierDiv.classList.add(`chat-card-${toUser}`);
 
     // Triez les messages par date de création
-    messages.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
+    messageRecu.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
 
     // Créez le HTML de base pour le chat
     let chatHTML = `
@@ -114,26 +115,34 @@ export const FormMessage = (container, toUser,userFrom, messages) => {
         <div class="chat-body">`;
 
     // Ajoutez les messages au HTML
-    messages.forEach((message) => {
+    messageRecu.forEach((message) => {
         chatHTML += `
-            <div class="${message.UserReceiver? 'message incoming' : 'message  outgoing '}">
+            <div class="${message.UserReceiver} message incoming">
                     
 
-                <p class= "ss">${message.ContentMessage} <span>${userFrom}</span></p>
-            </div>
+                <p class= "ss">${message.ContentMessage} </p>
+                <span>${toUser}</span>
+            </div>`
 
-            <div class="${message.UserForum? 'message outgoing' : 'message incoming  '}">
-                    
-
-                <p class= "ss">${message.ContentMessage} <span>${toUser}</span></p>
-            </div>`;
     });
 
+    messageEnvoyer.forEach((message) => {
+        chatHTML += `
+        <div class="${message.UserForum} message outgoing">
+                    
+
+        <p class= "ss">${message.ContentMessage} </p>
+        <span>${userFrom}</span>
+    </div>`;
+
+    });
+
+ 
     // Terminez le HTML avec le formulaire de saisie de message
     chatHTML += `
         </div>
-        <form enctype="multipart/form-data" id="receved-${toUser}">
-            <input type="hidden" name="send-Name" value="${toUser}">
+        <form enctype="multipart/form-data" class="receved-${toUser}">
+            <input type="hidden" name="send-Name" value="${userFrom}">
             <div class="chat-footer">
                 <input placeholder="Type your message" type="text" name="messagePrivite">
                 <button>Send</button>

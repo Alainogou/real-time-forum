@@ -201,7 +201,6 @@ function handleSuccessfulLogin(data) {
     socket.onopen = (event) => {
         let message = JSON.stringify({NickName: data.User.NickName});
         socket.send(message);
-        console.log('WebSocket connection opened');
     };
 
      // Écoutez les messages entrants
@@ -232,25 +231,29 @@ function handleSuccessfulLogin(data) {
             
                     contact.addEventListener("click",()=>{
                         console.log("contact clicked");
-                       
-                
-                       
-
-                        fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
-                        let messageFormId = document.querySelector(`#receved-${msg.AllUser[k].NickName}`)
-                        
-                        if (messageFormId){
-                            messageFormId.addEventListener("submit",(event) =>{
-                                handleMessage(event,data.User.NickName);
-                                console.log('yes sent message');
-                            })
-                        }
-                        let closeMesenger= document.querySelector(`.btn-close2-${msg.AllUser[k].NickName}`)
-                        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
-                            
-                            let clickClose = document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
-                            clickClose.remove()
-                        })
+                        let mydata={
+                            "UserForum": [
+                              {
+                                "ID": 35,
+                                "FromUser": "",
+                                "ContentMessage": "wi alo cv",
+                                "ToUser": "",
+                                "CreateDate": "2024-01-23T12:44:31.013044512Z"
+                              }
+                            ],
+                            "UserReceiver": [
+                              {
+                                "ID": 34,
+                                "FromUser": "",
+                                "ContentMessage": "cc sow",
+                                "ToUser": "",
+                                "CreateDate": "2024-01-23T12:39:09.777992068Z"
+                              }
+                            ]
+                          }
+                          privateSocket(msg.AllUser[k].NickName, data.User.NickName, mydata, right)
+                        // fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
+                     
                     })
 
                    
@@ -337,22 +340,67 @@ function fetchComment(addcomment, postId){
 
 }
 
-// function fetchPrivateMessage(userFrom, toUser){
-
-//     fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
-//     .then(response => response.json())
-//     .then(data => {
-//     console.log("alo",data);
-   
-//     console.log("userFrom from API response:", data.userFrom);
-
-        
+function privateSocket(toUser, fromUser, data, right)  {
     
-//     })
-//     .catch(error => console.error('Erreur:', error));
+   
+    // FormMessage(right, toUser,fromUser, data.UserReceiver, data.UserForum);
+    // let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+    // if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+    //          let clickClose = document.querySelector(`.chat-card-${toUser}`)
+    //         clickClose.remove()
+    // })
+    const socket = new WebSocket(`ws://localhost:8081/privateSocket?userFrom=${fromUser}&toUser=${toUser}`);
+    
+    
+       // Écoutez les messages entrants
+    socket.onmessage = function(event) {
+        let msg = JSON.parse(event.data);
+        console.log('il y a un message entrant')
+        console.log(msg)
+        let premierDiv= document.querySelector(`.chat-card-${toUser}`)
+        if (premierDiv) premierDiv.remove()
+         console.log('yo shhs', premierDiv)
+        FormMessage(right, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+                let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                clickClose.remove()
+        })
 
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+        console.log('messagesh' ,messageFormId);
+        
+        if (messageFormId)  messageFormId .addEventListener('submit', (event) => {
+            event.preventDefault();
+            const messageInput = document.querySelector('input[name="messagePrivite"]');
+            const message = messageInput.value;
+            const messageData = {
+                FromUser: fromUser,
+                ToUser: toUser,
+                Message: message,
+                CreateDate: new Date().toISOString()
+            };
+            console.log(messageData, "messagedata");
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+        });
+    };
+             
+    socket.onopen = (event) => {
+       
+    };
 
-// }
+   
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`);
+    };
+
+}
 
 function fetchPrivateMessage(userFrom, toUser){
     // Assuming 'right' is the container where the chat should be displayed
@@ -367,14 +415,31 @@ function fetchPrivateMessage(userFrom, toUser){
     fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
     .then(response => response.json())
     .then(data => {
+
+        console.log("from",userFrom, "toUser",toUser);
         console.log("data from API response:", data);
 
         // Combine the received and sent messages into one array
-        let allMessages = [...data.UserReceiver, ...data.UserForum];
+        // /let allMessages = [...data.UserReceiver, ...data.UserForum];
+        console.log("datta received:", data.UserReceiver);
+        // console.log("all messages from API response:", allMessages);
 
         // Call FormMessage with the combined messages array
-        FormMessage(right, toUser,userFrom, allMessages);
-     
+        FormMessage(right, toUser,userFrom, data.UserReceiver, data.UserForum);
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+                        
+                        if (messageFormId){
+                            messageFormId.addEventListener("submit",(event) =>{
+                                handleMessage(event,toUser);
+                                console.log('yes sent message');
+                            })
+                        }
+                        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+                        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+                            
+                            let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                            clickClose.remove()
+                        })
 
     })
     .catch(error => console.error('Erreur:', error));
@@ -755,9 +820,9 @@ function showError(selector, message) {
     }, 5000);
 }
 
+
 function handleMessage(event, nickname){
 
-    
 
     event.preventDefault();
     console.log('yes')
@@ -822,95 +887,6 @@ function handleMessage(event, nickname){
 }
 
 
-// export const FormMessage = (container, nickname) => {
-//     // ... (existing code to create and append the form)
-
-//     // Add the event listener for form submission
-//     let form = document.querySelector(`#receved-${nickname}`);
-//     if (form) {
-//         form.addEventListener('submit', (event) => {
-//             event.preventDefault(); // Prevent the default form submission behavior
-
-//             const formData = new FormData(event.target); // Get the form data
-
-//             // Create the message object
-//             let newMessage = {
-//                 FromUser: nickname,
-//                 Message: formData.get("messagePrivite"),
-//                 ToUser: formData.get("send-Name"),
-//                 CreateDate: new Date().toISOString() // Set the current date and time
-//             };
-
-//             // Send the message to the server
-//             fetch('http://localhost:8081/CreateMessage', {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify(newMessage) // Convert the message object to a JSON string
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 if (data.success) {
-//                     // Update the chat UI to include the new message
-//                     const chatBody = container.querySelector('.chat-body');
-//                     const newMessageDiv = document.createElement('div');
-//                     newMessageDiv.classList.add('message', 'outgoing');
-//                     newMessageDiv.innerHTML = `<p>${newMessage.Message}</p>`;
-//                     chatBody.appendChild(newMessageDiv);
-
-//                     // Optionally, clear the message input field
-//                     form.querySelector('input[name="messagePrivite"]').value = '';
-//                 } else {
-//                     // Handle any errors, such as displaying an error message to the user
-//                     console.error('Error sending message:', data.error);
-//                 }
-//             })
-//             .catch(error => {
-//                 console.error('Error sending message:', error);
-//             });
-//         });
-//     }
-// }
-
-// function setupLikeButton(postId) {
-//     console.log("fjff");
-//     var likeButton = document.getElementById('likeButton-' + postId);
-//     if (likeButton) {
-//         likeButton.addEventListener('click', function() {
-//             var likeIcon = this;
-//             var likeCountElement = document.getElementById('likeCount-' + postId);
-//             var likeCount = parseInt(likeCountElement.textContent, 10);
-//             var isLiked = likeIcon.getAttribute('data-liked') === 'true';
-
-//             if (isLiked) {
-//                 likeCount -= 1;
-//                 likeIcon.setAttribute('data-liked', 'false');
-//                 likeIcon.classList.remove('liked');
-//             } else {
-//                 likeCount += 1;
-//                 likeIcon.setAttribute('data-liked', 'true');
-//                 likeIcon.classList.add('liked');
-//             }
-
-//             likeCountElement.textContent = likeCount + " Likes";
-//             localStorage.setItem('likeCount-' + postId, likeCount);
-//         });
-        
-//         // When the page loads, retrieve the like counts from local storage and update the UI
-//         window.addEventListener('load', function() {
-//             var likeButtons = document.querySelectorAll('[id^="likeButton-"]');
-//             likeButtons.forEach(function(button) {
-//                 var postId = button.id.split('-')[1];
-//                 var storedLikeCount = localStorage.getItem('likeCount-' + postId);
-//                 if (storedLikeCount) {
-//                     var likeCountElement = document.getElementById('likeCount-' + postId);
-//                     likeCountElement.textContent = storedLikeCount;
-//                 }
-//             });
-//         });
-//     }
-// }
 
 // Cette fonction configure le bouton "J'aime" pour un post spécifique.
 function setupLikeButton(postId) {

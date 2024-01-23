@@ -3,14 +3,15 @@ package controllers
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"strings"
-	"realtimeforum/websocket"
 	"io/ioutil"
+	"net/http"
+	wbs "realtimeforum/websocket"
+	"strings"
 
 	"encoding/json"
 )
-type UserDeconn  struct  {
+
+type UserDeconn struct {
 	NickName string `json:"NickName"`
 }
 

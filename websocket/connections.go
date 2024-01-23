@@ -34,9 +34,6 @@ type AllUserStatus struct {
 var UsersMap = make(map[string]*models.User)
 var UsersMapMutex sync.Mutex
 
-// var ConnectionsArray []*websocket.Conn
-// var ConnectionsArrayMutex sync.Mutex
-
 var allUserStatus AllUserStatus
 var userExist []string
 
@@ -47,12 +44,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		fmt.Println(err)
 	}
 	defer ws.Close()
-
-	// ConnectionsArrayMutex.Lock()
-	// ConnectionsArray = append(ConnectionsArray, ws)
-	// ConnectionsArrayMutex.Unlock()
-
-	// fmt.Println(ConnectionsArray)
 
 	for {
 		// Recevoir un message du client
@@ -163,49 +154,3 @@ func removeUserStatus(allUserStatus *AllUserStatus, nickName string) {
 		}
 	}
 }
-
-// func handleConnectisons(w http.ResponseWriter, r *http.Request) {
-// 	ws, err := upgrader.Upgrade(w, r, nil)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	defer ws.Close()
-// 	for {
-// 		_, msg, err := ws.ReadMessage()
-// 		if err != nil {
-// 			fmt.Println("read:", err)
-// 			return
-// 		}
-
-// 		var receivedMsg Message
-// 		err = json.Unmarshal(msg, &receivedMsg)
-// 		if err != nil {
-// 			fmt.Println("unmarshal:", err)
-// 			return
-// 		}
-
-// 		jsonMsg, _ := json.Marshal(receivedMsg)
-// 		err = ws.WriteMessage(websocket.TextMessage, jsonMsg)
-// 		if err != nil {
-// 			fmt.Println("write:", err)
-// 			return
-// 		}
-// 		fmt.Println("Received message:", receivedMsg.NickName)
-// 	}
-// 	// for {
-
-// 	// 	messageType, msg, err := ws.ReadMessage()
-
-// 	// 	fmt.Println(string(msg))
-// 	// 	if err != nil {
-
-// 	// 		fmt.Println("errroe", err)
-
-// 	// 		break
-// 	// 	}
-// 	// 	if err := ws.WriteMessage(messageType, msg); err != nil {
-// 	// 		fmt.Println(err)
-// 	// 		break
-// 	// 	}
-// 	// }
-// }
