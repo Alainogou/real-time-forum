@@ -21,7 +21,7 @@ type MessageJson struct {
 
 var MessageConnection = make(map[string]*websocket.Conn)
 
-func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func sHandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	userFrom := r.URL.Query().Get("userFrom")
 	toUser := r.URL.Query().Get("toUser")
 	fmt.Println(userFrom, toUser)
@@ -50,6 +50,67 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 	for {
 
+		// MessageConnection[userFrom] = ws
+		// fmt.Println(MessageConnection)
+		// Broad(userFrom, toUser, db, ws)
+
+		// // Recevoir un message du client
+		// _, msg, err := ws.ReadMessage()
+		// if err != nil {
+		// 	fmt.Println("read:", err)
+
+		// 	return
+		// }
+
+		// var receivedMsg MessageJson
+		// err = json.Unmarshal(msg, &receivedMsg)
+		// if err != nil {
+		// 	fmt.Println("unmarshal:", err)
+		// 	return
+		// }
+
+		// // fmt.Println("mess", messengers)
+		// com := models.MessagePrivate{}
+		// errinsert := com.InsertMessage(db, receivedMsg.FromUser, receivedMsg.ToUser, receivedMsg.ContentMessage, receivedMsg.CreateDate)
+		// if errinsert != nil {
+		// 	fmt.Println(errinsert)
+		// 	// helper.ErrorPage(w, 500)
+		// 	return
+		// }
+
+	}
+}
+
+func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+
+	userFrom := r.URL.Query().Get("userFrom")
+	toUser := r.URL.Query().Get("toUser")
+	fmt.Println(userFrom, toUser)
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer ws.Close()
+
+	for {
+		MessageConnection[userFrom] = ws
+		// message := models.MessageSender{}
+		// user_forum, err := models.GetMessage(db, userFrom, toUser)
+		// user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
+
+		// if err != nil || err1 != nil {
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 	return
+		// }
+		// message.UserForum = user_forum
+		// message.UserReceiver = user_receiver
+		// jsonMsg, _ := json.Marshal(message)
+		// err = ws.WriteMessage(websocket.TextMessage, jsonMsg)
+		// if err != nil {
+		// 	fmt.Println("write:", err)
+		// 	return
+		// }
+		Broad(userFrom, toUser, db)
 		// Recevoir un message du client
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
@@ -65,7 +126,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 
-		// fmt.Println("mess", messengers)
+		fmt.Println("mess", receivedMsg)
 		com := models.MessagePrivate{}
 		errinsert := com.InsertMessage(db, receivedMsg.FromUser, receivedMsg.ToUser, receivedMsg.ContentMessage, receivedMsg.CreateDate)
 		if errinsert != nil {
@@ -73,39 +134,54 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			// helper.ErrorPage(w, 500)
 			return
 		}
-		MessageConnection[userFrom] = ws
-		fmt.Println(MessageConnection)
-		Broad(userFrom, toUser, db, ws)
 
-		// Envoyer un message au client
-		/* allUserStatus = AllUserStatus{AllUser: userConnect}
-		Broadcast(allUserStatus, userExist, receivedMsg.NickName) */
+		fmt.Println(MessageConnection)
+		// Broad(userFrom, toUser, db, ws)
 
 	}
 }
 
-func Broad(userFrom, toUser string, db *sql.DB, ws *websocket.Conn) {
-	for k := 0; k < len(userExist); k++ {
-		if userExist[k] == userFrom {
-			message := models.MessageSender{}
-			user_forum, err := models.GetMessage(db, userFrom, toUser)
-			user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
+func Broad(userFrom, toUser string, db *sql.DB) {
 
-			if err != nil || err1 != nil {
-				fmt.Println("yo error")
-				return
-			}
-			message.UserForum = user_forum
-			message.UserReceiver = user_receiver
-			jsonMsg, err := json.Marshal(message)
-			conn := MessageConnection[userExist[k]]
-			err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
+	message := models.MessageSender{}
+	user_forum, err := models.GetMessage(db, userFrom, toUser)
+	user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
 
-			if err != nil {
-				fmt.Println("write:", err)
-				return
-			}
+	if err != nil || err1 != nil {
+		fmt.Println("yo error")
+		return
+	}
+	message.UserForum = user_forum
+	message.UserReceiver = user_receiver
+	jsonMsg, err := json.Marshal(message)
+	conn := MessageConnection[userFrom]
+	err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 
+	if err != nil {
+		fmt.Println("write:", err)
+		return
+	}
+	fmt.Println("bOOOL", IsUserConnected(toUser))
+	if IsUserConnected(toUser) {
+
+		user_forum, _ = models.GetMessage(db, toUser, userFrom)
+		user_receiver, _ = models.GetMessage(db, userFrom, toUser)
+		message.UserForum = user_forum
+		message.UserReceiver = user_receiver
+		jsonMsg, err := json.Marshal(message)
+
+		conn = MessageConnection[toUser]
+		err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
+
+		if err != nil {
+			fmt.Println("write:", err)
+			return
 		}
 	}
+
+}
+
+func IsUserConnected(username string) bool {
+	_, exists := MessageConnection[username]
+	return exists
 }

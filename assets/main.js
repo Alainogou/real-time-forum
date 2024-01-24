@@ -172,7 +172,7 @@ function handleSuccessfulLogin(data) {
         postForm(postform, data.User.Id)
 
         let closeForm=document.querySelectorAll(`.btn-close-${data.User.NickName}`)
-    console.log(closeForm);
+        console.log(closeForm);
         
         if (closeForm) closeForm.addEventListener("click", function(){
             postform.style.display='none'
@@ -219,10 +219,8 @@ function handleSuccessfulLogin(data) {
         contactTagDiv.appendChild(h2);
         div.appendChild(contactTagDiv);
         
-        
-            
-            for (let k=0;k<msg.AllUser.length;k++){
-                if (msg.AllUser[k].NickName !== data.User.NickName){
+        for (let k=0;k<msg.AllUser.length;k++){
+            if (msg.AllUser[k].NickName !== data.User.NickName){
                 Messenger(div, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
                 
                 setTimeout(() => {
@@ -231,27 +229,11 @@ function handleSuccessfulLogin(data) {
             
                     contact.addEventListener("click",()=>{
                         console.log("contact clicked");
-                        let mydata={
-                            "UserForum": [
-                              {
-                                "ID": 35,
-                                "FromUser": "",
-                                "ContentMessage": "wi alo cv",
-                                "ToUser": "",
-                                "CreateDate": "2024-01-23T12:44:31.013044512Z"
-                              }
-                            ],
-                            "UserReceiver": [
-                              {
-                                "ID": 34,
-                                "FromUser": "",
-                                "ContentMessage": "cc sow",
-                                "ToUser": "",
-                                "CreateDate": "2024-01-23T12:39:09.777992068Z"
-                              }
-                            ]
-                          }
-                          privateSocket(msg.AllUser[k].NickName, data.User.NickName, mydata, right)
+                             let premierDiv = document.createElement('div');
+                            premierDiv.classList.add('chat-card');
+                            premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+                            right.appendChild(premierDiv);
+                            privateSocket(msg.AllUser[k].NickName, data.User.NickName, right)
                         // fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
                      
                     })
@@ -260,7 +242,7 @@ function handleSuccessfulLogin(data) {
                 }, 1000);
 
             }
-            }
+        }
             
        
         right.appendChild(div)
@@ -340,7 +322,7 @@ function fetchComment(addcomment, postId){
 
 }
 
-function privateSocket(toUser, fromUser, data, right)  {
+function privateSocket(toUser, fromUser, right)  {
     
    
     // FormMessage(right, toUser,fromUser, data.UserReceiver, data.UserForum);
@@ -355,12 +337,11 @@ function privateSocket(toUser, fromUser, data, right)  {
        // Écoutez les messages entrants
     socket.onmessage = function(event) {
         let msg = JSON.parse(event.data);
-        console.log('il y a un message entrant')
-        console.log(msg)
+       
         let premierDiv= document.querySelector(`.chat-card-${toUser}`)
-        if (premierDiv) premierDiv.remove()
-         console.log('yo shhs', premierDiv)
-        FormMessage(right, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        // if (premierDiv) premierDiv.remove()
+         
+        FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
         let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
         if (closeMesenger) closeMesenger.addEventListener("click",()=>{
                 let clickClose = document.querySelector(`.chat-card-${toUser}`)
@@ -402,48 +383,51 @@ function privateSocket(toUser, fromUser, data, right)  {
 
 }
 
-function fetchPrivateMessage(userFrom, toUser){
-    // Assuming 'right' is the container where the chat should be displayed
+
+
+
+// function fetchPrivateMessage(userFrom, toUser){
+//     // Assuming 'right' is the container where the chat should be displayed
     
-    var divsRight = document.querySelectorAll('.right');
-    let right=divsRight[1]
-    // right.classList.add('right');
-        // Append 'right' to the DOM if it's not already there
-        // For example, document.body.appendChild(right);
+//     var divsRight = document.querySelectorAll('.right');
+//     let right=divsRight[1]
+//     // right.classList.add('right');
+//         // Append 'right' to the DOM if it's not already there
+//         // For example, document.body.appendChild(right);
     
 
-    fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
-    .then(response => response.json())
-    .then(data => {
+//     fetch(`http://localhost:8081/fetchPrivateMessage/${userFrom}+${toUser}`)
+//     .then(response => response.json())
+//     .then(data => {
 
-        console.log("from",userFrom, "toUser",toUser);
-        console.log("data from API response:", data);
+//         console.log("from",userFrom, "toUser",toUser);
+//         console.log("data from API response:", data);
 
-        // Combine the received and sent messages into one array
-        // /let allMessages = [...data.UserReceiver, ...data.UserForum];
-        console.log("datta received:", data.UserReceiver);
-        // console.log("all messages from API response:", allMessages);
+//         // Combine the received and sent messages into one array
+//         // /let allMessages = [...data.UserReceiver, ...data.UserForum];
+//         console.log("datta received:", data.UserReceiver);
+//         // console.log("all messages from API response:", allMessages);
 
-        // Call FormMessage with the combined messages array
-        FormMessage(right, toUser,userFrom, data.UserReceiver, data.UserForum);
-        let messageFormId = document.querySelector(`.receved-${toUser}`)
+//         // Call FormMessage with the combined messages array
+//         FormMessage(right, toUser,userFrom, data.UserReceiver, data.UserForum);
+//         let messageFormId = document.querySelector(`.receved-${toUser}`)
                         
-                        if (messageFormId){
-                            messageFormId.addEventListener("submit",(event) =>{
-                                handleMessage(event,toUser);
-                                console.log('yes sent message');
-                            })
-                        }
-                        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
-                        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+//                         if (messageFormId){
+//                             messageFormId.addEventListener("submit",(event) =>{
+//                                 handleMessage(event,toUser);
+//                                 console.log('yes sent message');
+//                             })
+//                         }
+//                         let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+//                         if (closeMesenger) closeMesenger.addEventListener("click",()=>{
                             
-                            let clickClose = document.querySelector(`.chat-card-${toUser}`)
-                            clickClose.remove()
-                        })
+//                             let clickClose = document.querySelector(`.chat-card-${toUser}`)
+//                             clickClose.remove()
+//                         })
 
-    })
-    .catch(error => console.error('Erreur:', error));
-}
+//     })
+//     .catch(error => console.error('Erreur:', error));
+// }
 
 
 

@@ -138,9 +138,12 @@ hr {
     .loginForm{
       max-width: 100%;
     }
+.chat-card{
 
-    
+    position: relative;
+    left: 50%;
   }
+}
   @media (max-width: 500px) {
     .home-view  .text {
       margin-bottom: 30px;

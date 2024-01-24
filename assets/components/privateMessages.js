@@ -92,14 +92,18 @@
 //     container.appendChild(premierDiv);
 // };
 
-export const FormMessage = (container, toUser,userFrom, messageRecu ,messageEnvoyer) => {
+export const FormMessage = (premierDiv, toUser,userFrom, messageRecu ,messageEnvoyer) => {
     
-    let premierDiv = document.createElement('div');
-    premierDiv.classList.add('chat-card');
-    premierDiv.classList.add(`chat-card-${toUser}`);
+    // let premierDiv = document.createElement('div');
+    // premierDiv.classList.add('chat-card');
+    // premierDiv.classList.add(`chat-card-${toUser}`);
 
     // Triez les messages par date de création
-    messageRecu.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
+    // messageRecu.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
+     let allMessage = [...messageRecu,...messageEnvoyer];
+     console.log("Non ordonne",allMessage);
+     let MessORD = sortMessagesByDate(allMessage)
+     console.log("ordonne",MessORD);
 
     // Créez le HTML de base pour le chat
     let chatHTML = `
@@ -151,8 +155,13 @@ export const FormMessage = (container, toUser,userFrom, messageRecu ,messageEnvo
 
     // Définissez le HTML interne de premierDiv et ajoutez-le au conteneur
     premierDiv.innerHTML = chatHTML;
-    container.appendChild(premierDiv);
+    // container.appendChild(premierDiv);
 };
+
+
+function sortMessagesByDate(messages) {
+    return messages.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
+}
 
 // messages.forEach((message) => {
 //     // let divClass = message.UserForum ? 'message outgoing' : message.UserReceiver ? 'message incoming' : 'message';

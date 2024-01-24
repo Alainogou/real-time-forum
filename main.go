@@ -102,6 +102,7 @@ func main() {
 	http.HandleFunc("/privateSocket", func(w http.ResponseWriter, r *http.Request) {
 		wbs.HandlePrivateMessage(w, r, controllers.DB)
 	})
+
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
 

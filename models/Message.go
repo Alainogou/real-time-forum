@@ -35,6 +35,8 @@ func GetMessage(db *sql.DB, userFrom, toUser string) ([]MessagePrivate, error) {
 
 		message := MessagePrivate{}
 		row.Scan(&message.ID, &message.ContentMessage, &message.CreateDate)
+		message.ToUser = toUser
+		message.FromUser = userFrom
 		allmessage = append(allmessage, message)
 	}
 	return allmessage, row.Err()
