@@ -1330,6 +1330,11 @@ button:active {
   color: #0f9d58;
   display: flex;
   justify-content: space-between;
+  
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
 }
 .incoming p {
   /* background-color: #220707; */
@@ -1342,6 +1347,10 @@ button:active {
   text-align: right;
   display: flex;
   justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
 }
 .outgoing p{
  color: orange;
