@@ -106,18 +106,6 @@ func GetAllUser(db *sql.DB) ([]*User, error) {
 	return users, nil
 }
 
-func SelectOneData(db *sql.DB) (User, error) {
-	return User{}, nil
-}
-
-func UpdateOne(db *sql.DB) (User, error) {
-	return User{}, nil
-}
-
-func DeleteOne(db *sql.DB) (User, error) {
-	return User{}, nil
-}
-
 func IsUserExist(db *sql.DB, email string) (string, error) {
 	var userEmail string
 

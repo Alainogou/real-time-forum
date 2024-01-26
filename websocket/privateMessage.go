@@ -128,11 +128,14 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		fmt.Println("mess", receivedMsg)
 		com := models.MessagePrivate{}
-		errinsert := com.InsertMessage(db, receivedMsg.FromUser, receivedMsg.ToUser, receivedMsg.ContentMessage, receivedMsg.CreateDate)
-		if errinsert != nil {
-			fmt.Println(errinsert)
-			// helper.ErrorPage(w, 500)
-			return
+		if receivedMsg.ContentMessage != "" {
+			errinsert := com.InsertMessage(db, receivedMsg.FromUser, receivedMsg.ToUser, receivedMsg.ContentMessage, receivedMsg.CreateDate)
+			if errinsert != nil {
+				fmt.Println(errinsert)
+				// helper.ErrorPage(w, 500)
+				return
+			}
+
 		}
 
 		fmt.Println(MessageConnection)

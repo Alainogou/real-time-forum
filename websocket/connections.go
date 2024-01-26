@@ -22,9 +22,10 @@ type Message struct {
 }
 
 type UserStatus struct {
-	Id       int    `json:"Id"`
-	NickName string `json:"NickName"`
-	Status   string `json:"Status"`
+	Id           int    `json:"Id"`
+	NickName     string `json:"NickName"`
+	Status       string `json:"Status"`
+	NbreMessages string `json:"NbreMessages"`
 }
 
 type AllUserStatus struct {

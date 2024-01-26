@@ -75,7 +75,7 @@ export const FormMessage = (right, toUser, userFrom, messageRecu, messageEnvoyer
     chatBody.className = 'chat-body';
 
     let allMessages = messageRecu.concat(messageEnvoyer);
-    allMessages.sort((a, b) => new Date(a.CreateDate) - new Date(b.CreateDate));
+    allMessages.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
 
   
     if (allMessages.length<10){
