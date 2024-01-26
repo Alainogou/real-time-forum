@@ -66,7 +66,6 @@ export const FormMessage = (right, toUser, userFrom, messageRecu, messageEnvoyer
         }, 500));
 
     }
-    
 
      // Create the chat header
      let chatHeader = document.createElement('div');
