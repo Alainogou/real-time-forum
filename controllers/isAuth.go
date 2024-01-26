@@ -18,8 +18,7 @@ type authInfo struct {
 }
 
 func IsAuth(w http.ResponseWriter, r *http.Request) {
-	count, _ := models.CountUnreadMessages(DB, "alo", "Dembouz")
-	fmt.Println("counter", count)
+
 	isConnect, email := Auth(DB, w, r)
 	userConnect := models.User{}
 	er := userConnect.GetOneUser(DB, email)

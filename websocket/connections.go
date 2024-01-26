@@ -25,7 +25,7 @@ type UserStatus struct {
 	Id           int    `json:"Id"`
 	NickName     string `json:"NickName"`
 	Status       string `json:"Status"`
-	NbreMessages string `json:"NbreMessages"`
+	NbreMessages int    `json:"NbreMessages"`
 }
 
 type AllUserStatus struct {
@@ -37,6 +37,7 @@ var UsersMapMutex sync.Mutex
 
 var allUserStatus AllUserStatus
 var userExist []string
+var UserSlice []*models.User
 
 func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
@@ -75,16 +76,23 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		UsersMap[receivedMsg.NickName] = oneUser
 
-		userSlice, _ := models.GetAllUser(db)
+		UserSlice, _ = models.GetAllUser(db)
 
 		userConnect := []UserStatus{}
 
-		for i := 0; i < len(userSlice); i++ {
-			_, ok := UsersMap[userSlice[i].NickName]
+		for i := 0; i < len(UserSlice); i++ {
+			_, ok := UsersMap[UserSlice[i].NickName]
+
+			count, err := models.CountUnreadMessages(db, receivedMsg.NickName, UserSlice[i].NickName)
+			if err != nil {
+				fmt.Println("error to give count read messages")
+			}
+			fmt.Println("COUNT", count)
+
 			if ok {
-				userConnect = append(userConnect, UserStatus{NickName: userSlice[i].NickName, Id: userSlice[i].Id, Status: "online"})
+				userConnect = append(userConnect, UserStatus{NickName: UserSlice[i].NickName, Id: UserSlice[i].Id, Status: "online"})
 			} else {
-				userConnect = append(userConnect, UserStatus{NickName: userSlice[i].NickName, Id: userSlice[i].Id, Status: "offLine"})
+				userConnect = append(userConnect, UserStatus{NickName: UserSlice[i].NickName, Id: UserSlice[i].Id, Status: "offLine"})
 
 			}
 
@@ -92,12 +100,12 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		// Envoyer un message au client
 		allUserStatus = AllUserStatus{AllUser: userConnect}
-		Broadcast(allUserStatus, userExist, receivedMsg.NickName)
+		Broadcast(allUserStatus, userExist, receivedMsg.NickName, db)
 
 	}
 }
 
-func RemoveUserFromMap(username string) {
+func RemoveUserFromMap(username string, db *sql.DB) {
 	UsersMapMutex.Lock()
 	defer UsersMapMutex.Unlock()
 
@@ -109,14 +117,22 @@ func RemoveUserFromMap(username string) {
 	}
 	userExist = removeString(userExist, username)
 
-	Broadcast(allUserStatus, userExist, username)
+	Broadcast(allUserStatus, userExist, username, db)
 }
 
-func Broadcast(allUserStatus AllUserStatus, userexist []string, userName string) {
+func Broadcast(allUserStatus AllUserStatus, userexist []string, userName string, db *sql.DB) {
 	for k := 0; k < len(userexist); k++ {
-		// if userexist[k] == userName {
-		// 	removeUserStatus(&allUserStatus, userName)
-		// }
+
+		for i := 0; i < len(UserSlice); i++ {
+
+			count, err := models.CountUnreadMessages(db, UserSlice[i].NickName, userexist[k])
+			if err != nil {
+				fmt.Println("error to give count read messages")
+
+			}
+			allUserStatus.AllUser[i].NbreMessages = count
+
+		}
 		jsonMsg, _ := json.Marshal(allUserStatus)
 		conn := UsersMap[userExist[k]].Conn
 		err := conn.WriteMessage(websocket.TextMessage, jsonMsg)

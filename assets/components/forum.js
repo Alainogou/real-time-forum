@@ -68,7 +68,7 @@ export const displayCategories=(container, firstName, lastName)=>{
     </div>`
 }
 
-export const Messenger = (container, nickname , NombreMessage) => {
+export const Messenger = (container, nickname , status, NombreMessage) => {
    let div = document.createElement('div');
    div.className = 'third_warpper';
    div.style.marginBottom = '10px'
@@ -79,7 +79,6 @@ export const Messenger = (container, nickname , NombreMessage) => {
    contactDiv.style.cursor='pointer'
 //    contactDiv.style.justifyContent='space-between'
    
-
    
    let userDiv = document.createElement('div');
    userDiv.className = 'user';
@@ -107,7 +106,7 @@ export const Messenger = (container, nickname , NombreMessage) => {
 
    let countMess = document.createElement('span');
    countMess.className ="Nmessage-"+nickname;
-   countMess.textContent = "1"
+   countMess.textContent = NombreMessage
 
    countMess.style.color="red";
 
@@ -117,7 +116,7 @@ export const Messenger = (container, nickname , NombreMessage) => {
    contactDiv.appendChild(userDiv);
 
    let p = document.createElement('p');
-   p.innerText = nickname;
+   p.innerText = nickname + " "+ status;
    contactDiv.appendChild(p);
   container.appendChild(contactDiv);
 

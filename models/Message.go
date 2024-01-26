@@ -14,9 +14,9 @@ type MessagePrivate struct {
 }
 
 type MessageSender struct {
-	UserForum []MessagePrivate
-
+	UserForum    []MessagePrivate
 	UserReceiver []MessagePrivate
+	NewMessage   bool
 }
 
 func GetMessage(db *sql.DB, userFrom, toUser string) ([]MessagePrivate, error) {
@@ -39,6 +39,7 @@ func GetMessage(db *sql.DB, userFrom, toUser string) ([]MessagePrivate, error) {
 		message.ToUser = toUser
 		message.FromUser = userFrom
 		allmessage = append(allmessage, message)
+		
 	}
 	return allmessage, row.Err()
 }

@@ -49,7 +49,7 @@ func LogoutUser(w http.ResponseWriter, r *http.Request) {
 		Value: "",
 		Path:  session.Path,
 	})
-	wbs.RemoveUserFromMap(deconn_user.NickName)
+	wbs.RemoveUserFromMap(deconn_user.NickName, DB)
 	fmt.Println("Decoonexion", wbs.UsersMap)
 
 }

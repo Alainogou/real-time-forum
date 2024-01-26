@@ -91,25 +91,14 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		fmt.Println(err)
 	}
 	defer ws.Close()
+	err = models.MarkMessagesAsRead(db, toUser, userFrom)
+	if err != nil {
+		fmt.Println("error to udapte at message is read")
+	}
 
 	for {
 		MessageConnection[userFrom] = ws
-		// message := models.MessageSender{}
-		// user_forum, err := models.GetMessage(db, userFrom, toUser)
-		// user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
 
-		// if err != nil || err1 != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-		// message.UserForum = user_forum
-		// message.UserReceiver = user_receiver
-		// jsonMsg, _ := json.Marshal(message)
-		// err = ws.WriteMessage(websocket.TextMessage, jsonMsg)
-		// if err != nil {
-		// 	fmt.Println("write:", err)
-		// 	return
-		// }
 		Broad(userFrom, toUser, db)
 		// Recevoir un message du client
 		_, msg, err := ws.ReadMessage()
@@ -157,6 +146,10 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 	message.UserForum = user_forum
 	message.UserReceiver = user_receiver
 	jsonMsg, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println("write:", err)
+		return
+	}
 	conn := MessageConnection[userFrom]
 	err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 
@@ -164,6 +157,7 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 		fmt.Println("write:", err)
 		return
 	}
+
 	fmt.Println("bOOOL", IsUserConnected(toUser))
 	if IsUserConnected(toUser) {
 
@@ -171,8 +165,12 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 		user_receiver, _ = models.GetMessage(db, userFrom, toUser)
 		message.UserForum = user_forum
 		message.UserReceiver = user_receiver
+		message.NewMessage = true
 		jsonMsg, err := json.Marshal(message)
-
+		if err != nil {
+			fmt.Println("write:", err)
+			return
+		}
 		conn = MessageConnection[toUser]
 		err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 

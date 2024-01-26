@@ -214,16 +214,25 @@ function handleSuccessfulLogin(data) {
         
         for (let k=0;k<msg.AllUser.length;k++){
             if (msg.AllUser[k].NickName !== data.User.NickName){
-                Messenger(div, msg.AllUser[k].NickName + "  " + msg.AllUser[k].Status )
+                Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
                 
                 setTimeout(() => {
                     let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
                     
-            
-                    contact.addEventListener("click",()=>{
+                    if (contact) contact.addEventListener("click",()=>{
                         console.log("contact clicked");
-                        privateSocket(msg.AllUser[k].NickName, data.User.NickName, right)
-                        // fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
+                        let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                        if (premierDive) premierDive.remove()
+
+                        let premierDiv = document.createElement('div');
+                        premierDiv.classList.add('chat-card');
+                        premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+
+                        let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
+                        if (messageOpen) messageOpen.innerHTML="0"
+
+                        privateSocket(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+                        right.appendChild(premierDiv)
                      
                     })
 
@@ -295,8 +304,7 @@ function fetchComment(addcomment, postId){
             mainComment.appendChild(contentComment)
 
 
-          
-           
+            
             addcomment.appendChild(mainComment)
             
         }
@@ -309,7 +317,7 @@ function fetchComment(addcomment, postId){
 
 }
 
-function privateSocket(toUser, fromUser, right)  {
+function privateSocket(toUser, fromUser, premierDiv)  {
     
    
 
@@ -319,17 +327,20 @@ function privateSocket(toUser, fromUser, right)  {
        // Écoutez les messages entrants
     socket.onmessage = function(event) {
         let msg = JSON.parse(event.data);
+        console.log(msg.NewMessage)
+        if (msg.NewMessage==true){
+            alert("yo new message")
+        }
        
-        let premierDiv= document.querySelector(`.chat-card-${toUser}`)
-        if (premierDiv) premierDiv.remove()
          
-        FormMessage(right, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
         let messageFormId = document.querySelector(`.receved-${toUser}`)
         console.log('messages receveid' ,messageFormId);
         
 
         let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
         if (closeMesenger) closeMesenger.addEventListener("click",()=>{
+            
                 let clickClose = document.querySelector(`.chat-card-${toUser}`)
                 clickClose.remove()
         })
@@ -350,6 +361,7 @@ function privateSocket(toUser, fromUser, right)  {
             messageInput.value = ''; // Effacer le champ de saisie après l'envoi
         });
     };
+    
              
     socket.onopen = (event) => {
        

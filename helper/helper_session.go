@@ -16,7 +16,7 @@ func SetCookieInDB(w http.ResponseWriter) string {
 	cookie := http.Cookie{
 		Name:     "sessionid",
 		Value:    sssid,
-		Expires:  time.Now().Add(time.Minute *30) ,
+		Expires:  time.Now().Add(time.Minute * 30),
 		Path:     "/",
 		MaxAge:   3600 * 24 * 3,
 		HttpOnly: true,
@@ -51,5 +51,3 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 	return errsession
 
 }
-
-
