@@ -68,7 +68,7 @@ export const displayCategories=(container, firstName, lastName)=>{
     </div>`
 }
 
-export const Messenger = (container, nickname) => {
+export const Messenger = (container, nickname , NombreMessage) => {
    let div = document.createElement('div');
    div.className = 'third_warpper';
    div.style.marginBottom = '10px'
@@ -77,6 +77,8 @@ export const Messenger = (container, nickname) => {
    contactDiv.style.display= 'flex'
    contactDiv.style.alignItems= 'center'
    contactDiv.style.cursor='pointer'
+//    contactDiv.style.justifyContent='space-between'
+   
 
    
    let userDiv = document.createElement('div');
@@ -90,6 +92,28 @@ export const Messenger = (container, nickname) => {
    let i = document.createElement('i');
    i.className = 'fa-solid fa-user';
    userDiv.appendChild(i);
+
+   let iconeMesage = document.createElement('div');
+   iconeMesage.className = 'iconeMessage';
+   iconeMesage.style.backgroundColor = '#efefef';
+   iconeMesage.style.height = '30px';
+   iconeMesage.style.width = '30px';
+   iconeMesage.style.textAlign = 'center';
+   iconeMesage.style.borderRadius = '50%';
+   iconeMesage.style.paddingTop = '4px';
+   let classI= document.createElement('i');
+   classI.className = "fa-solid fa-message";
+   iconeMesage.appendChild(classI);
+
+   let countMess = document.createElement('span');
+   countMess.className ="Nmessage-"+nickname;
+   countMess.textContent = "1"
+
+   countMess.style.color="red";
+
+   
+   contactDiv.appendChild(iconeMesage)
+   contactDiv.appendChild(countMess);
    contactDiv.appendChild(userDiv);
 
    let p = document.createElement('p');
