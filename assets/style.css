@@ -6,12 +6,6 @@
   font-family: 'Roboto', sans-serif;
 }
 
-.chat-body {
-  max-height: 500px; /* Adjust this value according to your needs */
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column-reverse;
-}
 
 .flex {
   display: flex;
@@ -1446,5 +1440,13 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.chat-body {
+  max-height: 500px; /* Adjust this value according to your needs */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }
 

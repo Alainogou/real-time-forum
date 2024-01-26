@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.IsAuth){
             handleSuccessfulLogin(data)
 
-            
-        
         }else{
            
            sendForm(ap)
@@ -224,8 +222,7 @@ function handleSuccessfulLogin(data) {
             
                     contact.addEventListener("click",()=>{
                         console.log("contact clicked");
-                           
-                            privateSocket(msg.AllUser[k].NickName, data.User.NickName, right)
+                        privateSocket(msg.AllUser[k].NickName, data.User.NickName, right)
                         // fetchPrivateMessage(data.User.NickName, msg.AllUser[k].NickName) 
                      
                     })
