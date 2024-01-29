@@ -83,12 +83,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		for i := 0; i < len(UserSlice); i++ {
 			_, ok := UsersMap[UserSlice[i].NickName]
 
-			count, err := models.CountUnreadMessages(db, receivedMsg.NickName, UserSlice[i].NickName)
-			if err != nil {
-				fmt.Println("error to give count read messages")
-			}
-			fmt.Println("COUNT", count)
-
 			if ok {
 				userConnect = append(userConnect, UserStatus{NickName: UserSlice[i].NickName, Id: UserSlice[i].Id, Status: "online"})
 			} else {
@@ -161,13 +155,4 @@ func removeString(slice []string, s string) []string {
 		}
 	}
 	return slice
-}
-
-func removeUserStatus(allUserStatus *AllUserStatus, nickName string) {
-	for i, userStatus := range allUserStatus.AllUser {
-		if userStatus.NickName == nickName {
-			allUserStatus.AllUser = append(allUserStatus.AllUser[:i], allUserStatus.AllUser[i+1:]...)
-			break
-		}
-	}
 }

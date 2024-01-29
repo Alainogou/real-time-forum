@@ -77,11 +77,11 @@ function handleComment(event, userId){
     event.preventDefault();
     
     const formData = new FormData(event.target);
-   
+    let postId=parseInt(formData.get("post_id"))
     let newComment={
         UserId :parseInt(userId),
         Content: formData.get("content"),
-        Post_id:parseInt(formData.get("post_id")),
+        Post_id:postId,
         
     } 
     
@@ -96,6 +96,8 @@ function handleComment(event, userId){
    .then(response => {
        if (response.ok) {
             console.log(newComment);
+            let commentNumber= document.getElementById(`commentNumber-${postId}`)
+            commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
            
         } else {       
 
@@ -230,7 +232,8 @@ function handleSuccessfulLogin(data) {
 
                         let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
                         if (messageOpen) messageOpen.innerHTML="0"
-
+                        
+                        
                         privateSocket(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
                         right.appendChild(premierDiv)
                      
@@ -268,8 +271,9 @@ function fetchComment(addcomment, postId){
     .then(response => response.json())
     .then(data => {
 
-    
+        
         addcomment.innerHTML=''
+        
 
         for (let p=0;p<data.length;p++){
             let comment=data[p]
@@ -322,22 +326,26 @@ function privateSocket(toUser, fromUser, premierDiv)  {
    
 
     const socket = new WebSocket(`ws://localhost:8081/privateSocket?userFrom=${fromUser}&toUser=${toUser}`);
-    
+   
     
        // Écoutez les messages entrants
     socket.onmessage = function(event) {
+        
         let msg = JSON.parse(event.data);
+        
+       
         console.log(msg.NewMessage)
-        if (msg.NewMessage==true){
+        if (msg.NewMessage==true ){
+            // let messageOpen=document.querySelector(`.Nmessage-${fromUser}`)
+            // if (messageOpen) messageOpen.innerText= parseInt(messageOpen.textContent ) + 1 
             alert("yo new message")
         }
-       
          
         FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
-        let messageFormId = document.querySelector(`.receved-${toUser}`)
-        console.log('messages receveid' ,messageFormId);
+      
+       
         
-
+        
         let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
         if (closeMesenger) closeMesenger.addEventListener("click",()=>{
             
@@ -345,8 +353,8 @@ function privateSocket(toUser, fromUser, premierDiv)  {
                 clickClose.remove()
         })
 
-      
-        if (messageFormId)  messageFormId .addEventListener('submit', (event) => {
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
             event.preventDefault();
             const messageInput = document.querySelector('input[name="messagePrivite"]');
             const message = messageInput.value;
@@ -356,9 +364,11 @@ function privateSocket(toUser, fromUser, premierDiv)  {
                 Message: message,
                 CreateDate: new Date().toISOString()
             };
-            console.log(messageData, "messagedata");
+            
             socket.send(JSON.stringify(messageData));
             messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+
+          
         });
     };
     
@@ -542,9 +552,7 @@ function fetchPost  (globalPosts,UserId) {
                     handleComment(event, UserId);
                     event.target.reset();
                     fetchComment(containerComment, postId)
-                    let commentNumber= document.getElementById(`commentNumber-${postId}`)
-                    console.log(commentNumber.textContent);
-                    commentNumber.innerText= parseInt(commentNumber.textContent ) + 1 
+                    
                   
 
                 });

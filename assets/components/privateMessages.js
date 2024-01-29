@@ -2,6 +2,7 @@
 
 export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEnvoyer) => {
     // Initialize the chat body
+    premierDiv.innerHTML=""
     let spinner=document.createElement('div');
     spinner.classList.add('spinner');
     spinner.classList.add('center')
