@@ -29,7 +29,8 @@ type UserStatus struct {
 }
 
 type AllUserStatus struct {
-	AllUser []UserStatus `json:"AllUser"`
+	AllUser    []UserStatus `json:"AllUser"`
+	NewMessage bool         `json:"NewMessage"`
 }
 
 var UsersMap = make(map[string]*models.User)
@@ -71,6 +72,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			fmt.Println("get user")
 		}
 		if !IsUserExist(receivedMsg.NickName) {
+
 			userExist = append(userExist, receivedMsg.NickName)
 		}
 

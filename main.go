@@ -99,6 +99,10 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wbs.HandleConnections(w, r, controllers.DB)
 	})
+	http.HandleFunc("/communication", func(w http.ResponseWriter, r *http.Request) {
+		wbs.HandleCommunications(w, r, controllers.DB)
+	})
+
 	http.HandleFunc("/privateSocket", func(w http.ResponseWriter, r *http.Request) {
 		wbs.HandlePrivateMessage(w, r, controllers.DB)
 	})

@@ -156,6 +156,7 @@ function handleSuccessfulLogin(data) {
     main.appendChild(center)
     app.appendChild(postform)
     app.appendChild(main);
+    
 
     let showPostForm= document.querySelector(".showPostForm")
     if (showPostForm) showPostForm.addEventListener("click", function(event){
@@ -203,9 +204,11 @@ function handleSuccessfulLogin(data) {
         right.innerHTML=''
 
         let msg = JSON.parse(event.data);
-        console.log('il y a un message entrant')
+    
+        
         let div = document.createElement('div');
         div.className = 'third_warpper';
+       
          
         let contactTagDiv = document.createElement('div');
         contactTagDiv.classsName = 'contact_tag';
@@ -213,6 +216,14 @@ function handleSuccessfulLogin(data) {
         h2.innerText = 'Contacts';
         contactTagDiv.appendChild(h2);
         div.appendChild(contactTagDiv);
+        
+
+        if (msg.NewMessage===true){    
+                  
+            alert("new message")   
+            msg.NewMessage=false
+            
+        }
         
         for (let k=0;k<msg.AllUser.length;k++){
             if (msg.AllUser[k].NickName !== data.User.NickName){
@@ -234,7 +245,7 @@ function handleSuccessfulLogin(data) {
                         if (messageOpen) messageOpen.innerHTML="0"
                         
                         
-                        privateSocket(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+                        chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
                         right.appendChild(premierDiv)
                      
                     })
@@ -321,55 +332,44 @@ function fetchComment(addcomment, postId){
 
 }
 
-function privateSocket(toUser, fromUser, premierDiv)  {
+function chatContainer(toUser, fromUser, premierDiv)  {
     
+    const socket = new WebSocket(`ws://localhost:8081/communication?userFrom=${fromUser}&toUser=${toUser}`);
    
-
-    const socket = new WebSocket(`ws://localhost:8081/privateSocket?userFrom=${fromUser}&toUser=${toUser}`);
-   
-    
        // Écoutez les messages entrants
     socket.onmessage = function(event) {
         
         let msg = JSON.parse(event.data);
         
-       
-        console.log(msg.NewMessage)
-        if (msg.NewMessage==true ){
-            // let messageOpen=document.querySelector(`.Nmessage-${fromUser}`)
-            // if (messageOpen) messageOpen.innerText= parseInt(messageOpen.textContent ) + 1 
-            alert("yo new message")
-        }
-         
         FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
-      
-       
         
-        
-        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
-        if (closeMesenger) closeMesenger.addEventListener("click",()=>{
-            
-                let clickClose = document.querySelector(`.chat-card-${toUser}`)
-                clickClose.remove()
-        })
 
-        let messageFormId = document.querySelector(`.receved-${toUser}`)
-        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const messageInput = document.querySelector('input[name="messagePrivite"]');
-            const message = messageInput.value;
-            const messageData = {
-                FromUser: fromUser,
-                ToUser: toUser,
-                Message: message,
-                CreateDate: new Date().toISOString()
-            };
+        
+        // let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+        // if (closeMesenger) closeMesenger.addEventListener("click",()=>{
             
-            socket.send(JSON.stringify(messageData));
-            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+        //         let clickClose = document.querySelector(`.chat-card-${toUser}`)
+        //         clickClose.remove()
+        // })
+
+        sendMessage(toUser, fromUser, premierDiv)
+        // let messageFormId = document.querySelector(`.receved-${toUser}`)
+        // if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
+        //     event.preventDefault();
+        //     const messageInput = document.querySelector('input[name="messagePrivite"]');
+        //     const message = messageInput.value;
+        //     const messageData = {
+        //         FromUser: fromUser,
+        //         ToUser: toUser,
+        //         Message: message,
+        //         CreateDate: new Date().toISOString()
+        //     };
+            
+        //     socket.send(JSON.stringify(messageData));
+        //     messageInput.value = ''; // Effacer le champ de saisie après l'envoi
 
           
-        });
+        // });
     };
     
              
@@ -389,6 +389,109 @@ function privateSocket(toUser, fromUser, premierDiv)  {
 
 }
 
+function sendMessage(toUser, fromUser, premierDiv)  {
+    
+
+    const socket = new WebSocket(`ws://localhost:8081/privateSocket?userFrom=${fromUser}&toUser=${toUser}`);
+
+    socket.onopen = (event) => {
+
+        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+        closeMesenger.addEventListener("click",()=>{
+                let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                clickClose.remove()
+                const messageData = {
+                    // FromUser: fromUser,
+                    // ToUser: toUser,
+                    // Message: "",
+                    // CreateDate: new Date().toISOString(),
+                    ToUserClosed:fromUser
+                };
+                socket.send(JSON.stringify(messageData))
+
+        })
+
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+       
+        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const messageInput = document.querySelector('input[name="messagePrivite"]');
+            const message = messageInput.value;
+            const messageData = {
+                FromUser: fromUser,
+                ToUser: toUser,
+                Message: message,
+                CreateDate: new Date().toISOString()
+            };
+            
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            
+          
+        });
+
+
+    };
+    
+    socket.onmessage = function(event) {
+        
+        let msg = JSON.parse(event.data);
+       
+        
+        FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+       
+        closeMesenger.addEventListener("click",()=>{
+                let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                clickClose.remove()
+                const messageData = {
+                    // FromUser: fromUser,
+                    // ToUser: toUser,
+                    // Message: "",
+                    // CreateDate: new Date().toISOString(),
+                    ToUserClosed:fromUser
+                };
+                socket.send(JSON.stringify(messageData))
+        })
+        
+       
+   
+        
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const messageInput = document.querySelector('input[name="messagePrivite"]');
+            const message = messageInput.value;
+            const messageData = {
+                FromUser: fromUser,
+                ToUser: toUser,
+                Message: message,
+                CreateDate: new Date().toISOString()
+            };
+            
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+          
+        });
+
+        
+       
+    };
+    
+             
+   
+
+   
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`);
+    };
+
+}
 
 
 

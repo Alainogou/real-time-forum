@@ -17,11 +17,11 @@ type MessageJson struct {
 	ContentMessage string    `json:"Message"`
 	ToUser         string    `json:"ToUser"`
 	CreateDate     time.Time `json:"CreateDate"`
+	ToUserClosed   string    `json:"ToUserClosed"`
 }
 
 var MessageConnection = make(map[string]*websocket.Conn)
-var NewMessage bool
-var MessageC = make(map[string]bool)
+var PersonOpenChat = make(map[string]*websocket.Conn)
 
 func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
@@ -38,14 +38,11 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if err != nil {
 		fmt.Println("error to udapte at message is read")
 	}
-	NewMessage = false
-	MessageC[userFrom] = false
-	fmt.Println("mES", MessageC)
+
 	for {
 		MessageConnection[userFrom] = ws
-		Broad(userFrom, toUser, db)
-
-		// Recevoir un message du client
+		PersonOpenChat[userFrom] = ws
+		fmt.Println("avant", MessageConnection)
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			fmt.Println("read:", err)
@@ -60,16 +57,21 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			return
 		}
 
+		if receivedMsg.ToUserClosed != "" {
+			delete(PersonOpenChat, receivedMsg.ToUserClosed)
+			fmt.Println(receivedMsg, "mon message")
+			Broad(userFrom, toUser, db)
+		}
 		com := models.MessagePrivate{}
+
 		if receivedMsg.ContentMessage != "" {
 
 			errinsert := com.InsertMessage(db, receivedMsg.FromUser, receivedMsg.ToUser, receivedMsg.ContentMessage, receivedMsg.CreateDate)
 			if errinsert != nil {
 				fmt.Println(errinsert)
-				// helper.ErrorPage(w, 500)
 				return
 			}
-			NewMessage = true
+			Broad(userFrom, toUser, db)
 
 		}
 
@@ -109,19 +111,60 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 		message.UserForum = user_forum
 		message.UserReceiver = user_receiver
 
-		message.NewMessage = NewMessage
-
 		jsonMsg, err := json.Marshal(message)
 		if err != nil {
 			fmt.Println("write:", err)
 			return
 		}
 		conn = MessageConnection[toUser]
+
 		err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 
 		if err != nil {
 			fmt.Println("write:", err)
 			return
+		}
+
+		// messages := models.MessageSender{}
+		// user_forum, err := models.GetMessage(db, userFrom, toUser)
+		// user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
+
+		// if err != nil || err1 != nil {
+		// 	fmt.Println("yo error")
+		// 	return
+		// }
+		// messages.UserForum = user_forum
+		// messages.UserReceiver = user_receiver
+		// mssg, _ := json.Marshal(messages)
+		// messages.NewMessage = true
+
+		// err = PersonOpenChat[toUser].WriteMessage(websocket.TextMessage, mssg)
+		// if err != nil {
+		// 	fmt.Println("write ici soos:", err)
+		// 	return
+		// }
+
+	} else {
+		if IsUserExist(toUser) {
+			fmt.Println("J'existe deja bro")
+			for i := 0; i < len(UserSlice); i++ {
+
+				count, err := models.CountUnreadMessages(db, UserSlice[i].NickName, toUser)
+				if err != nil {
+					fmt.Println("error to give count read messages")
+
+				}
+				allUserStatus.AllUser[i].NbreMessages = count
+
+			}
+			allUserStatus.NewMessage = true
+			jsonAll, _ := json.Marshal(allUserStatus)
+			conWith := UsersMap[toUser].Conn
+			err = conWith.WriteMessage(websocket.TextMessage, jsonAll)
+			if err != nil {
+				fmt.Println("write:", err)
+				return
+			}
 		}
 	}
 

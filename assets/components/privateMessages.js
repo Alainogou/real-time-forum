@@ -47,7 +47,7 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
         });
 
         allMessages=allMessages.slice(10, allMessages.length)
-        console.log(allMessages.length)
+      
         chatBody.addEventListener('scroll', throttle((event) => {
         // Check if user has scrolled to the top
             if (event.target.scrollTop === 0) {
@@ -56,7 +56,7 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
                 
                 
                 allMessages=allMessages.slice(Math.min(10, allMessages.length), allMessages.length)
-                console.log(allMessages.length, allMessages, "tyo c'estyyyyy")
+                
 
                 // Adjust scroll position to prevent jumping
                 let scrollHeightAfter = chatBody.scrollHeight;
@@ -99,6 +99,7 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
      premierDiv.appendChild(chatBody);
      premierDiv.appendChild(chatFooter);
     //  right.appendChild(premierDiv);
+    
  
 };
 
