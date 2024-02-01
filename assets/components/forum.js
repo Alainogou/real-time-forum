@@ -115,10 +115,17 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    contactDiv.appendChild(countMess);
    contactDiv.appendChild(userDiv);
 
+   
    let p = document.createElement('p');
-   p.innerText = nickname + " "+ status;
-   contactDiv.appendChild(p);
-  container.appendChild(contactDiv);
+    p.innerText = nickname + " ";
+
+    let span = document.createElement('span');
+    span.id = "status-" + nickname; // Remplacer 'nickname' par une valeur unique si nécessaire
+    span.innerText = status;
+
+    p.appendChild(span);
+    contactDiv.appendChild(p);
+    container.appendChild(contactDiv);
 
    
 };

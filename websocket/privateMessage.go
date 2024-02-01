@@ -42,7 +42,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	for {
 		MessageConnection[userFrom] = ws
 		PersonOpenChat[userFrom] = ws
-		fmt.Println("avant", MessageConnection)
+		fmt.Println(MessageConnection)
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			fmt.Println("read:", err)
@@ -59,7 +59,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 		if receivedMsg.ToUserClosed != "" {
 			delete(PersonOpenChat, receivedMsg.ToUserClosed)
-			fmt.Println(receivedMsg, "mon message")
+		
 			break
 		}
 		com := models.MessagePrivate{}
@@ -80,7 +80,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func Broad(userFrom, toUser string, db *sql.DB) {
-
+	
 	message := models.MessageSender{}
 	user_forum, err := models.GetMessage(db, userFrom, toUser)
 	user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
@@ -125,24 +125,7 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 			return
 		}
 
-		// messages := models.MessageSender{}
-		// user_forum, err := models.GetMessage(db, userFrom, toUser)
-		// user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
-
-		// if err != nil || err1 != nil {
-		// 	fmt.Println("yo error")
-		// 	return
-		// }
-		// messages.UserForum = user_forum
-		// messages.UserReceiver = user_receiver
-		// mssg, _ := json.Marshal(messages)
-		// messages.NewMessage = true
-
-		// err = PersonOpenChat[toUser].WriteMessage(websocket.TextMessage, mssg)
-		// if err != nil {
-		// 	fmt.Println("write ici soos:", err)
-		// 	return
-		// }
+		
 
 	} else {
 		if IsUserExist(toUser) {

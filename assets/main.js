@@ -201,21 +201,98 @@ function handleSuccessfulLogin(data) {
 
      // Écoutez les messages entrants
     socket.onmessage = function(event) {
-        right.innerHTML=''
-
         let msg = JSON.parse(event.data);
-    
+        console.log(msg);
         
-        let div = document.createElement('div');
-        div.className = 'third_warpper';
-       
-         
-        let contactTagDiv = document.createElement('div');
-        contactTagDiv.classsName = 'contact_tag';
-        let h2 = document.createElement('h2');
-        h2.innerText = 'Contacts';
-        contactTagDiv.appendChild(h2);
-        div.appendChild(contactTagDiv);
+
+        if (msg.NewConnection){
+            let userConnected=document.querySelector(`#status-${msg.PersonConnected}`)
+            if (userConnected) userConnected.innerHTML='online'
+        }else if (msg.NewDeconnexion){
+
+            let userDeconnected=document.querySelector(`#status-${msg.PersonConnected}`)
+            if (userDeconnected) userDeconnected.innerHTML='off'
+            //  PersonConnected string
+            
+        }else{
+
+            right.innerHTML=''
+           
+            let div = document.createElement('div');
+            div.className = 'third_warpper';
+            
+            let contactTagDiv = document.createElement('div');
+            contactTagDiv.classsName = 'contact_tag';
+            let h2 = document.createElement('h2');
+            h2.innerText = 'Contacts';
+            contactTagDiv.appendChild(h2);
+            div.appendChild(contactTagDiv);
+
+            let userlist = document.createElement("div");
+            userlist.className = "userlist";
+            for (let k=0;k<msg.AllUser.length;k++){
+                if (msg.AllUser[k].NickName !== data.User.NickName){
+                    Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
+                    
+                    setTimeout(() => {
+                        let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
+                        
+                        if (contact) contact.addEventListener("click",()=>{
+                            console.log("contact clicked");
+                            let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                            if (premierDive) premierDive.remove()
+
+                            let premierDiv = document.createElement('div');
+                            premierDiv.classList.add('chat-card');
+                            premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+
+                            let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
+                            if (messageOpen) messageOpen.innerHTML="0"
+                            
+                            
+                            chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+                            right.appendChild(premierDiv)
+                        
+                        })
+
+                    
+                    }, 1000);
+
+                }
+                // if (msg.AllUser[k].NickName !== data.User.NickName){
+                //     Messenger(userlist, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages)
+                    
+                //     setTimeout(() => {
+                //         let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
+                        
+                //         if (contact) contact.addEventListener("click",()=>{
+                //             // console.log("contact clicked");
+                //             let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                //             if (premierDive) premierDive.remove()
+    
+                //             let premierDiv = document.createElement('div');
+                //             premierDiv.classList.add('chat-card');
+                //             premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+                //             premierDiv.style.display="block";
+                //             if (premierDiv) premierDiv.remove()
+    
+                //             let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
+                //             if (messageOpen) messageOpen.innerHTML="0"
+    
+                //             privateSocket(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+                //             right.appendChild(premierDiv)
+                         
+                //         })
+    
+                       
+                //     }, 1000);
+    
+                // }
+            }
+            div.appendChild(userlist)
+            right.appendChild(div)
+        }
+        
         
 
         if (msg.NewMessage===true){    
@@ -225,39 +302,39 @@ function handleSuccessfulLogin(data) {
             
         }
         
-        for (let k=0;k<msg.AllUser.length;k++){
-            if (msg.AllUser[k].NickName !== data.User.NickName){
-                Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
+        // for (let k=0;k<msg.AllUser.length;k++){
+        //     if (msg.AllUser[k].NickName !== data.User.NickName){
+        //         Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
                 
-                setTimeout(() => {
-                    let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
+        //         setTimeout(() => {
+        //             let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
                     
-                    if (contact) contact.addEventListener("click",()=>{
-                        console.log("contact clicked");
-                        let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
-                        if (premierDive) premierDive.remove()
+        //             if (contact) contact.addEventListener("click",()=>{
+        //                 console.log("contact clicked");
+        //                 let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+        //                 if (premierDive) premierDive.remove()
 
-                        let premierDiv = document.createElement('div');
-                        premierDiv.classList.add('chat-card');
-                        premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+        //                 let premierDiv = document.createElement('div');
+        //                 premierDiv.classList.add('chat-card');
+        //                 premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
 
-                        let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
-                        if (messageOpen) messageOpen.innerHTML="0"
+        //                 let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
+        //                 if (messageOpen) messageOpen.innerHTML="0"
                         
                         
-                        chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
-                        right.appendChild(premierDiv)
+        //                 chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+        //                 right.appendChild(premierDiv)
                      
-                    })
+        //             })
 
                    
-                }, 1000);
+        //         }, 1000);
 
-            }
-        }
+        //     }
+        // }
             
        
-        right.appendChild(div)
+        // right.appendChild(div)
     };
            
 
