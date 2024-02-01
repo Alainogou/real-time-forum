@@ -60,7 +60,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if receivedMsg.ToUserClosed != "" {
 			delete(PersonOpenChat, receivedMsg.ToUserClosed)
 			fmt.Println(receivedMsg, "mon message")
-			Broad(userFrom, toUser, db)
+			break
 		}
 		com := models.MessagePrivate{}
 
@@ -116,7 +116,7 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 			fmt.Println("write:", err)
 			return
 		}
-		conn = MessageConnection[toUser]
+		conn = PersonOpenChat[toUser]
 
 		err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 
@@ -171,6 +171,6 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 }
 
 func IsUserConnected(username string) bool {
-	_, exists := MessageConnection[username]
+	_, exists := PersonOpenChat[username]
 	return exists
 }
