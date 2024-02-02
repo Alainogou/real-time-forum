@@ -9,22 +9,46 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
    
     spinner.style.display='none'
 
-    // let premierDiv = document.createElement('div');
-    // premierDiv.classList.add('chat-card');
-    // premierDiv.classList.add(`chat-card-${toUser}`);
-
     let chatBody = document.createElement('div');
     chatBody.className = 'chat-body';
+     
 
     let allMessages = messageRecu.concat(messageEnvoyer);
-    allMessages.sort((a, b) => new Date(b.CreateDate) - new Date(a.CreateDate));
 
-  
-    if (allMessages.length<10){
+    allMessages.sort((a, b) => new Date(a.CreateDate) - new Date(b.CreateDate));
+    
+    if (allMessages.length<=10){
+        console.log("infere", allMessages)
         loadMessages(0,allMessages.length, chatBody, allMessages, userFrom);
     }else{
+        
+        let messages=[]
+        messages.push(...allMessages);
+        console.log(allMessages)
+        var tampon= [];
+        var countTamp=0;
+        console.log(messages.length, "debt")
+        // Get the last 10 message
+        for (let t = 0; t <  messages.length; t++) {
+           
+            if (messages[t]) {                            
+                    let tamp = allMessages.pop();
+                    tampon.push(tamp);
+            }
+           
+            countTamp++;
+            if (countTamp==10) break
+        }
+        var tamponSecond= [];
+        for (let p=tampon.length-1;p>=0;p--){
+            let tamp = tampon.pop();
+            tamponSecond.push(tamp);
+        }
+        messages=[]
+        messages.push(...allMessages);
+        console.log(messages.length, "apres un fect")
       
-        loadMessages(0, 10, chatBody, allMessages, userFrom)
+        loadMessages(0, 10, chatBody, tamponSecond, userFrom)
         chatBody.scrollTop = chatBody.scrollHeight;
         
         var countLoader=0;
@@ -46,23 +70,60 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
             }
         });
 
-        allMessages=allMessages.slice(10, allMessages.length)
-      
         chatBody.addEventListener('scroll', throttle((event) => {
-        // Check if user has scrolled to the top
+            // Check if user has scrolled to the top
             if (event.target.scrollTop === 0) {
                 let scrollHeightBefore = chatBody.scrollHeight;
-                loadMessages(0, Math.min(10, allMessages.length), chatBody, allMessages, userFrom)
-                
-                
-                allMessages=allMessages.slice(Math.min(10, allMessages.length), allMessages.length)
-                
+        
+                for (let t = 0; t < Math.min(10,messages.length-1); t++) {
+                    let _data = allMessages.pop();
 
+                    if (_data) {                          
+                                            
+                            let newMessage;
+                            newMessage=AddMessage(_data.FromUser, _data.ContentMessage, userFrom )
+                            let newTime= AddTime(timeAgo(_data.CreateDate))
+
+                            chatBody.insertBefore(newMessage, chatBody.firstChild);
+                            chatBody.insertBefore(newTime, chatBody.firstChild);
+                            // if (_data["Sender"] == _User1) {
+                            //     newMessage = sendMessages(_data["Sender"], _data["Message"], formattedDate);
+                            // }
+            
+                            // if (_data["Recipient"] == _User1) {
+                            //     newMessage = recipientMessages(_data["Sender"], _data["Message"], formattedDate);
+                            // }
+                
+                            // Insert new message sszat the top of chatBody[i]
+                            // chatBody.insertBefore(newMessage, chatBody.firstChild);
+                        }
+                }
                 // Adjust scroll position to prevent jumping
+                messages=[]
+                messages.push(...allMessages);
+                console.log("apres scroll", messages.length)
                 let scrollHeightAfter = chatBody.scrollHeight;
                 chatBody.scrollTop = chatBody.scrollTop + (scrollHeightAfter - scrollHeightBefore);
             }
         }, 500));
+
+        // allMessages=allMessages.slice(10, allMessages.length)
+      
+        // chatBody.addEventListener('scroll', throttle((event) => {
+        // // Check if user has scrolled to the top
+        //     if (event.target.scrollTop === 0) {
+        //         let scrollHeightBefore = chatBody.scrollHeight;
+        //         loadMessages(0, Math.min(10, allMessages.length), chatBody, allMessages, userFrom)
+                
+                
+        //         allMessages=allMessages.slice(Math.min(10, allMessages.length), allMessages.length)
+                
+
+        //         // Adjust scroll position to prevent jumping
+        //         let scrollHeightAfter = chatBody.scrollHeight;
+        //         chatBody.scrollTop = chatBody.scrollTop + (scrollHeightAfter - scrollHeightBefore);
+        //     }
+        // }, 500));
 
     }
 
@@ -125,37 +186,103 @@ function throttle(func, limit) {
 }
 
 function loadMessages (startIndex , limit, chatBody , messages, userFrom) {
+
        
     for (let i = startIndex; i <  limit; i++) {
         let message = messages[i];
-       
-        let messageElement = document.createElement('div');
-        messageElement.classList.add( message.FromUser === userFrom ? 'outgoing' : 'incoming');
-
-        messageElement.classList.add('messageSMS')
-        let contentMessage = document.createElement('div');
-        contentMessage.classList.add("contentMessage")
-
-        let contentElement = document.createElement('p');
-        contentElement.classList.add( "message-conten");
-        contentElement.innerText = `${message.ContentMessage}`;
-        let userElement = document.createElement('span');
-        userElement.classList.add("message-sender")
-        userElement.innerText = `${message.FromUser}`;
-
-        let timeElement = document.createElement('div');
-        timeElement.classList.add("message-date")
-        timeElement.innerText = `${new Date(message.CreateDate).toLocaleString()}`;
-
+        if (message){
+            let messageElement = document.createElement('div');
+            messageElement.classList.add( message.FromUser === userFrom ? 'outgoing' : 'incoming');
     
-        contentMessage.appendChild(contentElement)
-        contentMessage.appendChild(userElement)
-        messageElement.appendChild(contentMessage);
+            messageElement.classList.add('messageSMS')
+            let contentMessage = document.createElement('div');
+            contentMessage.classList.add("contentMessage")
+    
+            let contentElement = document.createElement('p');
+            contentElement.classList.add( "message-conten");
+            contentElement.innerText = `${message.ContentMessage}`;
+            let userElement = document.createElement('span');
+            userElement.classList.add("message-sender")
+            userElement.innerText = `${message.FromUser}`;
+    
+            let timeElement = document.createElement('div');
+            timeElement.classList.add("message-date")
+            let time=timeAgo(message.CreateDate)
+            timeElement.innerText = `${time}`;
+    
         
-      
-        chatBody.appendChild(messageElement);
-        chatBody.appendChild(timeElement);
+            contentMessage.appendChild(contentElement)
+            contentMessage.appendChild(userElement)
+            messageElement.appendChild(contentMessage);
+            
+          
+            chatBody.appendChild(messageElement);
+            chatBody.appendChild(timeElement);
+        }
+       
      
     }
 };
 
+function AddMessage(sender, content, userFrom){
+            let messageElement = document.createElement('div');
+            messageElement.classList.add( sender === userFrom ? 'outgoing' : 'incoming');
+    
+            messageElement.classList.add('messageSMS')
+            let contentMessage = document.createElement('div');
+            contentMessage.classList.add("contentMessage")
+    
+            let contentElement = document.createElement('p');
+            contentElement.classList.add( "message-conten");
+            contentElement.innerText = `${content}`;
+            let userElement = document.createElement('span');
+            userElement.classList.add("message-sender")
+            userElement.innerText = `${sender}`;
+    
+            contentMessage.appendChild(contentElement)
+            contentMessage.appendChild(userElement)
+            messageElement.appendChild(contentMessage);
+            
+            return messageElement
+}
+
+function AddTime(time){
+
+    let timeElement = document.createElement('div');
+    timeElement.classList.add("message-date")
+    timeElement.innerText = `${time}`
+    
+    return timeElement
+}
+
+function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+  
+    const secondsPast = (now.getTime() - date.getTime()) / 1000;
+  
+    if(secondsPast < 60) {
+        return parseInt(secondsPast) + ' sec ago';
+    }
+  
+    if(secondsPast < 3600) {
+        return parseInt(secondsPast/60) + ' mn ago';
+    }
+  
+    if(secondsPast <= 86400) {
+        return parseInt(secondsPast/3600) + ' h ago';
+    }
+  
+    if(secondsPast > 86400) {
+        const daysPast = parseInt(secondsPast/86400);
+        if (daysPast < 7) {
+            return daysPast + ' days ago';
+        } else if (daysPast < 30) {
+            return parseInt(daysPast/7) + ' weeks ago';
+        } else if (daysPast < 365) {
+            return parseInt(daysPast/30) + ' months ago';
+        } else {
+            return parseInt(daysPast/365) + ' years ago';
+        }
+    }
+  }

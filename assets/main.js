@@ -478,10 +478,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
                 let clickClose = document.querySelector(`.chat-card-${toUser}`)
                 clickClose.remove()
                 const messageData = {
-                    // FromUser: fromUser,
-                    // ToUser: toUser,
-                    // Message: "",
-                    // CreateDate: new Date().toISOString(),
+                    
                     ToUserClosed:fromUser+toUser
                 };
                 socket.send(JSON.stringify(messageData))
@@ -522,10 +519,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
                 let clickClose = document.querySelector(`.chat-card-${toUser}`)
                 clickClose.remove()
                 const messageData = {
-                    // FromUser: fromUser,
-                    // ToUser: toUser,
-                    // Message: "",
-                    // CreateDate: new Date().toISOString(),
+                    
                     ToUserClosed:fromUser+toUser
                 };
                 socket.send(JSON.stringify(messageData))

@@ -1474,10 +1474,18 @@ button:active {
 
 
 .chat-body {
-  max-height: 500px; /* Adjust this value according to your needs */
+
+  border-top: 2px dotted var(--whiteffffff);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  max-height: 500px;
+
+  /* ; 
   padding: 20px;
   overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column-reverse; */
 }
 

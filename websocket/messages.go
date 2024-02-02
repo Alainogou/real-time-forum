@@ -11,15 +11,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// type MessageJson struct {
-// 	FromUser       string    `json:"FromUser"`
-// 	ContentMessage string    `json:"Message"`
-// 	ToUser         string    `json:"ToUser"`
-// 	CreateDate     time.Time `json:"CreateDate"`
-// }
-
-// var NewMessage bool
-// var MessageC = make(map[string]bool)
 
 func HandleCommunications(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
