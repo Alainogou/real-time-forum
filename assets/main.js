@@ -482,7 +482,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
                     // ToUser: toUser,
                     // Message: "",
                     // CreateDate: new Date().toISOString(),
-                    ToUserClosed:fromUser
+                    ToUserClosed:fromUser+toUser
                 };
                 socket.send(JSON.stringify(messageData))
 
@@ -526,7 +526,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
                     // ToUser: toUser,
                     // Message: "",
                     // CreateDate: new Date().toISOString(),
-                    ToUserClosed:fromUser
+                    ToUserClosed:fromUser+toUser
                 };
                 socket.send(JSON.stringify(messageData))
         })
