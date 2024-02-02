@@ -29,8 +29,8 @@ type UserStatus struct {
 }
 
 type AllUserStatus struct {
-	AllUser    []UserStatus `json:"AllUser"`
-	NewMessage bool         `json:"NewMessage"`
+	AllUser         []UserStatus `json:"AllUser"`
+	NewMessage      bool         `json:"NewMessage"`
 	NewConnection   bool         `json:"NewConnection"`
 	NewDeconnexion  bool         `json:"NewDeconnexion"`
 	PersonConnected string       `json:"PersonConnected"`
@@ -42,7 +42,6 @@ var UsersMapMutex sync.Mutex
 var allUserStatus AllUserStatus
 var userExist []string
 var UserSlice []*models.User
-
 
 func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
@@ -124,8 +123,14 @@ func RemoveUserFromMap(username string, db *sql.DB) {
 	defer UsersMapMutex.Unlock()
 
 	delete(UsersMap, username)
-	delete(MessageConnection, username)
-	delete(PersonOpenChat, username)
+
+	for i := 0; i < len(UserSlice); i++ {
+		if username != UserSlice[i].NickName {
+			delete(MessageConnection, username+UserSlice[i].NickName)
+			delete(PersonOpenChat, username+UserSlice[i].NickName)
+		}
+	}
+
 	for i := 0; i < len(allUserStatus.AllUser); i++ {
 		if allUserStatus.AllUser[i].NickName == username {
 			allUserStatus.AllUser[i].Status = "OffLine"
@@ -189,7 +194,6 @@ func removeString(slice []string, s string) []string {
 	}
 	return slice
 }
-
 
 // func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
