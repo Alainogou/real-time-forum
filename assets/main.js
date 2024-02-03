@@ -220,13 +220,26 @@ function handleSuccessfulLogin(data) {
         
 
         if (msg.NewConnection){
-            let userConnected=document.querySelector(`#status-${msg.PersonConnected}`)
-            if (userConnected) userConnected.innerHTML='online'
+            let userConnected=document.querySelector(`.rightContact-${msg.PersonConnected}`)
+            if (userConnected) {
+            userConnected.innerHTML=''
+            let img = document.createElement('img');
+            img.src = 'assets/image/status-active-svgrepo-com.svg'; 
+            img.alt = 'Online';
+            img.className = 'status-icon-on'
+            userConnected.appendChild(img);
+                
+            }
         }else if (msg.NewDeconnexion){
-
-            let userDeconnected=document.querySelector(`#status-${msg.PersonConnected}`)
-            if (userDeconnected) userDeconnected.innerHTML='off'
-            //  PersonConnected string
+            let userConnected=document.querySelector(`.rightContact-${msg.PersonConnected}`)
+            if (userConnected) {
+            userConnected.innerHTML=''
+            let img = document.createElement('img');
+            img.src = 'assets/image/status-no-active-svgrepo-com.svg'; // Remplacez par le chemin de votre icône
+            img.alt = 'Offline';
+            img.className = 'status-icon-off'
+           userConnected.appendChild(img)
+            }//  PersonConnected string
             
         }else{
 

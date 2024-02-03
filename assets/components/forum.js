@@ -76,9 +76,7 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    contactDiv.classList.add( `contact-${nickname}`);
    contactDiv.classList.add( 'contact');
    contactDiv.setAttribute('data-userid', `${nickname}`)
-   contactDiv.style.display= 'flex'
-   contactDiv.style.alignItems= 'center'
-   contactDiv.style.cursor='pointer'
+  
 //    contactDiv.style.justifyContent='space-between'
  
    
@@ -111,27 +109,47 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    countMess.textContent = NombreMessage
 
    countMess.style.color="red";
+   let leftContactDiv = document.createElement('div');
+   leftContactDiv.className ="leftContact";
 
    
-   contactDiv.appendChild(iconeMesage)
-   contactDiv.appendChild(countMess);
-   contactDiv.appendChild(userDiv);
+   leftContactDiv.appendChild(iconeMesage)
+   leftContactDiv.appendChild(countMess);
+   leftContactDiv.appendChild(userDiv);
 
    
    let p = document.createElement('p');
     p.innerText = nickname + " ";
-
+    leftContactDiv.appendChild(p)
+    let rightContactDiv = document.createElement('div');
+    rightContactDiv.className ="rightContact-"+nickname;
     let span = document.createElement('span');
     span.id = "status-" + nickname; // Remplacer 'nickname' par une valeur unique si nécessaire
     span.innerText = status;
+    span.style.display="none";
     if (status === 'offLine') {
         span.classList.add('status-offline');
+           // Ajoutez une image si le statut est 'offline'
+            let img = document.createElement('img');
+            img.src = 'assets/image/status-no-active-svgrepo-com.svg'; // Remplacez par le chemin de votre icône
+            img.alt = 'Offline';
+            img.className = 'status-icon-off'; // Ajoutez une classe pour styliser l'image si nécessaire
+            rightContactDiv.appendChild(img);
        }else{
         span.classList.add('status-online');
+        let img = document.createElement('img');
+        img.src = 'assets/image/status-active-svgrepo-com.svg'; // Remplacez par le chemin de votre icône
+        img.alt = 'Online';
+        img.className = 'status-icon-on'; // Ajoutez une classe pour styliser l'image si nécessaire
+        rightContactDiv.appendChild(img);
        }
 
-    p.appendChild(span);
-    contactDiv.appendChild(p);
+       contactDiv.appendChild(leftContactDiv);
+
+   
+    contactDiv.appendChild(span);
+    contactDiv.appendChild(rightContactDiv);
+   
     container.appendChild(contactDiv);
 
    
