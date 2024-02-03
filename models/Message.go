@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -50,9 +51,9 @@ func (Com *MessagePrivate) InsertMessage(db *sql.DB, fromUser, toUser, contentMe
 	return errr
 }
 
-func CountUnreadMessages(db *sql.DB, userFrom, toUser string) (int, error) {
+func NombreMessage(db *sql.DB, userFrom, toUser string) (int, error) {
 	var count int
-	err := db.QueryRow(`SELECT COUNT(*) FROM message WHERE fromUser = ? AND toUser = ? AND isRead = 0`, userFrom, toUser).Scan(&count)
+	err := db.QueryRow(`SELECT COUNT(*) FROM message WHERE (fromUser = ? AND toUser = ?) OR (toUser = ? AND fromUser = ?)`, userFrom, toUser, userFrom, toUser).Scan(&count)
 	if err != nil {
 		return 0, err
 	}
@@ -62,4 +63,33 @@ func CountUnreadMessages(db *sql.DB, userFrom, toUser string) (int, error) {
 func MarkMessagesAsRead(db *sql.DB, userFrom, toUser string) error {
 	_, err := db.Exec(`UPDATE message SET isRead = 1 WHERE fromUser = ? AND toUser = ? AND isRead = 0`, userFrom, toUser)
 	return err
+}
+func CountUnreadMessages(db *sql.DB, userFrom, toUser string) (int, error) {
+	var count int
+	err := db.QueryRow(`SELECT COUNT(*) FROM message WHERE fromUser = ? AND toUser = ? AND isRead = 0`, userFrom, toUser).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+// GetLastMessageDateBetweenUsers récupère la date de création du dernier message entre deux utilisateurs.
+func GetLastMessageDateBetweenUsers(db *sql.DB, userFrom string, toUser string) (*time.Time, error) {
+	var lastMessageDate time.Time
+	query := `
+		SELECT createdDate
+		FROM message
+		WHERE (fromUser = ? AND toUser = ?) OR (fromUser = ? AND toUser = ?)
+		ORDER BY createdDate DESC
+		LIMIT 1
+	`
+	err := db.QueryRow(query, userFrom, toUser, toUser, userFrom).Scan(&lastMessageDate)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Pas de messages trouvés entre ces deux utilisateurs
+			return nil, errors.New("no messages found between users")
+		}
+		return nil, err
+	}
+	return &lastMessageDate, nil
 }

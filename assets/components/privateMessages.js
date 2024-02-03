@@ -145,7 +145,10 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
      chatFooter.innerHTML=` 
              <form enctype="multipart/form-data" class="receved-${toUser}">
                 <input type="hidden" name="send-Name" value="${userFrom}">
-                <div class="chat-footer">
+               
+                <div class="chat-footer"> 
+                <p class="emptyMsg"></p>
+
                     <input placeholder="Type your message" type="text" name="messagePrivite">
                     <button>Send</button>
                 </div>

@@ -158,6 +158,7 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 
 			}
 			allUserStatus.NewMessage = true
+			allUserStatus.PersonConnected = userFrom
 			jsonAll, _ := json.Marshal(allUserStatus)
 			conWith := UsersMap[toUser].Conn
 			err = conWith.WriteMessage(websocket.TextMessage, jsonAll)

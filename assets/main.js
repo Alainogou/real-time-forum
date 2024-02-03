@@ -9,7 +9,7 @@ let ap=document.getElementById('enter')
 
 import { renderCommentForm } from './components/commentForm.js'
 import {createNewAccount} from './components/createNewAccount.js'
-import {Messenger, displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
+import {Messenger,  displayCategories, headerPage, loadConnexionPage} from './components/forum.js'
 import { sendForm } from './components/loginForm.js'
 import {createPostbutton, fetchPosthtml, postForm} from './components/postForm.js'
 import { FormMessage } from './components/privateMessages.js'
@@ -125,7 +125,19 @@ function handleComment(event, userId){
   
 }
 
+const alertMessage = (sender, Recipient ,div1) => {
+    console.log("alertMessage");
+    const div = document.createElement('div');
+    div.className = 'notif';
 
+    const span = document.createElement('span');
+    span.className = 'welcome_text';
+
+    span.innerHTML = `Hey, <span class="notif-user"> ${Recipient}</span>  you have a new message from <span class="notif-user"> ${sender}</span>`;
+
+    div.appendChild(span);
+    div1.appendChild(div);
+}
 function handleSuccessfulLogin(data) {
    
     ap.style.display="none";
@@ -136,6 +148,8 @@ function handleSuccessfulLogin(data) {
     center.classList.add('center');
 
     right.classList.add('right');
+    right.classList.add('right1');
+
     main.classList.add('main');
     
 
@@ -230,27 +244,28 @@ function handleSuccessfulLogin(data) {
 
             let userlist = document.createElement("div");
             userlist.className = "userlist";
-            for (let k=0;k<msg.AllUser.length;k++){
-                if (msg.AllUser[k].NickName !== data.User.NickName){
-                    Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
+            let AllUser=[...msg.MessageExist, ...msg.NotMessage]
+            for (let k=0;k<AllUser.length;k++){
+                if (AllUser[k].NickName !== data.User.NickName){
+                    Messenger(userlist, AllUser[k].NickName, AllUser[k].Status, AllUser[k].NbreMessages )
                     
                     setTimeout(() => {
-                        let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
+                        let contact = document.querySelector(`.contact-${AllUser[k].NickName}`)
                         
                         if (contact) contact.addEventListener("click",()=>{
                             console.log("contact clicked");
-                            let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
+                            let premierDive= document.querySelector(`.chat-card-${AllUser[k].NickName}`)
                             if (premierDive) premierDive.remove()
 
                             let premierDiv = document.createElement('div');
                             premierDiv.classList.add('chat-card');
-                            premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
+                            premierDiv.classList.add(`chat-card-${AllUser[k].NickName}`);
 
-                            let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
+                            let messageOpen=document.querySelector(`.Nmessage-${AllUser[k].NickName}`)
                             if (messageOpen) messageOpen.innerHTML="0"
                             
                             
-                            chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
+                            chatContainer(AllUser[k].NickName, data.User.NickName, premierDiv)
                             right.appendChild(premierDiv)
                         
                         })
@@ -259,82 +274,46 @@ function handleSuccessfulLogin(data) {
                     }, 1000);
 
                 }
-                // if (msg.AllUser[k].NickName !== data.User.NickName){
-                //     Messenger(userlist, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages)
-                    
-                //     setTimeout(() => {
-                //         let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
-                        
-                //         if (contact) contact.addEventListener("click",()=>{
-                //             // console.log("contact clicked");
-                //             let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
-                //             if (premierDive) premierDive.remove()
-    
-                //             let premierDiv = document.createElement('div');
-                //             premierDiv.classList.add('chat-card');
-                //             premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
-                //             premierDiv.style.display="block";
-                //             if (premierDiv) premierDiv.remove()
-    
-                //             let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
-                //             if (messageOpen) messageOpen.innerHTML="0"
-    
-                //             privateSocket(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
-                //             right.appendChild(premierDiv)
-                         
-                //         })
-    
-                       
-                //     }, 1000);
-    
-                // }
+               
             }
             div.appendChild(userlist)
             right.appendChild(div)
         }
         
         
-
+ 
         if (msg.NewMessage===true){    
-                  
-            alert("new message")   
+            console.log("new message");
+
+            let nMsgElement = document.querySelector(`.Nmessage-${msg.PersonConnected}`);
+
+            if (nMsgElement) {
+                nMsgElement.innerText= parseInt(nMsgElement.textContent ) + 1 
+            }
+           moveUserToTop(msg.PersonConnected)
+            // setTimeout(()=>{
+               let body= document.querySelector('body')
+               alertMessage(msg.PersonConnected,data.User.NickName,body)  
+            // },1000)
+
+         
+            
+            // if (nMsgElement) {
+            //     let currentValue = parseInt(nMsgElement.textContent, 10);
+            //     if (!isNaN(currentValue)) {
+            //         nMsgElement.textContent = (currentValue + 1).toString();
+            //     } else {
+            //         console.error('Cannot increment non-numeric value');
+            //     }
+            // } else {
+            //     console.error('Element not found');
+            // }
+            
             msg.NewMessage=false
             
         }
         
-        // for (let k=0;k<msg.AllUser.length;k++){
-        //     if (msg.AllUser[k].NickName !== data.User.NickName){
-        //         Messenger(div, msg.AllUser[k].NickName, msg.AllUser[k].Status, msg.AllUser[k].NbreMessages )
-                
-        //         setTimeout(() => {
-        //             let contact = document.querySelector(`.contact-${msg.AllUser[k].NickName}`)
-                    
-        //             if (contact) contact.addEventListener("click",()=>{
-        //                 console.log("contact clicked");
-        //                 let premierDive= document.querySelector(`.chat-card-${msg.AllUser[k].NickName}`)
-        //                 if (premierDive) premierDive.remove()
-
-        //                 let premierDiv = document.createElement('div');
-        //                 premierDiv.classList.add('chat-card');
-        //                 premierDiv.classList.add(`chat-card-${msg.AllUser[k].NickName}`);
-
-        //                 let messageOpen=document.querySelector(`.Nmessage-${msg.AllUser[k].NickName}`)
-        //                 if (messageOpen) messageOpen.innerHTML="0"
-                        
-                        
-        //                 chatContainer(msg.AllUser[k].NickName, data.User.NickName, premierDiv)
-        //                 right.appendChild(premierDiv)
-                     
-        //             })
-
-                   
-        //         }, 1000);
-
-        //     }
-        // }
-            
-       
-        // right.appendChild(div)
+      
     };
            
 
@@ -350,6 +329,18 @@ function handleSuccessfulLogin(data) {
     main.appendChild(right);
 }
 
+function moveUserToTop(userId) {
+    
+    const usersDiv = document.querySelector(".userlist");
+    const userContainer = document.querySelector(`.contact-${userId}`);
+    if (userContainer) {
+      console.log("userContainer: ", userContainer);
+      usersDiv.removeChild(userContainer);
+      usersDiv.insertBefore(userContainer, usersDiv.children[0]);
+      // Enregistrer l'ordre des utilisateurs dans localStorage
+    
+    }
+}
 
 
 function fetchComment(addcomment, postId){
@@ -421,32 +412,8 @@ function chatContainer(toUser, fromUser, premierDiv)  {
         FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
         
 
-        
-        // let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
-        // if (closeMesenger) closeMesenger.addEventListener("click",()=>{
-            
-        //         let clickClose = document.querySelector(`.chat-card-${toUser}`)
-        //         clickClose.remove()
-        // })
-
         sendMessage(toUser, fromUser, premierDiv)
-        // let messageFormId = document.querySelector(`.receved-${toUser}`)
-        // if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
-        //     event.preventDefault();
-        //     const messageInput = document.querySelector('input[name="messagePrivite"]');
-        //     const message = messageInput.value;
-        //     const messageData = {
-        //         FromUser: fromUser,
-        //         ToUser: toUser,
-        //         Message: message,
-        //         CreateDate: new Date().toISOString()
-        //     };
-            
-        //     socket.send(JSON.stringify(messageData));
-        //     messageInput.value = ''; // Effacer le champ de saisie après l'envoi
-
-          
-        // });
+        
     };
     
              
@@ -491,6 +458,15 @@ function sendMessage(toUser, fromUser, premierDiv)  {
             event.preventDefault();
             const messageInput = document.querySelector('input[name="messagePrivite"]');
             const message = messageInput.value;
+            let emptyMessage = document.querySelector(".emptyMsg")
+            if ( message=="") {
+                emptyMessage.textContent="Message empty"
+                emptyMessage.style.color="red"
+                setTimeout(() => {
+                    emptyMessage.textContent=""
+                }, 3000);
+                console.log("Message empty");
+            }
             const messageData = {
                 FromUser: fromUser,
                 ToUser: toUser,
@@ -500,6 +476,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
             
             socket.send(JSON.stringify(messageData));
             messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            
             
           
         });

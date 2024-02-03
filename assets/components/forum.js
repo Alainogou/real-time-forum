@@ -73,12 +73,14 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    div.className = 'third_warpper';
    div.style.marginBottom = '10px'
    let contactDiv = document.createElement('div');
-   contactDiv.className = `contact-${nickname}`;
+   contactDiv.classList.add( `contact-${nickname}`);
+   contactDiv.classList.add( 'contact');
+   contactDiv.setAttribute('data-userid', `${nickname}`)
    contactDiv.style.display= 'flex'
    contactDiv.style.alignItems= 'center'
    contactDiv.style.cursor='pointer'
 //    contactDiv.style.justifyContent='space-between'
-   
+ 
    
    let userDiv = document.createElement('div');
    userDiv.className = 'user';
@@ -105,7 +107,7 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    iconeMesage.appendChild(classI);
 
    let countMess = document.createElement('span');
-   countMess.className ="Nmessage-"+nickname;
+   countMess.classList.add(`Nmessage-${nickname}`);
    countMess.textContent = NombreMessage
 
    countMess.style.color="red";
@@ -122,6 +124,11 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
     let span = document.createElement('span');
     span.id = "status-" + nickname; // Remplacer 'nickname' par une valeur unique si nécessaire
     span.innerText = status;
+    if (status === 'offLine') {
+        span.classList.add('status-offline');
+       }else{
+        span.classList.add('status-online');
+       }
 
     p.appendChild(span);
     contactDiv.appendChild(p);
@@ -129,6 +136,8 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
 
    
 };
+
+
 
 
 export const loadConnexionPage=(container, name) =>{

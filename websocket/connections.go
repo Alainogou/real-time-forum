@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"realtimeforum/models"
+	"sort"
+	"strings"
+	"time"
 
 	"encoding/json"
 	"sync"
@@ -22,14 +25,17 @@ type Message struct {
 }
 
 type UserStatus struct {
-	Id           int    `json:"Id"`
-	NickName     string `json:"NickName"`
-	Status       string `json:"Status"`
-	NbreMessages int    `json:"NbreMessages"`
+	Id           int       `json:"Id"`
+	NickName     string    `json:"NickName"`
+	Status       string    `json:"Status"`
+	NbreMessages int       `json:"NbreMessages"`
+	CreateDate   time.Time `json:"CreateDate"`
 }
 
 type AllUserStatus struct {
 	AllUser         []UserStatus `json:"AllUser"`
+	MessageExist    []UserStatus `json:"MessageExist"`
+	NotMessage      []UserStatus `json:"NotMessage"`
 	NewMessage      bool         `json:"NewMessage"`
 	NewConnection   bool         `json:"NewConnection"`
 	NewDeconnexion  bool         `json:"NewDeconnexion"`
@@ -105,6 +111,67 @@ func HandleConnections(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		// Envoyer un message au client
 
 		allUserStatus = AllUserStatus{AllUser: userConnect}
+
+		MessageExist := []UserStatus{}
+		NotMessage := []UserStatus{}
+		for i := 0; i < len(allUserStatus.AllUser); i++ {
+			nbr, err := models.GetLastMessageDateBetweenUsers(db, receivedMsg.NickName, allUserStatus.AllUser[i].NickName)
+			if err != nil {
+				NotMessage = append(NotMessage, allUserStatus.AllUser[i])
+			} else {
+				allUserStatus.AllUser[i].CreateDate = *nbr
+				MessageExist = append(MessageExist, allUserStatus.AllUser[i])
+			}
+
+		}
+		fmt.Println(MessageExist)
+
+		// Créez un nouveau tableau pour stocker uniquement les noms d'utilisateur
+		nickNames := make([]string, len(NotMessage))
+
+		// Remplissez le tableau nickNames avec les noms d'utilisateur de NotMessage
+		for i, user := range NotMessage {
+			nickNames[i] = user.NickName
+		}
+		sort.Slice(nickNames, func(i, j int) bool {
+			return strings.ToLower(nickNames[i]) < strings.ToLower(nickNames[j])
+		})
+		_NotMessage := []UserStatus{}
+
+		for _, user := range nickNames {
+			for _, n := range NotMessage {
+				if n.NickName == user {
+
+					_NotMessage = append(_NotMessage, n)
+				}
+			}
+		}
+		// Créez un nouveau tableau pour stocker uniquement les dates
+		dateLastMsg := make([]time.Time, len(MessageExist))
+
+		for i, dat := range MessageExist {
+			dateLastMsg[i] = dat.CreateDate
+		}
+		// Triez le tableau dateLastMsg par ordre croissant de CreateDate
+		sort.Slice(dateLastMsg, func(i, j int) bool {
+			return dateLastMsg[i].After(dateLastMsg[j]) || dateLastMsg[i].Equal(dateLastMsg[j])
+		})
+
+		_MessageExist := []UserStatus{}
+
+		for _, date := range dateLastMsg {
+			for _, n := range MessageExist {
+				if n.CreateDate == date {
+
+					_MessageExist = append(_MessageExist, n)
+				}
+			}
+		}
+		
+
+		allUserStatus.NotMessage = _NotMessage
+		allUserStatus.MessageExist = _MessageExist
+
 		jsonMsg, _ := json.Marshal(allUserStatus)
 
 		err = ws.WriteMessage(websocket.TextMessage, jsonMsg)

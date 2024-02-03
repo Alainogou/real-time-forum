@@ -865,6 +865,59 @@ nav .right  img{
 .main .center .end span i{
   margin-right: 8px;
 }
+
+
+/* notiof of new message */
+
+.notif{
+  position: absolute;
+  background-color: aqua;
+  top: 15%;
+  right: 0; 
+  padding: 10px;
+  /* background: #fff; */
+  border-radius: 5px;
+  width: fit-content;
+  height: 70px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(0); 
+  animation: slideIn 7s ease forwards;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.welcome_text{
+  font-size: 20px;
+  
+}
+.notif .welcome_text .notif-user{
+  color:rgb(143, 143, 28);
+  font-weight: bold;
+}
+.status-offline {
+  color: red; /* ou toute autre couleur que vous préférez */
+}
+.status-online{
+  color: #0f9d58;
+}
+@keyframes slideIn {
+  0% {
+      transform: translateX(100%); /* Start from the right */
+      opacity: 0;
+      right: 25%;
+  }
+  5%, 90% {
+      transform: translateX(0); /* Move to the center */
+      opacity: 1;
+  }
+  100% {
+      opacity: 0;
+  }
+}
+
+
 /*-----------------right------------------*/
 .main .right{
   width: 25%;
