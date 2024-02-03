@@ -226,7 +226,24 @@ function handleSuccessfulLogin(data) {
 
             let userDeconnected=document.querySelector(`#status-${msg.PersonConnected}`)
             if (userDeconnected) userDeconnected.innerHTML='off'
-            //  PersonConnected string
+            
+            
+        }else if  (msg.NewMessage===true){    
+            console.log("new message");
+
+            let nMsgElement = document.querySelector(`#Nmessage-${msg.PersonConnected}`);
+            console.log( "MOMSS", nMsgElement.textContent)
+            if (nMsgElement) {
+                nMsgElement.innerText= parseInt(nMsgElement.textContent) + 1 
+            }
+             moveUserToTop(msg.PersonConnected)
+            setTimeout(()=>{
+               let body= document.querySelector('body')
+               alertMessage(msg.PersonConnected,data.User.NickName,body)  
+            },1000)
+
+  
+            msg.NewMessage=false
             
         }else{
 
@@ -261,7 +278,7 @@ function handleSuccessfulLogin(data) {
                             premierDiv.classList.add('chat-card');
                             premierDiv.classList.add(`chat-card-${AllUser[k].NickName}`);
 
-                            let messageOpen=document.querySelector(`.Nmessage-${AllUser[k].NickName}`)
+                            let messageOpen=document.querySelector(`#Nmessage-${AllUser[k].NickName}`)
                             if (messageOpen) messageOpen.innerHTML="0"
                             
                             
@@ -282,36 +299,7 @@ function handleSuccessfulLogin(data) {
         
         
  
-        if (msg.NewMessage===true){    
-            console.log("new message");
-
-            let nMsgElement = document.querySelector(`.Nmessage-${msg.PersonConnected}`);
-
-            if (nMsgElement) {
-                nMsgElement.innerText= parseInt(nMsgElement.textContent ) + 1 
-            }
-           moveUserToTop(msg.PersonConnected)
-            // setTimeout(()=>{
-               let body= document.querySelector('body')
-               alertMessage(msg.PersonConnected,data.User.NickName,body)  
-            // },1000)
-
-         
-            
-            // if (nMsgElement) {
-            //     let currentValue = parseInt(nMsgElement.textContent, 10);
-            //     if (!isNaN(currentValue)) {
-            //         nMsgElement.textContent = (currentValue + 1).toString();
-            //     } else {
-            //         console.error('Cannot increment non-numeric value');
-            //     }
-            // } else {
-            //     console.error('Element not found');
-            // }
-            
-            msg.NewMessage=false
-            
-        }
+       
         
       
     };

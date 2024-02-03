@@ -125,41 +125,27 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 			return
 		}
 
-		// messages := models.MessageSender{}
-		// user_forum, err := models.GetMessage(db, userFrom, toUser)
-		// user_receiver, err1 := models.GetMessage(db, toUser, userFrom)
-
-		// if err != nil || err1 != nil {
-		// 	fmt.Println("yo error")
-		// 	return
-		// }
-		// messages.UserForum = user_forum
-		// messages.UserReceiver = user_receiver
-		// mssg, _ := json.Marshal(messages)
-		// messages.NewMessage = true
-
-		// err = PersonOpenChat[toUser].WriteMessage(websocket.TextMessage, mssg)
-		// if err != nil {
-		// 	fmt.Println("write ici soos:", err)
-		// 	return
-		// }
+	
 
 	} else {
 		if IsUserExist(toUser) {
 
-			for i := 0; i < len(UserSlice); i++ {
+			// for i := 0; i < len(UserSlice); i++ {
 
-				count, err := models.CountUnreadMessages(db, UserSlice[i].NickName, toUser)
-				if err != nil {
-					fmt.Println("error to give count read messages")
+			// 	count, err := models.CountUnreadMessages(db, UserSlice[i].NickName, toUser)
+			// 	if err != nil {
+			// 		fmt.Println("error to give count read messages")
 
-				}
-				allUserStatus.AllUser[i].NbreMessages = count
+			// 	}
+			// 	allUserStatus.AllUser[i].NbreMessages = count
 
-			}
-			allUserStatus.NewMessage = true
-			allUserStatus.PersonConnected = userFrom
-			jsonAll, _ := json.Marshal(allUserStatus)
+
+			// }
+
+			allUserS:=AllUserStatus{}
+			allUserS.NewMessage = true
+			allUserS.PersonConnected = userFrom
+			jsonAll, _ := json.Marshal(allUserS)
 			conWith := UsersMap[toUser].Conn
 			err = conWith.WriteMessage(websocket.TextMessage, jsonAll)
 			if err != nil {

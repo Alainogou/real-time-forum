@@ -86,16 +86,7 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
 
                             chatBody.insertBefore(newMessage, chatBody.firstChild);
                             chatBody.insertBefore(newTime, chatBody.firstChild);
-                            // if (_data["Sender"] == _User1) {
-                            //     newMessage = sendMessages(_data["Sender"], _data["Message"], formattedDate);
-                            // }
-            
-                            // if (_data["Recipient"] == _User1) {
-                            //     newMessage = recipientMessages(_data["Sender"], _data["Message"], formattedDate);
-                            // }
-                
-                            // Insert new message sszat the top of chatBody[i]
-                            // chatBody.insertBefore(newMessage, chatBody.firstChild);
+                          
                         }
                 }
                 // Adjust scroll position to prevent jumping
@@ -107,23 +98,6 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
             }
         }, 500));
 
-        // allMessages=allMessages.slice(10, allMessages.length)
-      
-        // chatBody.addEventListener('scroll', throttle((event) => {
-        // // Check if user has scrolled to the top
-        //     if (event.target.scrollTop === 0) {
-        //         let scrollHeightBefore = chatBody.scrollHeight;
-        //         loadMessages(0, Math.min(10, allMessages.length), chatBody, allMessages, userFrom)
-                
-                
-        //         allMessages=allMessages.slice(Math.min(10, allMessages.length), allMessages.length)
-                
-
-        //         // Adjust scroll position to prevent jumping
-        //         let scrollHeightAfter = chatBody.scrollHeight;
-        //         chatBody.scrollTop = chatBody.scrollTop + (scrollHeightAfter - scrollHeightBefore);
-        //     }
-        // }, 500));
 
     }
 
