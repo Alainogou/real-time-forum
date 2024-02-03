@@ -105,7 +105,7 @@ export const Messenger = (container, nickname , status, NombreMessage) => {
    iconeMesage.appendChild(classI);
 
    let countMess = document.createElement('span');
-   countMess.classList.add(`Nmessage-${nickname}`);
+   countMess.id=(`Nmessage-${nickname}`);
    countMess.textContent = NombreMessage
 
    countMess.style.color="red";

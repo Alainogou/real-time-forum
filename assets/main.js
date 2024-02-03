@@ -241,6 +241,18 @@ function handleSuccessfulLogin(data) {
            userConnected.appendChild(img)
             }//  PersonConnected string
             
+        }else if  (msg.NewMessage===true){    
+            console.log("new message");
+            let nMsgElement = document.querySelector(`#Nmessage-${msg.PersonConnected}`);
+            console.log( "MOMSS", nMsgElement.textContent)
+            if (nMsgElement) {
+                nMsgElement.innerText= parseInt(nMsgElement.textContent) + 1 
+            }
+             moveUserToTop(msg.PersonConnected)
+            setTimeout(()=>{
+               let body= document.querySelector('body')
+               alertMessage(msg.PersonConnected,data.User.NickName,body)  
+            },1000)
         }else{
 
             right.innerHTML=''
@@ -274,7 +286,7 @@ function handleSuccessfulLogin(data) {
                             premierDiv.classList.add('chat-card');
                             premierDiv.classList.add(`chat-card-${AllUser[k].NickName}`);
 
-                            let messageOpen=document.querySelector(`.Nmessage-${AllUser[k].NickName}`)
+                            let messageOpen=document.querySelector(`#Nmessage-${AllUser[k].NickName}`)
                             if (messageOpen) messageOpen.innerHTML="0"
                             
                             
@@ -295,36 +307,7 @@ function handleSuccessfulLogin(data) {
         
         
  
-        if (msg.NewMessage===true){    
-            console.log("new message");
-
-            let nMsgElement = document.querySelector(`.Nmessage-${msg.PersonConnected}`);
-
-            if (nMsgElement) {
-                nMsgElement.innerText= parseInt(nMsgElement.textContent ) + 1 
-            }
-           moveUserToTop(msg.PersonConnected)
-            // setTimeout(()=>{
-               let body= document.querySelector('body')
-               alertMessage(msg.PersonConnected,data.User.NickName,body)  
-            // },1000)
-
-         
-            
-            // if (nMsgElement) {
-            //     let currentValue = parseInt(nMsgElement.textContent, 10);
-            //     if (!isNaN(currentValue)) {
-            //         nMsgElement.textContent = (currentValue + 1).toString();
-            //     } else {
-            //         console.error('Cannot increment non-numeric value');
-            //     }
-            // } else {
-            //     console.error('Element not found');
-            // }
-            
-            msg.NewMessage=false
-            
-        }
+       
         
       
     };
@@ -343,7 +326,7 @@ function handleSuccessfulLogin(data) {
 }
 
 function moveUserToTop(userId) {
-    
+    console.log("top");
     const usersDiv = document.querySelector(".userlist");
     const userContainer = document.querySelector(`.contact-${userId}`);
     if (userContainer) {
@@ -469,7 +452,8 @@ function sendMessage(toUser, fromUser, premierDiv)  {
        
         if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
             event.preventDefault();
-            const messageInput = document.querySelector('input[name="messagePrivite"]');
+            const messageInput = document.querySelector(`input[name="messagePrivite-${toUser}"]`);
+
             const message = messageInput.value;
             let emptyMessage = document.querySelector(".emptyMsg")
             if ( message=="") {
@@ -489,6 +473,10 @@ function sendMessage(toUser, fromUser, premierDiv)  {
             
             socket.send(JSON.stringify(messageData));
             messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            
+            if(message!==""){
+                moveUserToTop(toUser)
+            }
             
             
           
@@ -521,7 +509,7 @@ function sendMessage(toUser, fromUser, premierDiv)  {
         let messageFormId = document.querySelector(`.receved-${toUser}`)
         if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
             event.preventDefault();
-            const messageInput = document.querySelector('input[name="messagePrivite"]');
+            const messageInput = document.querySelector(`input[name="messagePrivite-${toUser}"]`);
             const message = messageInput.value;
             const messageData = {
                 FromUser: fromUser,
@@ -532,6 +520,9 @@ function sendMessage(toUser, fromUser, premierDiv)  {
             
             socket.send(JSON.stringify(messageData));
             messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            if(message!==""){
+                moveUserToTop(toUser)
+            }
           
         });
 
