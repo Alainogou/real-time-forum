@@ -19,12 +19,6 @@ import { FormMessage } from './components/privateMessages.js'
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-
-    // let currentPath = window.location.pathname;
-    // console.log(currentPath);
-    // if (currentPath!=="/"){
-    //     console.log("c'est pas bon");
-    // }
     
     fetch('http://localhost:8081/auth')
     .then(response => response.json())
@@ -218,7 +212,7 @@ function handleSuccessfulLogin(data) {
         socket.send(message);
     };
 
-     // Écoutez les messages entrants
+   
     socket.onmessage = function(event) {
         let msg = JSON.parse(event.data);
         console.log(msg);
@@ -243,7 +237,7 @@ function handleSuccessfulLogin(data) {
             img.src = 'assets/image/status-no-active-svgrepo-com.svg'; // Remplacez par le chemin de votre icône
             img.alt = 'Offline';
             img.className = 'status-icon-off'
-           userConnected.appendChild(img)
+             userConnected.appendChild(img)
             }//  PersonConnected string
             
         }else if  (msg.NewMessage===true){    

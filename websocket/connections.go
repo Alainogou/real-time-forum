@@ -41,7 +41,7 @@ type AllUserStatus struct {
 	NewConnection   bool         `json:"NewConnection"`
 	NewDeconnexion  bool         `json:"NewDeconnexion"`
 	PersonConnected string       `json:"PersonConnected"`
-	NewUser         string       `json:"NewUser"`
+	
 }
 
 var UsersMap = make(map[string]*models.User)
@@ -208,18 +208,32 @@ func RemoveUserFromMap(username string, db *sql.DB) {
 	BroadcastDeconnexion(userExist, username, db)
 }
 
-func BroadcastConnexion(allUserStatus AllUserStatus, userexist []string, userName string, db *sql.DB) {
+func BroadcastConnexion(allUser AllUserStatus, userexist []string, userName string, db *sql.DB) {
 	fmt.Println(models.IsNewUser, "Broadcast")
 	if models.IsNewUser {
-		
+		for k := 0; k < len(userexist); k++ {
 
+			if userexist[k] != userName {
+				
+				jsonMsg, _ := json.Marshal(allUserStatus)
+				conn := UsersMap[userExist[k]].Conn
+				err := conn.WriteMessage(websocket.TextMessage, jsonMsg)
+				if err != nil {
+					fmt.Println("write:", err)
+					return
+				}
+			}
+
+		}
+		models.IsNewUser = false
+		
 	} else {
 		for k := 0; k < len(userexist); k++ {
 
 			if userexist[k] != userName {
-				allUserStatus.NewConnection = true
-				allUserStatus.PersonConnected = userName
-				jsonMsg, _ := json.Marshal(allUserStatus)
+				allUser.NewConnection = true
+				allUser.PersonConnected = userName
+				jsonMsg, _ := json.Marshal(allUser)
 				conn := UsersMap[userExist[k]].Conn
 				err := conn.WriteMessage(websocket.TextMessage, jsonMsg)
 				if err != nil {
@@ -231,7 +245,7 @@ func BroadcastConnexion(allUserStatus AllUserStatus, userexist []string, userNam
 		}
 	}
 
-	models.IsNewUser = false
+	
 }
 
 func BroadcastDeconnexion(userexist []string, userName string, db *sql.DB) {
