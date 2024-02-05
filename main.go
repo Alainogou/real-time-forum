@@ -9,7 +9,7 @@ import (
 	"realtimeforum/controllers"
 	wbs "realtimeforum/websocket"
 	"time"
-
+	"log"
 	"github.com/rs/cors"
 )
 
@@ -58,18 +58,23 @@ func init() {
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
+		http.NotFound(w, r) // Renvoie une page 404 si le chemin n'est pas "/"
 		return
 	}
 
 	tmpl, err := template.ParseFiles("index.html")
 	if err != nil {
-		fmt.Println("Parsing error")
+		// Loggez l'erreur et renvoyez une réponse d'erreur personnalisée
+		log.Printf("Template parsing error: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	err = tmpl.Execute(w, nil)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		// Loggez l'erreur et renvoyez une réponse d'erreur personnalisée
+		log.Printf("Template execution error: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 }
@@ -89,7 +94,6 @@ func main() {
 	http.HandleFunc("/auth", controllers.IsAuth)
 	http.HandleFunc("/logout", controllers.LogoutUser)
 	http.HandleFunc("/createPost", controllers.CreatePost)
-	// http.HandleFunc("/createPost", controllers.CommentPost)
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	http.HandleFunc("/createComment", controllers.CreateComment)
 	http.HandleFunc("/fetchComment/", controllers.GetComments)
