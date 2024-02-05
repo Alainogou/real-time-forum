@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"html/template"
+	
 	"net/http"
 	"os"
 	"realtimeforum/config"
 	"realtimeforum/controllers"
-	wbs "realtimeforum/websocket"
+	"realtimeforum/routes"	
 	"time"
-	"log"
-	"github.com/rs/cors"
+	 "github.com/rs/cors"
 )
 
 var (
@@ -19,7 +18,6 @@ var (
 
 const currentTime = "2006-01-02 15:04:05"
 
-// ASCI esacpe codes for colors
 const (
 	Reset   = "\033[0m"
 	Red     = "\033[31m"
@@ -56,62 +54,14 @@ func init() {
 
 }
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r) // Renvoie une page 404 si le chemin n'est pas "/"
-		return
-	}
 
-	tmpl, err := template.ParseFiles("index.html")
-	if err != nil {
-		// Loggez l'erreur et renvoyez une réponse d'erreur personnalisée
-		log.Printf("Template parsing error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
 
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		// Loggez l'erreur et renvoyez une réponse d'erreur personnalisée
-		log.Printf("Template execution error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-}
-
-// func getHandler(w http.ResponseWriter, r *http.Request) {
-// 	// Handle GET request
-// 	fmt.Fprintf(w, "GET request received")
-// }
 
 func main() {
 	InitMessage()
-	static := http.FileServer(http.Dir("./assets/"))
-	http.Handle("/assets/", http.StripPrefix("/assets/", static))
-	http.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/register", controllers.RegisterUser)
-	http.HandleFunc("/login", controllers.LoginUser)
-	http.HandleFunc("/auth", controllers.IsAuth)
-	http.HandleFunc("/logout", controllers.LogoutUser)
-	http.HandleFunc("/createPost", controllers.CreatePost)
-	http.HandleFunc("/fetchPost", controllers.GetPosts)
-	http.HandleFunc("/createComment", controllers.CreateComment)
-	http.HandleFunc("/fetchComment/", controllers.GetComments)
-	
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		wbs.HandleConnections(w, r, controllers.DB)
-	})
-	http.HandleFunc("/communication", func(w http.ResponseWriter, r *http.Request) {
-		wbs.HandleCommunications(w, r, controllers.DB)
-	})
-
-	http.HandleFunc("/privateSocket", func(w http.ResponseWriter, r *http.Request) {
-		wbs.HandlePrivateMessage(w, r, controllers.DB)
-	})
-
+	routes.Route()
 	handler := cors.Default().Handler(http.DefaultServeMux)
 	http.ListenAndServe(Port, handler)
-
 	defer controllers.DB.Close()
 
 }

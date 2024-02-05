@@ -1,6 +1,154 @@
 
 
-export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEnvoyer) => {
+
+function chatContainer(toUser, fromUser, premierDiv)  {
+    
+    const socket = new WebSocket(`ws://localhost:8081/communication?userFrom=${fromUser}&toUser=${toUser}`);
+   
+       // Écoutez les messages entrants
+    socket.onmessage = function(event) {
+        
+        let msg = JSON.parse(event.data);
+        
+        FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        
+
+        sendMessage(toUser, fromUser, premierDiv)
+        
+    };
+    
+             
+    socket.onopen = (event) => {
+       
+    };
+
+   
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`);
+    };
+
+}
+
+
+function sendMessage(toUser, fromUser, premierDiv)  {
+    
+
+    const socket = new WebSocket(`ws://localhost:8081/privateSocket?userFrom=${fromUser}&toUser=${toUser}`);
+
+    socket.onopen = (event) => {
+
+        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+        closeMesenger.addEventListener("click",()=>{
+                let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                clickClose.remove()
+                const messageData = {
+                    
+                    ToUserClosed:fromUser+toUser
+                };
+                socket.send(JSON.stringify(messageData))
+
+        })
+
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+       
+        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const messageInput = document.querySelector(`input[name="messagePrivite-${toUser}"]`);
+
+            const message = messageInput.value;
+            let emptyMessage = document.querySelector(".emptyMsg")
+            if ( message=="") {
+                emptyMessage.textContent="Message empty"
+                emptyMessage.style.color="red"
+                setTimeout(() => {
+                    emptyMessage.textContent=""
+                }, 3000);
+                console.log("Message empty");
+            }
+            const messageData = {
+                FromUser: fromUser,
+                ToUser: toUser,
+                Message: message,
+                CreateDate: new Date().toISOString()
+            };
+            
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            
+            if(message!==""){
+                moveUserToTop(toUser)
+            }
+            
+            
+          
+        });
+
+
+    };
+    
+    socket.onmessage = function(event) {
+        
+        let msg = JSON.parse(event.data);
+       
+        
+        FormMessage(premierDiv, toUser,fromUser, msg.UserReceiver, msg.UserForum);
+        let closeMesenger= document.querySelector(`.btn-close2-${toUser}`)
+       
+        closeMesenger.addEventListener("click",()=>{
+                let clickClose = document.querySelector(`.chat-card-${toUser}`)
+                clickClose.remove()
+                const messageData = {
+                    
+                    ToUserClosed:fromUser+toUser
+                };
+                socket.send(JSON.stringify(messageData))
+        })
+        
+       
+   
+        
+        let messageFormId = document.querySelector(`.receved-${toUser}`)
+        if (messageFormId)  messageFormId.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const messageInput = document.querySelector(`input[name="messagePrivite-${toUser}"]`);
+            const message = messageInput.value;
+            const messageData = {
+                FromUser: fromUser,
+                ToUser: toUser,
+                Message: message,
+                CreateDate: new Date().toISOString()
+            };
+            
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = ''; // Effacer le champ de saisie après l'envoi
+            if(message!==""){
+                moveUserToTop(toUser)
+            }
+          
+        });
+
+        
+       
+    };
+    
+
+    socket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`);
+    };
+
+}
+
+
+const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEnvoyer) => {
     // Initialize the chat body
     premierDiv.innerHTML=""
     let spinner=document.createElement('div');
@@ -261,4 +409,19 @@ function timeAgo(dateString) {
             return parseInt(daysPast/365) + ' years ago';
         }
     }
-  }
+}
+
+
+function moveUserToTop(userId) {
+    console.log("top");
+    const usersDiv = document.querySelector(".userlist");
+    const userContainer = document.querySelector(`.contact-${userId}`);
+    if (userContainer) {
+      console.log("userContainer: ", userContainer);
+      usersDiv.removeChild(userContainer);
+      usersDiv.insertBefore(userContainer, usersDiv.children[0]);
+      // Enregistrer l'ordre des utilisateurs dans localStorage
+    
+    }
+}
+export {chatContainer}
