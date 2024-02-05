@@ -107,10 +107,10 @@ export function fetchPosthtml(postId, postImage, friendName, postTime, postText,
 
           </div>
           
-          <div>
+          <div >
              <h1 style="font-size:20px">${title}</h1>
              <br></br>
-              <p>${postText}</p>
+              <p class="postText">${postText}</p>
               <br></br>
           </div>
           ${imageHtml}
