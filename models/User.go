@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+var IsNewUser bool
+
 type UserWithLastMessage struct {
 	*User
 	LastMessageAt time.Time
@@ -129,115 +131,3 @@ func IsUserExist(db *sql.DB, email string) (string, error) {
 
 	return userEmail, nil
 }
-
-// func GetAllUsersWithLastMessage(db *sql.DB) ([]UserWithLastMessage, error) {
-// 	query := `
-//     SELECT u.id, GREATEST(MAX(m1.createdDate), MAX(m2.createdDate)) AS lastMessageAt
-//     FROM user u
-//     LEFT JOIN message m1 ON u.id = m1.fromUser
-//     LEFT JOIN message m2 ON u.id = m2.toUser
-//     GROUP BY u.id;
-//     `
-//     rows, err := db.Query(query)
-//     if err != nil {
-//         return nil, err
-//     }
-//     defer rows.Close()
-
-// 	var usersWithLastMessage []UserWithLastMessage
-
-//     for rows.Next() {
-//         var user User
-//         var lastMessageAt sql.NullTime // Utilisez sql.NullTime pour gérer les cas où il n'y a pas de messages
-//         if err := rows.Scan(&user.Id, &lastMessageAt); err != nil {
-//             return nil, err
-//         }
-//         userWithLastMsg := UserWithLastMessage{
-//             User: &user,
-//         }
-//         if lastMessageAt.Valid {
-//             userWithLastMsg.LastMessageAt = lastMessageAt.Time
-//         }
-//         usersWithLastMessage = append(usersWithLastMessage, userWithLastMsg)
-//     }
-//     if err = rows.Err(); err != nil {
-//         return nil, err
-//     }
-
-// 	// Trier les utilisateurs
-// 	sort.Slice(usersWithLastMessage, func(i, j int) bool {
-// 		if usersWithLastMessage[i].LastMessageAt.IsZero() && usersWithLastMessage[j].LastMessageAt.IsZero() {
-// 			return usersWithLastMessage[i].NickName < usersWithLastMessage[j].NickName
-// 		}
-// 		if usersWithLastMessage[i].LastMessageAt.IsZero() {
-// 			return false
-// 		}
-// 		if usersWithLastMessage[j].LastMessageAt.IsZero() {
-// 			return true
-// 		}
-// 		return usersWithLastMessage[i].LastMessageAt.After(usersWithLastMessage[j].LastMessageAt)
-// 	})
-
-// 	fmt.Println(usersWithLastMessage)
-// 	return usersWithLastMessage, nil
-// }
-
-// func GetLastMessageDate(db *sql.DB, userID int) (sql.NullTime, error) {
-// 	var lastMessageAt sql.NullTime
-// 	query := `
-//     SELECT GREATEST(MAX(m1.createdDate), MAX(m2.createdDate))
-//     FROM message m1
-//     LEFT JOIN message m2 ON m1.toUser = m2.fromUser
-//     WHERE m1.fromUser = ? OR m2.toUser = ?
-//     `
-// 	err := db.QueryRow(query, userID, userID).Scan(&lastMessageAt)
-// 	if err != nil {
-// 		return sql.NullTime{}, err
-// 	}
-// 	return lastMessageAt, nil
-// }
-
-// func GetAllUsersWithLastMessage(db *sql.DB) ([]*User, error) {
-// 	users, err := GetAllUser(db)
-// 	fmt.Println("Utilisateurs récupérés:", users) // Pour vérifier les utilisateurs récupérés
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	for _, user := range users {
-// 		lastMessageAt, err := GetLastMessageDate(db, user.Id)
-// 		// Après avoir appelé GetLastMessageDate pour chaque utilisateur
-// fmt.Println("Date du dernier message pour l'utilisateur", user.Id, ":", lastMessageAt)
-
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		user.LastMessageAt = lastMessageAt
-// 	}
-
-// 	// Trier les utilisateurs ici si nécessaire
-// 	// Après avoir mis à jour tous les utilisateurs avec leur date de dernier message
-// 	sort.Slice(users, func(i, j int) bool {
-// 		// Si les deux utilisateurs n'ont pas de dernier message, triez-les par NickName
-// 		if users[i].LastMessageAt.Valid == false && users[j].LastMessageAt.Valid == false {
-// 			return users[i].NickName < users[j].NickName
-// 		}
-// 		// Si l'un des utilisateurs n'a pas de dernier message, il vient après celui qui en a un
-// 		if users[i].LastMessageAt.Valid == false {
-// 			return false
-// 		}
-// 		if users[j].LastMessageAt.Valid == false {
-// 			return true
-// 		}
-// 		// Sinon, triez les utilisateurs par la date de leur dernier message, du plus récent au plus ancien
-// 		return users[i].LastMessageAt.Time.After(users[j].LastMessageAt.Time)
-
-// 	})
-
-// 	// Après le tri
-// 	fmt.Println("Utilisateurs triés:", users)
-
-// 	// fmt.Println(users)
-// 	return users, nil
-// }

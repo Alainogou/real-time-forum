@@ -14,11 +14,6 @@ import (
 	"encoding/json"
 
 	"golang.org/x/crypto/bcrypt"
-	// "strings"
-	// "time"
-	// // "github.com/gofrs/uuid"
-	// "github.com/gofrs/uuid"
-	// "golang.org/x/crypto/bcrypt"
 )
 
 type LoginRequest struct {
@@ -65,27 +60,6 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	// Error = ""
-	// // Datas.IsAuth = false
-	// if strings.ToLower(r.Method) == "get" {
-	// 	// err := helper.RenderTemplateWithLoyout(w, "pages/login", Datas)
-	// 	// Datas = UserData{}
-	// 	// if err != nil {
-	// 	// 	helper.ErrorPage(w, 404)
-	// 	// 	fmt.Println(err)
-	// 	// 	return
-	// 	// }
-	// } else if strings.ToLower(r.Method) == "post" {
-
-	// 	// user := models.User{}
-	// 	// errr := user.GetOneUser(DB, html.EscapeString(email))
-
-	// 	// if errr != nil {
-	// 	// 	fmt.Println(errr)
-	// 	// 	// helper.ErrorPage(w, 500)
-	// 	// 	return
-	// 	// }
-
 	ispassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(newLog.Password))
 
 	if ispassword != nil {
@@ -109,9 +83,8 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		// Datas.ErrorLog = ""
 		// http.Redirect(w, r, "/", 302)
 		sssid = ""
+
 		return
 	}
-	// } else {
-	// 	// helper.ErrorPage(w, 405)
-	// }
+
 }

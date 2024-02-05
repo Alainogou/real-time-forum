@@ -42,7 +42,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	for {
 		MessageConnection[userFrom+toUser] = ws
 		PersonOpenChat[userFrom+toUser] = ws
-		fmt.Println("avant", MessageConnection)
+
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			fmt.Println("read:", err)
@@ -59,7 +59,7 @@ func HandlePrivateMessage(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		if receivedMsg.ToUserClosed != "" {
 
 			delete(PersonOpenChat, receivedMsg.ToUserClosed)
-			fmt.Println(receivedMsg, "mon message")
+
 			break
 		}
 		com := models.MessagePrivate{}
@@ -125,8 +125,6 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 			return
 		}
 
-	
-
 	} else {
 		if IsUserExist(toUser) {
 
@@ -139,10 +137,9 @@ func Broad(userFrom, toUser string, db *sql.DB) {
 			// 	}
 			// 	allUserStatus.AllUser[i].NbreMessages = count
 
-
 			// }
 
-			allUserS:=AllUserStatus{}
+			allUserS := AllUserStatus{}
 			allUserS.NewMessage = true
 			allUserS.PersonConnected = userFrom
 			jsonAll, _ := json.Marshal(allUserS)

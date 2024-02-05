@@ -79,7 +79,8 @@ func Broads(userFrom, toUser string, db *sql.DB) {
 	}
 
 	if IsUserConnected(toUser) {
-
+		
+  
 		user_forum, _ = models.GetMessage(db, toUser, userFrom)
 		user_receiver, _ = models.GetMessage(db, userFrom, toUser)
 		message.UserForum = user_forum
@@ -92,6 +93,7 @@ func Broads(userFrom, toUser string, db *sql.DB) {
 		}
 		conn = MessageConnection[toUser]
 
+		
 		err = conn.WriteMessage(websocket.TextMessage, jsonMsg)
 
 		if err != nil {

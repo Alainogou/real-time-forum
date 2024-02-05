@@ -147,10 +147,9 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+		models.IsNewUser = true
 
 	}
-
-	
 
 }
 
@@ -174,4 +173,3 @@ func isNumber(s string) bool {
 func verifLen(data string) bool {
 	return data != "" && !isNumber(data)
 }
-

@@ -17,18 +17,17 @@ type UserDeconn struct {
 
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
 	isAuth, _ := Auth(DB, w, r)
-	if !isAuth{
+	if !isAuth {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-        return
+		return
 	}
-	
+
 	ok, _ := CheckRequest(r, "/logout", "post")
 
 	if !ok {
 		fmt.Println("errologout")
 		return
 	}
-
 
 	deconn_user := UserDeconn{}
 	reqBody, err := ioutil.ReadAll(r.Body)
