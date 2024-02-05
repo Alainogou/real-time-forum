@@ -18,16 +18,16 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
     allMessages.sort((a, b) => new Date(a.CreateDate) - new Date(b.CreateDate));
     
     if (allMessages.length<=10){
-        console.log("infere", allMessages)
+       
         loadMessages(0,allMessages.length, chatBody, allMessages, userFrom);
     }else{
         
         let messages=[]
         messages.push(...allMessages);
-        console.log(allMessages)
+       
         var tampon= [];
         var countTamp=0;
-        console.log(messages.length, "debt")
+       
         // Get the last 10 message
         for (let t = 0; t <  messages.length; t++) {
            
@@ -46,7 +46,7 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
         }
         messages=[]
         messages.push(...allMessages);
-        console.log(messages.length, "apres un fect")
+       
       
         loadMessages(0, 10, chatBody, tamponSecond, userFrom)
         chatBody.scrollTop = chatBody.scrollHeight;
@@ -83,10 +83,9 @@ export const FormMessage = (premierDiv, toUser, userFrom, messageRecu, messageEn
                             let newMessage;
                             newMessage=AddMessage(_data.FromUser, _data.ContentMessage, userFrom )
                             let newTime= AddTime(timeAgo(_data.CreateDate))
-
-                            chatBody.insertBefore(newMessage, chatBody.firstChild);
                             chatBody.insertBefore(newTime, chatBody.firstChild);
-                          
+                            chatBody.insertBefore(newMessage, chatBody.firstChild);
+                           
                         }
                 }
                 // Adjust scroll position to prevent jumping
