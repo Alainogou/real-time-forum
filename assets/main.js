@@ -18,8 +18,13 @@ import { FormMessage } from './components/privateMessages.js'
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', (event) => {
 
+    // let currentPath = window.location.pathname;
+    // console.log(currentPath);
+    // if (currentPath!=="/"){
+    //     console.log("c'est pas bon");
+    // }
     
     fetch('http://localhost:8081/auth')
     .then(response => response.json())
@@ -918,71 +923,6 @@ function showError(selector, message) {
     }, 5000);
 }
 
-
-function handleMessage(event, nickname){
-
-
-    event.preventDefault();
-    console.log('yes')
-    
-    const formData = new FormData(event.target);
-   
-    let newMessage = {
-        FromUser: nickname,
-        Message: formData.get("messagePrivite"),
-        ToUser: formData.get("send-Name"),
-        CreateDate: new Date().toISOString() // This will set the current date and time in ISO format
-    };
-
-    
-    
-    fetch('http://localhost:8081/CreateMessage', {
-        method: 'POST',
-        headers: {
-           'Content-Type': 'application/json', 
-       },
-       body: JSON.stringify(newMessage),
-     
-    })
-   .then(response => {
-       if (response.ok) {
-            console.log("oo",newMessage);
-
-            // const chatBody = container.querySelector('.chat-body');
-            // const newMessageDiv = document.querySelector('.outgoing');
-            // // newMessageDiv.classList.add('message', 'outgoing');
-            // newMessageDiv.innerHTML = `<p>${newMessage.Message}</p>`;
-            // chatBody.appendChild(newMessageDiv);
-
-            // // Optionally, clear the message input field
-            // form.querySelector('input[name="messagePrivite"]').value = '';
-           
-        } else {       
-
-            return response.json();
-        }
-    })
-    .then(response => { 
-       
-       if (response){
-       
-        // let emptyContent= document.querySelector(".EmptyContent")
-        // if (response['error_class']==="emptycomment"){
-        //     emptyContent.innerHTML=response['message']
-        // }
-        // setTimeout(() => {
-        //     emptyContent.innerHTML=''
-        // }, 5000);
-    }
-   
-       
-
-    })
- 
-   .catch(error => console.error('Erreur lors de la création de l\'utilisateur:', error));
-  
-
-}
 
 
 

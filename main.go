@@ -93,9 +93,7 @@ func main() {
 	http.HandleFunc("/fetchPost", controllers.GetPosts)
 	http.HandleFunc("/createComment", controllers.CreateComment)
 	http.HandleFunc("/fetchComment/", controllers.GetComments)
-	http.HandleFunc("/CreateMessage", controllers.CreateMessage)
-	http.HandleFunc("/fetchPrivateMessage/", controllers.GetPrivateMessage)
-
+	
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		wbs.HandleConnections(w, r, controllers.DB)
 	})

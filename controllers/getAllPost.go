@@ -10,6 +10,11 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	
 	post := models.Post{}
 
+	isAuth, _ := Auth(DB, w, r)
+	if !isAuth{
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+	}
 	allpost, err := post.GetAllPosts(DB)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

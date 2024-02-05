@@ -150,10 +150,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	// if (newUser.Age==10){
-	//     fmt.Println(newUser.ConfirmPassword)
-
-	// }
+	
 
 }
 
@@ -178,32 +175,3 @@ func verifLen(data string) bool {
 	return data != "" && !isNumber(data)
 }
 
-// func isPasswordValid(s string) bool {
-// 	regPassword := regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_\W]).{8,15}$`)
-// 	return regPassword.MatchString(s)
-// }
-// func isPasswordValid(s string) bool {
-// 	if len(s) < 8 || len(s) > 15 {
-// 		return false
-// 	}
-
-// 	hasLower := false
-// 	hasUpper := false
-// 	hasDigit := false
-// 	hasSpecial := false
-
-// 	for _, c := range s {
-// 		switch {
-// 		case unicode.IsLower(c):
-// 			hasLower = true
-// 		case unicode.IsUpper(c):
-// 			hasUpper = true
-// 		case unicode.IsDigit(c):
-// 			hasDigit = true
-// 		case unicode.IsPunct(c) || unicode.IsSymbol(c):
-// 			hasSpecial = true
-// 		}
-// 	}
-
-// 	return hasLower && hasUpper && hasDigit && hasSpecial
-// }

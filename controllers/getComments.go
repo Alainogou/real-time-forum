@@ -10,6 +10,12 @@ import (
 )
 
 func GetComments(w http.ResponseWriter, r *http.Request) {
+
+	isAuth, _ := Auth(DB, w, r)
+	if !isAuth{
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+	}
 	urlPath := r.URL.Path
 	splitPath := strings.Split(urlPath, "/")
 	id := splitPath[len(splitPath)-1]

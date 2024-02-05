@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"realtimeforum/models"
 	"strings"
-
+	"html"
 	"time"
 )
 
@@ -25,6 +25,12 @@ type PostContent struct {
 }
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
+	isAuth, _ := Auth(DB, w, r)
+	if !isAuth{
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+	}
+
 	post := models.Post{}
 
 	var newPost PostContent
@@ -138,8 +144,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		post = models.Post{
 
 			User_id:   newPost.User_id,
-			Title:     newPost.Title,
-			Content:   newPost.Content,
+			Title:    html.EscapeString(strings.TrimSpace(newPost.Title)),
+			Content:   html.EscapeString(strings.TrimSpace(newPost.Content)) ,
 			ImageName: filename,
 			Category:  newPost.Category,
 		}
@@ -148,8 +154,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 		post = models.Post{
 			User_id:  newPost.User_id,
-			Title:    newPost.Title,
-			Content:  newPost.Content,
+			Title:    html.EscapeString(strings.TrimSpace(newPost.Title)),
+			Content:   html.EscapeString(strings.TrimSpace(newPost.Content)) ,
 			Category: newPost.Category,
 		}
 
