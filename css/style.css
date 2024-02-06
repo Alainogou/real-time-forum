@@ -140,11 +140,12 @@ hr {
     .loginForm{
       max-width: 100%;
     }
-.chat-card{
+/* .chat-card{
 
-    position: relative;
+    position: absolute;
     left: 50%;
-  }
+    top: 50%;
+  } */
 }
   @media (max-width: 500px) {
     .home-view  .text {
@@ -452,6 +453,8 @@ nav .right  img{
   padding: 20px 20px 0 20px;
   background: #f5f5f5;
   margin-left: 25%;
+ 
+  /* display: none; */
 }
 .main .center::-webkit-scrollbar{
   width: 0;
@@ -462,6 +465,7 @@ nav .right  img{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
+
 .main .center .top_box .my_story_card{
   width: 135px;
   height: 250px;
@@ -683,6 +687,7 @@ nav .right  img{
   padding: 10px 15px;
   border-radius: 7px;
   box-shadow: 0 1px 8px rgba(0,0,0,0.2);
+  z-index: -1;
 }
 .main .center .friends_post .friend_post_top{
   display: flex;
@@ -926,14 +931,16 @@ height:15px
 
 /*-----------------right------------------*/
 .main .right{
-  width: 25%;
+ width: 25%;
   height: 92vh;
-  overflow: hidden;
-  overflow-y: scroll;
+  /* overflow: hidden; */
   background: #f5f5f5;
   padding: 20px 10px 5px 6px;
   position: fixed;
   right: 0;
+  z-index: 1;
+  
+
 }
 .main .right::-webkit-scrollbar{
   width: 7px;
@@ -1342,7 +1349,8 @@ button:active {
 
 /* Private Message */
 
-.chat-card {
+
+  .main .right  .chat-card {
   width: 300px;
   position: absolute;
   right: 5px;
@@ -1350,7 +1358,9 @@ button:active {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
- 
+  z-index: 999;
+  /* 1f0f0f */
+
 
 }
 
